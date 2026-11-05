@@ -45,7 +45,7 @@ button:disabled{opacity:.4;cursor:not-allowed}
 #fab.run{background:var(--ok)}#fab.pau{background:var(--wa)}#fab.end{background:var(--er)}
 #tBar{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(172px + env(safe-area-inset-bottom,0px));display:none;flex-direction:column;align-items:center;z-index:21}#tBar.open{display:flex}
 #tbT{background:rgba(0,0,0,.75);color:#fff;font-weight:700;font-variant-numeric:tabular-nums;padding:4px 12px;border-radius:12px;margin-bottom:6px;font-size:14px}
-#tbRow,.plRow{position:relative;width:270px;height:96px;filter:drop-shadow(0 4px 8px rgba(0,0,0,.28))}
+#tbRow,.plRow{position:relative;width:270px;height:96px}
 #tbRow button,.plRow button{position:absolute;border:0!important;margin:0!important;min-width:0!important;box-shadow:none!important;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:18px;font-weight:500;line-height:1;letter-spacing:.2px;gap:4px;flex:none;font-family:'Segoe UI',Roboto,Arial,sans-serif}
 #tbRow button:disabled,.plRow button:disabled{filter:grayscale(.6);opacity:.55}
 #tbRow svg,.plRow svg{width:26px;height:26px;stroke:currentColor;fill:none;stroke-width:2.6;stroke-linejoin:round;stroke-linecap:round}
@@ -132,7 +132,7 @@ button svg,label svg{pointer-events:none}
 #curTask{border:2px solid var(--ac);background:linear-gradient(var(--card),var(--card))}
 #curTask .lbl,#who .lbl{font:700 12px/1 var(--fc);letter-spacing:.08em;text-transform:uppercase;color:var(--mu)}
 .saveRow{gap:10px}
-.saveRow.stick{position:sticky;bottom:calc(10px + env(safe-area-inset-bottom,0px));z-index:15;background:var(--card);padding:10px 84px 10px 10px;border-radius:14px;border:1px solid var(--bd);box-shadow:0 -6px 20px rgba(0,0,0,.28)}
+.saveRow.stick{position:sticky;bottom:calc(10px + env(safe-area-inset-bottom,0px));z-index:15;background:var(--card);padding:10px 84px 10px 10px;border-radius:14px;border:1px solid var(--bd);box-shadow:0 -2px 8px rgba(0,0,0,.18);transform:translateZ(0)}
 .hrow button{padding:10px 8px;font-size:15px}
 .sheet{position:fixed;inset:0;background:rgba(10,12,14,.55);display:none;align-items:flex-end;z-index:50}
 .sheet.on{display:flex}
@@ -143,7 +143,7 @@ button svg,label svg{pointer-events:none}
 .dnOk .i{width:30px;height:30px;stroke-width:3}
 #dnT{font:700 24px/1.15 var(--fc)}
 #fiLock{color:var(--tx)}
-#fiLock .i{width:22px;height:22px}.aiRepB{gap:6px}.aiRepL{background:none;border:0;color:var(--mu);text-decoration:underline;text-underline-offset:3px;min-height:44px;font-size:14px;font-weight:500;padding:4px 0;margin-top:4px}#aiRep label{display:flex;gap:10px;align-items:center;min-height:44px;font-size:17px}#aiRep input[type=radio]{width:22px;height:22px;accent-color:var(--ac)}#arPrev{background:var(--bg);border:1px solid var(--bd);border-radius:10px;padding:10px;font-size:14px;max-height:120px;overflow:auto;white-space:pre-wrap;color:var(--mu)}
+#fiLock .i{width:22px;height:22px}#fab,#tBar,#toast{transform:translateZ(0)}.tImpBox{border:1px solid var(--bd2);border-radius:12px;padding:10px;margin:4px 0 8px}.tImpH{font-weight:700;font-size:14px;margin-bottom:6px}#tSrc{display:grid;grid-template-columns:repeat(3,1fr);border:2px solid var(--bd2);border-radius:10px;overflow:hidden}#tSrc button{background:transparent;color:var(--tx);border-radius:0;min-height:44px;font-size:15px;padding:4px}#tSrc button.on{background:var(--ac);color:var(--acx)}#tLoadL,#tPdfL{width:100%;justify-content:center}#fiGo{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:8px;background:transparent;color:var(--mu);border:0;font-size:16px;font-weight:600;min-height:0;border-radius:10px;width:auto}#fiGo span{background:var(--card);border:1px dashed var(--bd2);border-radius:999px;padding:8px 14px}.aiRepB{gap:6px}.aiRepL{background:none;border:0;color:var(--mu);text-decoration:underline;text-underline-offset:3px;min-height:44px;font-size:14px;font-weight:500;padding:4px 0;margin-top:4px}#aiRep label{display:flex;gap:10px;align-items:center;min-height:44px;font-size:17px}#aiRep input[type=radio]{width:22px;height:22px;accent-color:var(--ac)}#arPrev{background:var(--bg);border:1px solid var(--bd);border-radius:10px;padding:10px;font-size:14px;max-height:120px;overflow:auto;white-space:pre-wrap;color:var(--mu)}
 #fabMenu #fQuiz{background:#C62828!important;color:#fff!important;font-size:12px!important}
 #quiz{position:fixed;inset:0;z-index:58;background:var(--bg);color:var(--tx);display:none;flex-direction:column}
 #quiz.on{display:flex}
@@ -297,7 +297,7 @@ body.noTools #fTools,body.noTools #tools{display:none!important}
 <button id="fab" aria-label="Menú">+</button>
 <div id="fabMenu"><button class="ok" id="fI">▶ Iniciar</button><button class="wa" id="fP">⏸ Pausa</button><button class="er" id="fF">⏹ Salida</button><button class="cir noLev" id="fTiempo">00:00:00</button><button class="cir" id="fTar" aria-label="Tareas"><i data-ic="tasks"></i>Tareas</button><button class="cir" id="fCalc" aria-label="Calculadora"><i data-ic="calc"></i>Calcular</button><button class="cir" id="fTools" aria-label="Herramientas"><i data-ic="tool"></i>Herram.</button><button class="cir" id="fPlano" aria-label="Dibujar plano"><i data-ic="plan"></i>Plano</button><button class="cir" id="fQuiz" aria-label="Cuestionarios"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="m9 13 2 2 4-4M10 2h4M12 2v3"/></svg>Quiz</button><button class="cir" id="fNorm" aria-label="Normativa"><span class="nEm" aria-hidden="true">📑</span>Normas</button><button class="cir onlyLev" id="fTool" aria-label="Materiales del levantamiento" style="display:none!important"><span>🛠</span></button></div>
 <div id="tBar" class="noLev"><div id="tbT">00:00:00</div><div id="tbRow"><button class="pl" id="tbI"><svg viewBox="0 0 24 24"><path d="M6 3l14 9-14 9z"/></svg>inicio</button><button class="pl" id="tbP"><svg viewBox="0 0 24 24"><path d="M8 4v16M16 4v16"/></svg><span id="tbPL">pausa</span></button><button class="pl" id="tbF"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="1"/></svg>salida</button></div></div>
-<section id="secTar" style="display:none"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px"><h2 style="margin:0">Tareas pendientes</h2><label class="btn fix pri" id="tLoadL" style="padding:6px 12px;font-size:14px;min-height:40px"><i data-ic="cam"></i>Cargar desde foto<input type="file" accept="image/*" id="tLoad"></label></div><div class="mu" style="font-size:12px">Sube una foto de la planilla de trabajos y la IA separa las tareas.</div><div class="mu" id="tImpSt" style="margin-top:6px;font-weight:600"></div><div id="tImp" style="display:none;margin:6px 0 10px;padding:10px;border:1px solid var(--ac);border-radius:12px"></div><div class="chips" id="tList"></div><div style="margin-top:8px"><input id="tT" placeholder="Tarea, ej: Foco malo"><input id="tU" placeholder="Lugar, ej: Cuncumen 218" style="margin-top:6px"><input id="tN" placeholder="Nota (opcional)" style="margin-top:6px"><div class="row" style="margin-top:6px"><button class="fix" id="tAdd">+ Agregar tarea</button><button class="sec" id="tCancel" style="display:none">Cancelar</button></div></div></section>
+<section id="secTar" style="display:none"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px"><h2 style="margin:0">Tareas pendientes</h2></div><div class="tImpBox"><div class="tImpH">Cargar tareas desde</div><div id="tSrc" role="tablist"><button type="button" role="tab" data-src="foto">Foto</button><button type="button" role="tab" data-src="pdf">PDF</button><button type="button" role="tab" data-src="txt">Texto</button></div><div class="mu" id="tSrcHelp" style="font-size:13px;margin:8px 0"></div><label class="btn fix pri" id="tLoadL"><i data-ic="cam"></i>Elegir foto<input type="file" accept="image/*" id="tLoad"></label><label class="btn fix pri" id="tPdfL" style="display:none"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H6v18h12V7z"/><path d="M14 3v4h4"/></svg>Elegir PDF<input type="file" accept="application/pdf,.pdf" id="tPdf"></label><div id="tTxtBox" style="display:none"><textarea id="tTxt" rows="5" placeholder="Ej:&#10;Foco malo en Cuncumen 218&#10;Enchufe malo Chillepin 118&#10;Ducha mala en Salamanca 215"></textarea><div class="row" style="margin-top:6px"><button class="pri" id="tTxtGo" type="button">Leer tareas</button><button class="sec" id="tTxtPaste" type="button">Pegar</button></div></div></div><div class="mu" id="tImpSt" style="margin-top:6px;font-weight:600"></div><div id="tImp" style="display:none;margin:6px 0 10px;padding:10px;border:1px solid var(--ac);border-radius:12px"></div><div class="chips" id="tList"></div><div style="margin-top:8px"><input id="tT" placeholder="Tarea, ej: Foco malo"><input id="tU" placeholder="Lugar, ej: Cuncumen 218" style="margin-top:6px"><input id="tN" placeholder="Nota (opcional)" style="margin-top:6px"><div class="row" style="margin-top:6px"><button class="fix" id="tAdd">+ Agregar tarea</button><button class="sec" id="tCancel" style="display:none">Cancelar</button></div></div></section>
 
 <section id="curTask" class="cur"><div class="curL"><span class="lbl">Tarea actual</span><b id="ctT">Sin tarea seleccionada</b><span id="ctU" class="mu"></span></div><button class="sec fix" id="ctBtn">Elegir tarea</button></section>
 <section id="who" class="cur" style="display:none"><div class="curL"><span class="lbl">Responsables y lugar</span><b id="whoR"></b><span id="whoU" class="mu"></span></div><button class="sec fix" id="whoBtn"><i data-ic="edit"></i>Editar</button></section>
@@ -382,9 +382,9 @@ body.noTools #fTools,body.noTools #tools{display:none!important}
 
 <section id="secFirma"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><h2 style="margin:0">Firma de conformidad</h2><span style="display:flex;gap:6px"><button class="sec fix" id="fiHide" style="padding:6px 10px;font-size:13px;white-space:nowrap">Ocultar</button><button class="sec fix" id="fiClr" style="padding:6px 10px;font-size:13px">Borrar</button></span></div>
 <div id="fiBody">
-<div style="position:relative;margin-top:8px"><canvas id="fiCv" style="width:100%;height:170px;background:var(--canvas);border-radius:10px;border:1px solid var(--bd2);touch-action:none;display:block"></canvas><button id="fiLock" aria-label="Bloquear firma" style="position:absolute;right:8px;bottom:8px;width:44px;height:44px;padding:0;border-radius:10px;background:var(--card);border:2px solid var(--bd2);box-shadow:0 2px 6px rgba(0,0,0,.25)"></button></div>
+<div style="position:relative;margin-top:8px"><canvas id="fiCv" style="width:100%;height:170px;background:var(--canvas);border-radius:10px;border:1px solid var(--bd2);touch-action:auto;display:block"></canvas><button id="fiGo" type="button" aria-label="Activar el cuadro para firmar"><span>Toca para firmar</span></button><button id="fiLock" aria-label="Bloquear firma" style="position:absolute;right:8px;bottom:8px;width:44px;height:44px;padding:0;border-radius:10px;background:var(--card);border:2px solid var(--bd2);box-shadow:0 2px 6px rgba(0,0,0,.25)"></button></div>
 <input id="fiN" placeholder="Nombre de quien recibe y firma" style="margin-top:8px">
-<div class="mu" style="margin-top:4px">Firma con el dedo dentro del cuadro blanco y toca el candado para bloquearla. Sale al final del PDF.</div>
+<div class="mu" style="margin-top:4px">Toca el cuadro para activarlo, firma con el dedo y toca el candado para bloquearla. Sale al final del PDF.</div>
 </div>
 </section>
 
@@ -501,21 +501,22 @@ const esc=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",
 const openP=r=>r.pausas.length&&!r.pausas[r.pausas.length-1].fin;
 const work=r=>{if(!r.inicio)return 0;const e=r.fin||Date.now();let p=0;r.pausas.forEach(x=>p+=(x.fin||e)-x.ini);return e-r.inicio-p};
 
+const _uw=new Map();function U(id,k,v){const key=id+'|'+k;if(_uw.get(key)===v)return;_uw.set(key,v);const el=$(id);if(!el)return;if(k==='t')el.textContent=v;else if(k==='h')el.innerHTML=v;else if(k==='d')el.disabled=v;else if(k==='c')el.className=v;else if(k==='v')el.style.visibility=v}
 function renderTime(){
-$("tm").textContent=dur(work(s));fab();
-$("st").textContent=!s.inicio?"Sin iniciar":s.fin?"Trabajo finalizado":openP(s)?"En pausa":"Trabajando";
-$("tI").textContent="Inicio: "+hm(s.inicio);$("tF").textContent="Salida: "+hm(s.fin);
+U("tm","t",dur(work(s)));fab();
+U("st","t",!s.inicio?"Sin iniciar":s.fin?"Trabajo finalizado":openP(s)?"En pausa":"Trabajando");
+U("tI","t","Inicio: "+hm(s.inicio));U("tF","t","Salida: "+hm(s.fin));
 const act=s.inicio&&!s.fin;
-$("bIni").disabled=!!s.inicio;$("bPau").disabled=!act;$("bFin").disabled=!act;
-$("bPau").textContent=openP(s)?"▶ Reanudar":"⏸ Pausa";
-$("pList").innerHTML=s.pausas.length?"Pausas: "+s.pausas.map(p=>hm(p.ini)+"–"+(p.fin?hm(p.fin):"en curso")).join(" · "):"";
+U("bIni","d",!!s.inicio);U("bPau","d",!act);U("bFin","d",!act);
+U("bPau","t",openP(s)?"▶ Reanudar":"⏸ Pausa");
+U("pList","h",s.pausas.length?"Pausas: "+s.pausas.map(p=>hm(p.ini)+"–"+(p.fin?hm(p.fin):"en curso")).join(" · "):"");
 }
 function renderResp(){
 $("rList").innerHTML=s.resp.map((n,i)=>`<span class="chip">${esc(n)}<button type="button" class="x" aria-label="Quitar" data-i="${i}">×</button></span>`).join("");
 }
 function renderPhotos(){
 ["antes","despues"].forEach(k=>{
-$("th-"+k).innerHTML=s[k].map((p,i)=>`<div class="th"><img src="${p.d}" alt="${k} ${i+1}" data-ak="${k}" data-ai="${i}" title="Tocar para marcar detalles">${p.an&&p.an.length?'<span class="anb" aria-hidden="true">✎</span>':''}<button type="button" class="x" aria-label="Quitar" data-k="${k}" data-i="${i}">×</button></div>`).join("")+(s[k+"V"]||[]).map((v,i)=>`<div class="th"><video data-vid="${v.id}" controls playsinline preload="metadata"></video><span class="vt">🎥</span><button type="button" class="x vx" aria-label="Quitar" data-vk="${k}" data-vi="${i}">×</button></div>`).join("");
+$("th-"+k).innerHTML=s[k].map((p,i)=>`<div class="th"><img src="${p.d}" decoding="async" loading="lazy" alt="${k} ${i+1}" data-ak="${k}" data-ai="${i}" title="Tocar para marcar detalles">${p.an&&p.an.length?'<span class="anb" aria-hidden="true">✎</span>':''}<button type="button" class="x" aria-label="Quitar" data-k="${k}" data-i="${i}">×</button></div>`).join("")+(s[k+"V"]||[]).map((v,i)=>`<div class="th"><video data-vid="${v.id}" controls playsinline preload="metadata"></video><span class="vt">🎥</span><button type="button" class="x vx" aria-label="Quitar" data-vk="${k}" data-vi="${i}">×</button></div>`).join("");
 $("th-"+k).querySelectorAll("video[data-vid]").forEach(async el=>{const bl=await getV(el.dataset.vid);if(bl)el.src=URL.createObjectURL(bl)});
 });
 }
@@ -719,7 +720,7 @@ $("fTar").onclick=()=>{const p=$("secTar");const show=p.style.display!=="block";
 renderT();
 let fabOn=false,fabOpen=false;
 let tbOpen=false;
-function fab(){const tx=dur(work(s));$("fTiempo").textContent=tx;if(!fabOpen)tbOpen=false;$("fabMenu").className=(fabOpen?"open":"")+(tbOpen?" bar":"");$("fab").style.visibility=(fabOpen&&!tbOpen)?"hidden":"";if(fabOpen&&window.layDial)layDial();$("tBar").className=tbOpen?"open":"";$("tbT").textContent=tx+" · "+(!s.inicio?"Sin iniciar":s.fin?"Finalizado":openP(s)?"En pausa":"Trabajando");const act=s.inicio&&!s.fin;$("tbI").disabled=!!s.inicio;$("tbP").disabled=!act;$("tbF").disabled=!act;$("tbPL").textContent=openP(s)?"reanudar":"pausa";$("sI").disabled=!!s.inicio;$("sP").disabled=!act;$("sF").disabled=!act;$("sPL").textContent=openP(s)?"reanudar":"pausa";$("saveRow").classList.toggle("stick",mode==="lev"?!!s.resp.length:!!s.fin)}
+function fab(){const tx=dur(work(s));U("fTiempo","t",tx);if(!fabOpen)tbOpen=false;U("fabMenu","c",(fabOpen?"open":"")+(tbOpen?" bar":""));U("fab","v",(fabOpen&&!tbOpen)?"hidden":"");if(fabOpen&&window.layDial&&!window._dialLaid){window._dialLaid=1;layDial()}if(!fabOpen)window._dialLaid=0;U("tBar","c",tbOpen?"open":"");U("tbT","t",tx+" · "+(!s.inicio?"Sin iniciar":s.fin?"Finalizado":openP(s)?"En pausa":"Trabajando"));const act=s.inicio&&!s.fin;U("tbI","d",!!s.inicio);U("tbP","d",!act);U("tbF","d",!act);U("tbPL","t",openP(s)?"reanudar":"pausa");U("sI","d",!!s.inicio);U("sP","d",!act);U("sF","d",!act);U("sPL","t",openP(s)?"reanudar":"pausa");const sr=$("saveRow");if(sr){const v=mode==="lev"?!!s.resp.length:!!s.fin;if(sr.classList.contains("stick")!==v)sr.classList.toggle("stick",v)}}
 function fabOld(){const f=$("fab");$("fT").textContent=dur(work(s));
 $("fS").textContent=!s.inicio?"Sin iniciar":s.fin?"Finalizado":openP(s)?"Pausa":"Trabajando";
 f.className=(fabOn?"on ":"")+(!s.inicio?"":s.fin?"end":openP(s)?"pau":"run");
@@ -909,13 +910,13 @@ const c=(j.candidates||[])[0],t=((c&&c.content&&c.content.parts)||[]).filter(p=>
 const e=new Error('sin IA');e.code=aiFn?'no_img':'no_key';throw e}
 let impList=[];
 function renderImp(){const B=$('tImp');if(!impList.length){B.style.display='none';B.innerHTML='';return}B.style.display='block';
-B.innerHTML='<div class="mu" style="margin-bottom:6px">Encontré '+impList.length+' tarea(s). Desmarca las que no quieras y toca Agregar.</div>'+impList.map((t,i)=>`<label style="display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-bottom:1px solid var(--bd)"><input type="checkbox" data-ii="${i}" ${t.ok?'checked':''} style="width:20px;height:20px;flex:none;margin-top:2px"><span><b>${esc(t.t)}</b>${t.u?' · '+esc(t.u):''}${t.n?'<br><small class="mu">'+esc(t.n)+'</small>':''}${t.dup?'<br><small class="mu">(ya está en tu lista)</small>':''}</span></label>`).join('')+'<div class="row" style="margin-top:8px"><button class="ok" id="tImpOk">Agregar seleccionadas</button><button class="sec fix" id="tImpX">Cancelar</button></div><button class="aiRepL" id="tImpRep">Reportar resultado de la IA</button>';
+B.innerHTML='<div class="mu" style="margin-bottom:6px">Encontré '+impList.length+' tarea(s). Desmarca las que no quieras y toca Agregar.</div>'+impList.map((t,i)=>`<label style="display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-bottom:1px solid var(--bd)"><input type="checkbox" data-ii="${i}" ${t.ok?'checked':''} style="width:20px;height:20px;flex:none;margin-top:2px"><span><b>${esc(t.t)}</b>${t.u?' · '+esc(t.u):''}${t.n?'<br><small class="mu">'+esc(t.n)+'</small>':''}${t.dup?'<br><small class="mu">(ya está en tu lista)</small>':''}</span></label>`).join('')+'<div class="row" style="margin-top:8px"><button class="ok" id="tImpOk">Agregar seleccionadas</button><button class="sec fix" id="tImpX">Cancelar</button></div>'+(window.impAI?'<button class="aiRepL" id="tImpRep">Reportar resultado de la IA</button>':'')+'';
 B.querySelectorAll('[data-ii]').forEach(c=>c.onchange=()=>{impList[+c.dataset.ii].ok=c.checked});
 $('tImpOk').onclick=()=>{const add=impList.filter(t=>t.ok).map(t=>({t:t.t,u:t.u,n:t.n,done:false}));tasks.push(...add);saveT();renderT();impList=[];renderImp();toast(add.length+' tarea(s) agregada(s)')};
 $('tImpX').onclick=()=>{impList=[];renderImp()}}
 $('tLoad').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;const st=$('tImpSt');st.textContent='Leyendo la imagen…';impList=[];renderImp();$('tLoadL').style.pointerEvents='none';$('tLoadL').style.opacity='.5';
 try{const b=await toJpgBlob(f,1800);if(!b)throw Object.assign(new Error('img'),{code:'img'});st.textContent='La IA está leyendo las tareas (puede tardar hasta un minuto)…';
-const raw=await readTasks(b);const cap=x=>{x=String(x||'').trim();return x?x[0].toUpperCase()+x.slice(1):''};
+window.impAI=true;const raw=await readTasks(b);const cap=x=>{x=String(x||'').trim();return x?x[0].toUpperCase()+x.slice(1):''};
 impList=raw.map(r=>({t:cap(r.tarea),u:cap(r.lugar),n:String(r.nota||'').trim()})).filter(r=>r.t).map(r=>{r.dup=tasks.some(x=>x.t.toLowerCase()===r.t.toLowerCase()&&(x.u||'').toLowerCase()===r.u.toLowerCase());r.ok=!r.dup;return r});
 st.textContent=impList.length?'':'No encontré tareas en la imagen. Prueba con una foto más nítida y derecha.';renderImp()}
 catch(e){st.textContent=e&&e.code==='img'?'No se pudo leer la imagen.':e&&e.code==='no_img'?'Para leer imágenes dentro de Claude hay que permitirlo cuando la app lo pida. Si no aparece, configura una clave de Gemini en Configuración.':e&&e.code==='no_key'?'Para leer la imagen fuera de Claude necesitas una clave de Gemini en Configuración (la IA local no lee imágenes).':aiErr(e)}
@@ -1014,14 +1015,15 @@ const folioStr=r=>r&&r.folio?(r.tipo==='lev'?'L-':'N° ')+String(r.folio).padSta
 (()=>{const C=$('fiCv');let ctx=null,drawing=false;
 const fit=()=>{const r=C.getBoundingClientRect();if(!r.width)return;const dpr=window.devicePixelRatio||1;C.width=Math.round(r.width*dpr);C.height=Math.round(r.height*dpr);ctx=C.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);ctx.lineWidth=2.5;ctx.lineCap='round';ctx.lineJoin='round';ctx.strokeStyle='#111';drawSaved()};
 function drawSaved(){if(!ctx)return;const r=C.getBoundingClientRect();ctx.clearRect(0,0,r.width,r.height);if(s.firma){const im=new Image();im.onload=()=>ctx.drawImage(im,0,0,r.width,r.height);im.src=s.firma}}
-const lockUI=()=>{const L=!!s.firmaLock;$('fiLock').innerHTML=IC(L?'lock':'unlock');$('fiLock').style.background=L?'var(--ac)':'var(--card)';$('fiLock').style.color=L?'var(--acx)':'var(--tx)';$('fiLock').style.borderColor=L?'var(--ac)':'var(--bd2)';$('fiLock').setAttribute('aria-label',L?'Desbloquear firma':'Bloquear firma');$('fiClr').disabled=L;C.style.touchAction=L?'auto':'none';C.style.opacity=L?'.85':'1';C.style.outline=L?'2px solid var(--ok)':'none'};
-$('fiLock').onclick=()=>{if(!s.firmaLock&&!s.firma){toast('Primero firma en el cuadro');return}s.firmaLock=!s.firmaLock;persist();lockUI();toast(s.firmaLock?'Firma bloqueada':'Firma desbloqueada')};
+const lockUI=()=>{const L=!!s.firmaLock;$('fiLock').innerHTML=IC(L?'lock':'unlock');$('fiLock').style.background=L?'var(--ac)':'var(--card)';$('fiLock').style.color=L?'var(--acx)':'var(--tx)';$('fiLock').style.borderColor=L?'var(--ac)':'var(--bd2)';$('fiLock').setAttribute('aria-label',L?'Desbloquear firma':'Bloquear firma');$('fiClr').disabled=L;C.style.touchAction=(!L&&window.fiArm)?'none':'auto';$('fiGo').style.display=(!L&&!window.fiArm)?'flex':'none';C.style.opacity=L?'.85':'1';C.style.outline=L?'2px solid var(--ok)':'none'};
+$('fiLock').onclick=()=>{if(!s.firmaLock&&!s.firma){toast('Primero firma en el cuadro');return}s.firmaLock=!s.firmaLock;window.fiArm=false;persist();lockUI();toast(s.firmaLock?'Firma bloqueada':'Firma desbloqueada')};
+$('fiGo').onclick=()=>{window.fiArm=true;lockUI()};try{new IntersectionObserver(es=>{if(!es[0].isIntersecting&&window.fiArm){window.fiArm=false;lockUI()}}).observe(C)}catch(e){}
 window.firmaRender=()=>{$('fiN').value=s.firmaN||'';lockUI();fit()};
 const fiShow=o=>{$('fiBody').style.display=o?'block':'none';$('fiHide').textContent=o?'Ocultar':'Mostrar';$('fiClr').style.display=o?'':'none';try{localStorage.setItem('rep_fiOpen',o?'1':'0')}catch(e){}if(o)setTimeout(fit,0)};
 $('fiHide').onclick=()=>fiShow($('fiBody').style.display==='none');
 try{fiShow(localStorage.getItem('rep_fiOpen')!=='0')}catch(e){fiShow(true)}
 const pt=e=>{const r=C.getBoundingClientRect();return[e.clientX-r.left,e.clientY-r.top]};
-C.addEventListener('pointerdown',e=>{if(s.firmaLock){toast('La firma está bloqueada. Toca 🔒 para desbloquear.');return}if(!ctx)fit();if(!ctx)return;e.preventDefault();drawing=true;try{C.setPointerCapture(e.pointerId)}catch(_){}const[x,y]=pt(e);ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x+.1,y+.1);ctx.stroke()});
+C.addEventListener('pointerdown',e=>{if(s.firmaLock){toast('La firma está bloqueada. Toca 🔒 para desbloquear.');return}if(!window.fiArm)return;if(!ctx)fit();if(!ctx)return;e.preventDefault();drawing=true;try{C.setPointerCapture(e.pointerId)}catch(_){}const[x,y]=pt(e);ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x+.1,y+.1);ctx.stroke()});
 C.addEventListener('pointermove',e=>{if(!drawing)return;const[x,y]=pt(e);ctx.lineTo(x,y);ctx.stroke()});
 const end=()=>{if(!drawing)return;drawing=false;s.firma=C.toDataURL('image/png');persist()};
 C.addEventListener('pointerup',end);C.addEventListener('pointercancel',end);
@@ -1343,7 +1345,7 @@ let leaveArm=0;function confirmLeave(){if(st&&st.i<st.qs.length&&$('qzBar').styl
 $('qzBack').onclick=()=>{if(!st||confirmLeave())home()};
 $('fQuiz').onclick=()=>{fabOpen=false;fab();home();W.classList.add('on');document.body.style.overflow='hidden'}})();
 
-const APP_VER='1.1.0';
+const APP_VER='1.2.0';
 (()=>{try{$('cfg').insertAdjacentHTML('beforeend','<p class="mu" id="appVer" style="text-align:center;margin:18px 0 6px">Reportes de trabajo · versión '+APP_VER+'</p>')}catch(e){}
 let prevV=null;try{prevV=localStorage.getItem('rep_ver');localStorage.setItem('rep_ver',APP_VER)}catch(e){}
 if(prevV&&prevV!==APP_VER)setTimeout(()=>toast('App actualizada a la versión '+APP_VER),900);
@@ -1359,7 +1361,37 @@ setTimeout(()=>{location.href='mailto:fcorreaiba@gmail.com?subject='+encodeURICo
 $('aiRepB').onclick=()=>reportAI($('notas').value,'Mejorar notas');
 document.addEventListener('click',e=>{const b=e.target.closest('#heRep');if(b){const t=$('heN');reportAI(t?t.value:'','Editar reporte guardado')}const b2=e.target.closest('#tImpRep');if(b2){reportAI((typeof impList!=='undefined'&&impList||[]).map(t=>'- '+t.t+(t.u?' · '+t.u:'')+(t.n?' ('+t.n+')':'')).join('\n'),'Importar tareas desde foto')}});})();
 
-applyMode();renderAll();renderHist();setInterval(renderTime,1000);
+(()=>{const st=$('tImpSt');let src='foto';
+const SRC={foto:'Saca o sube una foto de la planilla y la IA separa las tareas.',pdf:'Sube el PDF con los trabajos. Si tiene texto, se lee sin IA; si es escaneado, lo lee la IA.',txt:'Pega el mensaje de WhatsApp con los trabajos, una tarea por línea. Se lee sin IA.'};
+const setSrc=k=>{src=k;document.querySelectorAll('#tSrc button').forEach(b=>{const on=b.dataset.src===k;b.classList.toggle('on',on);b.setAttribute('aria-selected',on)});$('tSrcHelp').textContent=SRC[k];$('tLoadL').style.display=k==='foto'?'':'none';$('tPdfL').style.display=k==='pdf'?'':'none';$('tTxtBox').style.display=k==='txt'?'block':'none';try{localStorage.setItem('rep_tSrc',k)}catch(e){}};
+$('tSrc').onclick=e=>{const b=e.target.closest('[data-src]');if(b)setSrc(b.dataset.src)};
+try{setSrc(localStorage.getItem('rep_tSrc')||'foto')}catch(e){setSrc('foto')}
+const cap=x=>{x=String(x||'').trim();return x?x[0].toUpperCase()+x.slice(1):''};
+const strip=l=>l.replace(/^\s*\[?\d{1,2}[\/.-]\d{1,2}[\/.-]\d{2,4},?\s+\d{1,2}:\d{2}(?::\d{2})?\s*(?:[ap]\.?\s?m\.?)?\]?\s*(?:-\s*)?(?:[^:]{1,40}:\s)?/i,'')
+ .replace(/^\s*(?:[-–—•*·▪►>✅☑️✔️❌🔴🟢🟡⚠️📍👉]+\s*)+/u,'').replace(/^\s*(?:\d{1,3}|[a-z])\s*[.)\-:]\s+/i,'').replace(/[*_~]/g,'').trim();
+const SKIP=/^(hola|buen[oa]s?\s*(d[ií]as?|tardes?|noches?)?|saludos|gracias|ok|okey|dale|listo|atte\.?|quedo atento|cualquier cosa.*|estos son.*|les? env[ií]o.*|trabajos? (para|de) (hoy|mañana).*|pendientes:?|tareas:?)[\s!.,:]*$/i;
+window.parseTaskText=txt=>{const out=[];String(txt||'').split(/\r?\n|;\s*(?=[A-ZÁÉÍÓÚÑ])/).forEach(l0=>{let l=strip(l0);if(!l||l.length<3||SKIP.test(l)||(/^(hola|buen[oa]s|saludos|gracias|estimad[oa]s?|atte|[oó]rden(es)? de trabajo|lista de|tareas|trabajos|pendientes)\b/i.test(l)&&!/\d{2,}/.test(l))||/^<.*omitid[oa]>$/i.test(l)||!/[a-záéíóúñ]/i.test(l))return;
+let n='';const pm=l.match(/\(([^)]{2,})\)\s*$/);if(pm){n=pm[1].trim();l=l.slice(0,pm.index).trim()}
+let t=l,u='';const PL=x=>/^(?:(?:calle|pasaje|psje\.?|av\.?|avenida|sector|villa|pobl\.?)\s+)?[^\d:]{2,40}\s#?\d{1,5}[a-z]?(?:\s*(?:depto\.?|dpto\.?|casa|of\.?)\s*\w+)?$/i.test(x.trim());let m=l.match(/^(.+?)\s*:\s*(.+)$/);
+if(m&&PL(m[1])){u=m[1];t=m[2]}else if(m&&PL(m[2])){t=m[1];u=m[2]}else{m=l.match(/^(.+?)\s+[\-–|]\s+(.+)$/);if(m&&PL(m[2])){t=m[1];u=m[2]}else if(m&&PL(m[1])){u=m[1];t=m[2]}else m=null}
+if(u){}
+else{m=l.match(/^(.+?)\s+(?:en|calle|sector|pasaje|psje\.?|av\.?|avenida|depto\.?|casa)\s+(.+)$/i);
+ if(m&&((/\d/.test(m[2])&&m[2].length<=60)||/^[A-ZÁÉÍÓÚÑ]/.test(m[2]))){t=m[1];u=(/^(calle|sector|pasaje|psje|av|avenida|depto|casa)/i.test(l.slice(m[1].length).trim())?l.slice(m[1].length).trim():m[2])}
+ else{m=l.match(/^(.+?)\s+((?:[A-ZÁÉÍÓÚÑ][\wáéíóúñ.]*\s+){1,4}#?\s?\d+[\w\-\/]*)$/);if(m){t=m[1];u=m[2]}}}
+t=cap(t.replace(/[\s,.;:–-]+$/,''));u=cap(u.replace(/[\s,.;:]+$/,''));if(t)out.push({t,u,n})});return out};
+const load=(list,ai)=>{window.impAI=!!ai;impList=list.filter(r=>r.t).map(r=>{r.dup=tasks.some(x=>x.t.toLowerCase()===r.t.toLowerCase()&&(x.u||'').toLowerCase()===(r.u||'').toLowerCase());r.ok=!r.dup;return r});renderImp()};
+$('tTxtGo').onclick=()=>{const v=$('tTxt').value;if(!v.trim()){st.textContent='Primero pega el mensaje con las tareas.';return}const L=parseTaskText(v);st.textContent=L.length?'Revisa la lista: puedes desmarcar las que no correspondan. Después de agregarlas también puedes editarlas.':'No encontré tareas en el texto. Revisa que haya una tarea por línea.';load(L);if(L.length)$('tTxt').value=''};
+$('tTxtPaste').onclick=async()=>{try{const t=await navigator.clipboard.readText();if(t){$('tTxt').value=t;$('tTxtGo').click()}else st.textContent='El portapapeles está vacío. Copia el mensaje en WhatsApp primero.'}catch(e){st.textContent='No pude leer el portapapeles. Mantén presionado el cuadro y elige Pegar.';$('tTxt').focus()}};
+$('tPdf').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;impList=[];renderImp();const L0=$('tPdfL');L0.style.pointerEvents='none';L0.style.opacity='.5';st.textContent='Leyendo el PDF…';
+try{const L=await pdfjsLoad();const doc=await L.getDocument({data:new Uint8Array(await f.arrayBuffer())}).promise;let txt='';const N=Math.min(doc.numPages,10);
+for(let p=1;p<=N;p++){const pg=await doc.getPage(p);const tc=await pg.getTextContent();let lastY=null,line='';tc.items.forEach(it=>{const y=Math.round(it.transform[5]);if(lastY!==null&&Math.abs(y-lastY)>3){txt+=line+'\n';line=''}line+=(line&&!line.endsWith(' ')&&!it.str.startsWith(' ')?' ':'')+it.str;lastY=y;if(it.hasEOL){txt+=line+'\n';line='';lastY=null}});txt+=line+'\n'}
+if(txt.replace(/\s/g,'').length>15){const r=parseTaskText(txt);st.textContent=r.length?'Revisa la lista: puedes desmarcar las que no correspondan.':'El PDF no tiene tareas reconocibles.';load(r)}
+else{st.textContent='El PDF es una imagen escaneada: la IA lo está leyendo (puede tardar hasta un minuto)…';const pg=await doc.getPage(1);const v=pg.getViewport({scale:1});const sc=Math.min(2.5,1800/Math.max(v.width,v.height));const vp=pg.getViewport({scale:sc});const cv=document.createElement('canvas');cv.width=vp.width;cv.height=vp.height;const cx=cv.getContext('2d');cx.fillStyle='#fff';cx.fillRect(0,0,cv.width,cv.height);await pg.render({canvasContext:cx,viewport:vp}).promise;const b=await new Promise(r=>cv.toBlob(r,'image/jpeg',.85));
+const raw=await readTasks(b);const r=raw.map(x=>({t:cap(x.tarea),u:cap(x.lugar),n:String(x.nota||'').trim()}));st.textContent=r.length?'':'No encontré tareas en el PDF.';load(r,true)}}
+catch(e){st.textContent=e&&e.code==='no_key'?'Este PDF es escaneado y para leerlo se necesita IA (configura una clave de Gemini). Si te llegó por WhatsApp como texto, usa la opción Texto.':e&&e.code?aiErr(e):'No se pudo abrir el PDF. Revisa tu conexión la primera vez (se descarga el lector) o prueba con otro archivo.'}
+L0.style.pointerEvents='';L0.style.opacity=''}})();
+
+applyMode();renderAll();renderHist();setInterval(()=>{if(!document.hidden)renderTime()},1000);
 (async()=>{try{const m=await kvAll();if(!m.size){[KL,"rep_draft","rep_draft_lev","rep_bod","rep_fmt"].forEach(k=>{try{const v=localStorage.getItem(k);if(v!=null){kvc.set(k,v);kvSet(k,v).catch(()=>{})}}catch(e){}});return}
 m.forEach((v,k)=>kvc.set(k,v));s=load(KD)||blank();list=load(KL)||[];bod=load("rep_bod")||[];fmt=Object.assign({emp:'',tit:'Reporte de trabajo',pie:'',col:'#1f6feb',logo:null,bg:null},load('rep_fmt')||{});renderAll();renderHist()}catch(e){}})();
 </script>
