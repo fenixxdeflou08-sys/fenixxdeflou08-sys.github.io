@@ -891,12 +891,16 @@ $('aiUndo').onclick=()=>{if(aiPrev===null)return;$('notas').value=aiPrev;s.notas
 const AI_SYS='Eres un asistente que redacta reportes de trabajo técnicos (electricidad, gasfitería, mantención) en español de Chile. Reescribe la nota que te den de forma clara, profesional y ordenada, corrigiendo ortografía y redacción. No inventes datos, materiales, causas ni resultados que no estén en la nota. Mantén lugares, números y nombres tal cual. Responde SOLO con el texto final, sin títulos, comillas ni explicaciones.';
 let aiCfg={mode:'auto',key:''};try{Object.assign(aiCfg,JSON.parse(localStorage.getItem('rep_ai')||'{}'))}catch(e){}
 const saveAi=()=>{try{localStorage.setItem('rep_ai',JSON.stringify(aiCfg))}catch(e){}};
-async function gemini(t){for(const mdl of ['gemini-flash-latest','gemini-2.5-flash']){
-const r=await fetch('https://generativelanguage.googleapis.com/v1beta/models/'+mdl+':generateContent?key='+encodeURIComponent(aiCfg.key),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({systemInstruction:{parts:[{text:AI_SYS}]},contents:[{role:'user',parts:[{text:'Nota:\n'+t}]}],generationConfig:{temperature:0.3}})});
-if(r.status===404)continue;const j=await r.json().catch(()=>({}));
-if(!r.ok){const e=new Error((j.error&&j.error.message)||('HTTP '+r.status));e.code=r.status===429?'rate_limited':(r.status===400||r.status===401||r.status===403)?'bad_key':'gemini';throw e}
-const c=(j.candidates||[])[0],out=((c&&c.content&&c.content.parts)||[]).filter(p=>!p.thought).map(p=>p.text||'').join('').trim();if(out)return out;throw new Error('vacío')}
-const e=new Error('modelo no disponible');e.code='gemini';throw e}
+const GEM_M=['gemini-flash-latest','gemini-2.5-flash','gemini-flash-lite-latest','gemini-2.5-flash-lite','gemini-2.0-flash'];
+async function gemCall(body){let last=null;for(const mdl of GEM_M){for(let k=0;k<2;k++){let r;try{r=await fetch('https://generativelanguage.googleapis.com/v1beta/models/'+mdl+':generateContent?key='+encodeURIComponent(aiCfg.key),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})}catch(x){last=Object.assign(new Error('sin conexión'),{code:'net'});break}
+if(r.status===404)break;const j=await r.json().catch(()=>({}));
+if(r.ok){const c=(j.candidates||[])[0],out=((c&&c.content&&c.content.parts)||[]).filter(p=>!p.thought).map(p=>p.text||'').join('').trim();if(out)return out;last=Object.assign(new Error('vacío'),{code:'gemini'});break}
+const e=new Error((j.error&&j.error.message)||('HTTP '+r.status));
+if(r.status===400||r.status===401||r.status===403){e.code='bad_key';throw e}
+e.code=r.status===429?'rate_limited':(r.status>=500?'busy':'gemini');last=e;
+if(r.status>=500&&k===0){await new Promise(ok=>setTimeout(ok,1500));continue}break}}
+throw last||Object.assign(new Error('modelo no disponible'),{code:'gemini'})}
+async function gemini(t){return gemCall({systemInstruction:{parts:[{text:AI_SYS}]},contents:[{role:'user',parts:[{text:'Nota:\n'+t}]}],generationConfig:{temperature:0.3}})}
 const WL='https://cdn.jsdelivr.net/npm/@wllama/wllama@3.8.1',LM_URL='https://huggingface.co/Qwen/Qwen2.5-0.5B-Instruct-GGUF/resolve/main/qwen2.5-0.5b-instruct-q8_0.gguf';
 let wl=null,wlP=null;const lmOK=()=>{try{return localStorage.getItem('rep_lmOK')===LM_URL}catch(e){return false}};const lmOld=()=>{try{const v=localStorage.getItem('rep_lmOK');return !!v&&v!==LM_URL}catch(e){return false}};
 async function getWl(onP){if(wl)return wl;if(wlP)return wlP;
@@ -909,14 +913,14 @@ if(m==='auto'&&aiFn){const r=await aiFn(AI_SYS+'\n\nNota:\n'+t,{modelTier:'quick
 if((m==='auto'||m==='gemini')&&aiCfg.key){try{return await gemini(t)}catch(e){if(m==='gemini'||!lmOK())throw e}}
 if((m==='auto'||m==='local')&&lmOK()){if(!wl&&st)st.textContent='Cargando la IA local en memoria (la primera vez tarda un poco)…';const o=await localRun(t);return o}
 const e=new Error('sin IA');e.code=m==='local'?'no_local':m==='gemini'?'no_key':'no_ai';throw e}
-const aiErr=e=>e&&e.code==='local_bad'?'La IA local dio una respuesta sin sentido y la descarté; tu texto quedó igual. Prueba de nuevo o con un texto más corto.':e&&e.code==='rate_limited'?'Se alcanzó el límite de uso por ahora; intenta en un rato.':e&&e.code==='not_granted'?'No se dio permiso para usar la IA.':e&&e.code==='bad_key'?'La clave de Gemini no es válida. Revísala en ⚙️ Configuración.':e&&e.code==='no_key'?'Falta la clave de Gemini en ⚙️ Configuración.':e&&e.code==='no_local'?'Primero descarga la IA local en ⚙️ Configuración.':e&&e.code==='no_ai'?'Para usar la IA fuera de Claude, configúrala en ⚙️ Configuración (clave gratis de Gemini o IA local).':'No se pudo mejorar el texto. Revisa tu conexión.';
+const aiErr=e=>e&&e.code==='busy'?'Google está saturado en este momento; tu texto quedó igual. Intenta en unos minutos.':e&&e.code==='local_bad'?'La IA local dio una respuesta sin sentido y la descarté; tu texto quedó igual. Prueba de nuevo o con un texto más corto.':e&&e.code==='rate_limited'?'Se alcanzó el límite de uso por ahora; intenta en un rato.':e&&e.code==='not_granted'?'No se dio permiso para usar la IA.':e&&e.code==='bad_key'?'La clave de Gemini no es válida. Revísala en ⚙️ Configuración.':e&&e.code==='no_key'?'Falta la clave de Gemini en ⚙️ Configuración.':e&&e.code==='no_local'?'Primero descarga la IA local en ⚙️ Configuración.':e&&e.code==='no_ai'?'Para usar la IA fuera de Claude, configúrala en ⚙️ Configuración (clave gratis de Gemini o IA local).':'No se pudo mejorar el texto. Revisa tu conexión.';
 $('aiMode').value=aiCfg.mode;$('gKey').value=aiCfg.key;$('lmSt').textContent=lmOK()?'IA local descargada ✓ (se carga al usarla)':lmOld()?'Hay una versión más precisa de la IA local. Toca el botón para descargarla de nuevo (unos 600 MB).':'';if(lmOK())$('lmDl').textContent='↻ Volver a cargar IA local';
 const aiShow=o=>{$('aiBody').style.display=o?'block':'none';$('aiA').textContent=o?'▾':'▸';$('aiL').textContent=o?'Ocultar':'Mostrar';try{localStorage.setItem('rep_aiOpen',o?'1':'0')}catch(e){}};
 $('aiH').onclick=()=>aiShow($('aiBody').style.display==='none');
 try{aiShow(localStorage.getItem('rep_aiOpen')!=='0')}catch(e){aiShow(true)}
 $('aiMode').onchange=e=>{aiCfg.mode=e.target.value;saveAi()};
 $('gKey').oninput=e=>{aiCfg.key=e.target.value.trim();saveAi();$('gSt').textContent=''};
-$('gTest').onclick=async()=>{const st=$('gSt');if(!aiCfg.key){st.textContent='Pega primero la clave.';return}st.textContent='Probando…';try{await gemini('hola, cambie el enchufe del baño');st.textContent='Clave funcionando ✓'}catch(e){st.textContent=e.code==='bad_key'?'La clave no es válida.':e.code==='rate_limited'?'La clave funciona, pero alcanzó su límite por ahora.':'No se pudo conectar ('+e.message+').'}};
+$('gTest').onclick=async()=>{const st=$('gSt');if(!aiCfg.key){st.textContent='Pega primero la clave.';return}st.textContent='Probando…';try{await gemini('hola, cambie el enchufe del baño');st.textContent='Clave funcionando ✓'}catch(e){st.textContent=e.code==='bad_key'?'La clave no es válida.':e.code==='rate_limited'?'La clave funciona, pero alcanzó su límite por ahora.':e.code==='busy'?'La clave funciona ✓, pero los servidores de Google están saturados. Intenta en unos minutos.':e.code==='net'?'Sin internet.':'No se pudo conectar ('+e.message+').'}};
 $('lmDl').onclick=async()=>{const b=$('lmDl'),st=$('lmSt');b.disabled=true;$('lmBar').style.display='block';st.textContent='Preparando…';
 try{await getWl(({loaded,total})=>{const p=total?Math.round(loaded/total*100):0;$('lmF').style.width=p+'%';st.textContent='Descargando… '+p+'% ('+Math.round(loaded/1048576)+' MB)'});$('lmF').style.width='100%';st.textContent='IA local lista ✓ Ya puedes usarla sin internet.';b.textContent='↻ Volver a cargar IA local'}
 catch(e){st.textContent='No se pudo descargar o cargar la IA local. '+(location.hostname.includes('claude')?'Dentro de Claude está bloqueado; hazlo desde la app publicada.':'Revisa la conexión y el espacio del celular.')}
@@ -930,9 +934,7 @@ const b2b64=b=>new Promise(ok=>{const r=new FileReader();r.onload=()=>ok(String(
 const parseJ=t=>{const m=String(t).match(/\{[\s\S]*\}/);return JSON.parse(m?m[0]:t)};
 async function readTasks(blob){const m=aiCfg.mode||'auto';
 if(m==='auto'&&aiFn){const lim=aiFn.limits?await aiFn.limits().catch(()=>({})):{};if(lim.images){const j=await aiFn.json(IMP_PROMPT,{images:[blob],modelTier:'default'});return j.tareas||[]}}
-if(aiCfg.key&&m!=='local'){for(const mdl of ['gemini-flash-latest','gemini-2.5-flash']){const r=await fetch('https://generativelanguage.googleapis.com/v1beta/models/'+mdl+':generateContent?key='+encodeURIComponent(aiCfg.key),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{role:'user',parts:[{text:IMP_PROMPT},{inline_data:{mime_type:'image/jpeg',data:await b2b64(blob)}}]}],generationConfig:{temperature:0.1,responseMimeType:'application/json'}})});
-if(r.status===404)continue;const j=await r.json().catch(()=>({}));if(!r.ok){const e=new Error((j.error&&j.error.message)||('HTTP '+r.status));e.code=r.status===429?'rate_limited':(r.status===400||r.status===401||r.status===403)?'bad_key':'gemini';throw e}
-const c=(j.candidates||[])[0],t=((c&&c.content&&c.content.parts)||[]).filter(p=>!p.thought).map(p=>p.text||'').join('');return (parseJ(t).tareas)||[]}}
+if(aiCfg.key&&m!=='local'){const t=await gemCall({contents:[{role:'user',parts:[{text:IMP_PROMPT},{inline_data:{mime_type:'image/jpeg',data:await b2b64(blob)}}]}],generationConfig:{temperature:0.1,responseMimeType:'application/json'}});return (parseJ(t).tareas)||[]}
 const e=new Error('sin IA');e.code=aiFn?'no_img':'no_key';throw e}
 let impList=[];
 function renderImp(){const B=$('tImp');if(!impList.length){B.style.display='none';B.innerHTML='';return}B.style.display='block';
@@ -1444,7 +1446,7 @@ let leaveArm=0;function confirmLeave(){if(st&&st.i<st.qs.length&&$('qzBar').styl
 $('qzBack').onclick=()=>{if(!st||confirmLeave())home()};
 $('fQuiz').onclick=()=>{fabOpen=false;fab();home();W.classList.add('on');document.body.style.overflow='hidden'}})();
 
-const APP_VER='1.7.2';
+const APP_VER='1.7.3';
 (()=>{try{$('cfg').insertAdjacentHTML('beforeend','<p class="mu" id="appVer" style="text-align:center;margin:18px 0 6px">Reportes de trabajo · versión '+APP_VER+'</p>')}catch(e){}
 let prevV=null;try{prevV=localStorage.getItem('rep_ver');localStorage.setItem('rep_ver',APP_VER)}catch(e){}
 if(prevV&&prevV!==APP_VER)setTimeout(()=>toast('App actualizada a la versión '+APP_VER),900);
