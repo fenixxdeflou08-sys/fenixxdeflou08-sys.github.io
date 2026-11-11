@@ -188,8 +188,9 @@ button svg,label svg{pointer-events:none}
 
 .th img[data-ak]{cursor:pointer}
 .anb{position:absolute;left:4px;bottom:4px;background:var(--ac);color:var(--acx);border-radius:6px;padding:0 6px;font-weight:700;font-size:13px;pointer-events:none}
-#plano.annot [data-tool=dim],#plano.annot [data-tool=grid]{display:none}
+#plano.annot [data-tool=dim],#plano.annot [data-tool=grid],#plano.annot [data-tool=meas]{display:none}
 #plano.annot #plTools{grid-template-columns:repeat(6,1fr)}
+#measSh{z-index:72}#plTools button>span{display:block}
 #plano.annot #plCv{background:#111316}
 
 #cp{z-index:75}
@@ -240,7 +241,7 @@ body.lev #fabMenu #fTiempo,body.noTools #fabMenu #fTools{display:none!important}
 #plZ{font-size:13px;font-variant-numeric:tabular-nums}
 #plOpt{display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:8px;background:var(--card);color:var(--tx);border-bottom:1px solid var(--bd);min-height:60px}
 #plCv{flex:1;min-height:0;width:100%;touch-action:none;display:block}
-#plTools{display:grid;grid-template-columns:repeat(8,1fr);gap:4px;padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px));background:#23272C}
+#plTools{display:grid;grid-template-columns:repeat(9,1fr);gap:4px;padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px));background:#23272C}
 #plTools button{flex-direction:column;gap:2px;min-height:56px;padding:4px 0;background:transparent;color:#DADDE2;font-size:11px;border-radius:10px}
 #plTools button.on{background:var(--ac);color:var(--acx)}
 .plc{width:34px;height:34px;min-height:0;border-radius:50%;padding:0;border:3px solid var(--card);box-shadow:0 0 0 1px var(--bd2);flex:none}
@@ -276,7 +277,7 @@ body.noTools #fTools,body.noTools #tools{display:none!important}
 #tools.open{display:block}
 #tlHead{display:flex;justify-content:space-between;align-items:center;font-weight:700;margin-bottom:8px}
 #tlHead button{width:34px;height:34px;padding:0;border-radius:50%;background:var(--bg);color:var(--tx);border:1px solid var(--bd);font-size:18px}
-#tlTabs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:10px}
+#tlTabs{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:10px}
 #tlTabs button{padding:8px 2px;font-size:13px}
 #tlBody{min-height:250px}
 #tlMsg{margin-top:8px;color:var(--er)}
@@ -403,7 +404,16 @@ body.noTools #fTools,body.noTools #tools{display:none!important}
 <button class="sec" id="bPdf" style="display:none">📄 PDF</button>
 <button class="sec" id="bNew">Nuevo</button>
 </div>
+<button class="sec" id="bPark" style="width:100%;margin:-6px 0 16px">📁 Guardar en carpeta para seguir después</button>
 
+<section id="secFold">
+<h2 id="fdH" role="button" tabindex="0" aria-expanded="true" style="margin:0;display:flex;align-items:center;justify-content:space-between;gap:8px;cursor:pointer;min-height:36px"><span>📁 Carpeta: trabajos por terminar <span id="fdC" class="mu" style="font-weight:600"></span></span><svg id="fdArr" class="i" viewBox="0 0 24 24" aria-hidden="true" style="transition:transform .2s"><path d="m6 9 6 6 6-6"/></svg></h2>
+<div id="fdBody" style="margin-top:8px">
+<div class="mu" style="margin-bottom:8px">Guarda el reporte a medias con un nombre y ábrelo después para seguir editándolo. Mientras está en la carpeta, el tiempo queda en pausa.</div>
+<div class="row" style="margin-bottom:8px"><input id="fdN" placeholder="Nombre (ej: Casa Gabriela, 2° piso)"><button class="ok fix" id="fdSave">Guardar aquí</button></div>
+<div id="fdList"></div>
+</div>
+</section>
 <section>
 <h2>Reportes guardados</h2>
 <div class="row" style="margin-bottom:8px"><input id="hQ" placeholder="Buscar lugar, tarea o nombre"><select id="hM" class="fix" style="width:auto;max-width:150px;padding:8px 6px"></select></div>
@@ -479,11 +489,12 @@ body.noTools #fTools,body.noTools #tools{display:none!important}
 </div>
 </section>
 </div>
-<div id="tools"><div id="tlHead"><span>🧰 Herramientas</span><button id="tlX" aria-label="Cerrar">×</button></div><div id="tlTabs"><button data-tl="lvl">📐 Nivel</button><button class="sec" data-tl="lin">🔦 Linterna</button><button class="sec" data-tl="db">🔊 Ruido</button><button class="sec" data-tl="lux">💡 Luz</button></div><div id="tlBody"></div><div id="tlMsg"></div></div>
+<div id="tools"><div id="tlHead"><span>🧰 Herramientas</span><button id="tlX" aria-label="Cerrar">×</button></div><div id="tlTabs"><button data-tl="lvl">📐 Nivel</button><button class="sec" data-tl="lin">🔦 Linterna</button><button class="sec" data-tl="db">🔊 Ruido</button><button class="sec" data-tl="lux">💡 Luz</button><button class="sec" data-tl="mg">🧲 Metal</button></div><div id="tlBody"></div><div id="tlMsg"></div></div>
 <div id="calc"><div id="cHead"><span>🧮 Calculadora</span><span style="display:flex;gap:6px"><button id="cMin" aria-label="Achicar">−</button><button id="cMax" aria-label="Agrandar">+</button><button id="cX" aria-label="Cerrar">×</button></span></div><div id="cDisp"><div id="cExp"></div><div id="cRes">0</div></div><div id="cKeys"></div><div id="cRsz"></div></div>
 <div id="plGal" role="dialog" aria-label="Todos los planos"><div id="pgTop"><button class="sec" id="pgX" aria-label="Cerrar"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button><b id="pgT">Planos</b><label class="btn pri" id="pgFotoL" role="button" tabindex="0" aria-label="Subir foto para marcar"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8a2 2 0 0 1 2-2h2l1.5-2h5L15 6h2"/><circle cx="10" cy="12.5" r="3.5"/><path d="M3 8v9a2 2 0 0 0 2 2h7"/><path d="m15.5 20.5.6-2.6 5-5a1.4 1.4 0 0 1 2 2l-5 5z"/></svg>Foto<input type="file" accept="image/*" id="pgFoto" hidden></label><button class="pri" id="pgNew" aria-label="Nuevo plano">+ Plano</button></div><div id="pgList"></div></div>
 <div id="pgMenu" class="sheet" role="dialog" aria-labelledby="pgMt"><div class="sheetIn"><b id="pgMt" style="font-size:19px"></b><div id="pgAct" class="pgAct"><button class="sec" data-pa="open">Abrir y editar</button><button class="sec" data-pa="rep">Agregar al reporte</button><button class="sec" data-pa="share">Compartir (WhatsApp)</button><button class="sec" data-pa="ren">Cambiar nombre</button><button class="sec" data-pa="dup">Duplicar</button><button class="sec er" data-pa="del">Borrar</button><button class="sec" data-pa="x">Cancelar</button></div><div id="pgRn" style="display:none"><input id="pgRi" maxlength="60" aria-label="Nombre del plano"><div class="row" style="margin-top:8px"><button class="pri" data-pa="rok">Guardar nombre</button><button class="sec" data-pa="x">Cancelar</button></div></div></div></div>
-<div id="plano" role="dialog" aria-label="Editor de planos"><div id="plTop"><button class="sec" id="plX" aria-label="Cerrar"><i data-ic="x"></i></button><span id="plZ" class="mu" aria-label="Zoom">100%</span><span style="flex:1"></span><button class="sec" id="plUndo" aria-label="Deshacer"><i data-ic="undo"></i></button><button class="sec" id="plRedo" aria-label="Rehacer"><i data-ic="redo"></i></button><button class="sec" id="plSh" aria-label="Compartir plano"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg></button><button class="sec" id="plDl" aria-label="Descargar imagen"><i data-ic="down"></i></button><button class="pri" id="plSave">Guardar</button></div><div id="plOpt"></div><canvas id="plCv"></canvas><div id="plTools"><button data-tool="pen"><i data-ic="edit"></i>Lápiz</button><button data-tool="hl"><i data-ic="hl"></i>Resaltar</button><button data-tool="erase"><i data-ic="erase"></i>Borrar</button><button data-tool="shape"><i data-ic="shapes"></i>Formas</button><button data-tool="dim"><i data-ic="dim"></i>Cota</button><button data-tool="text"><i data-ic="text"></i>Texto</button><button data-tool="move"><i data-ic="move"></i>Mover</button><button data-tool="grid"><i data-ic="grid"></i>Fondo</button></div></div>
+<div id="plano" role="dialog" aria-label="Editor de planos"><div id="plTop"><button class="sec" id="plX" aria-label="Cerrar"><i data-ic="x"></i></button><span id="plZ" class="mu" aria-label="Zoom">100%</span><span style="flex:1"></span><button class="sec" id="plUndo" aria-label="Deshacer"><i data-ic="undo"></i></button><button class="sec" id="plRedo" aria-label="Rehacer"><i data-ic="redo"></i></button><button class="sec" id="plSh" aria-label="Compartir plano"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg></button><button class="sec" id="plDl" aria-label="Descargar imagen"><i data-ic="down"></i></button><button class="pri" id="plSave">Guardar</button></div><div id="plOpt"></div><canvas id="plCv"></canvas><div id="plTools"><button data-tool="pen"><i data-ic="edit"></i>Lápiz</button><button data-tool="hl"><i data-ic="hl"></i>Resaltar</button><button data-tool="erase"><i data-ic="erase"></i>Borrar</button><button data-tool="shape"><i data-ic="shapes"></i>Formas</button><button data-tool="dim"><i data-ic="dim"></i>Cota</button><button data-tool="text"><i data-ic="text"></i>Texto</button><button data-tool="move"><i data-ic="move"></i>Mover</button><button data-tool="grid"><i data-ic="grid"></i>Fondo</button><button data-tool="meas"><span aria-hidden="true" style="font-size:20px;line-height:20px">📏</span>Medir</button></div></div><div id="measSh" class="sheet" role="dialog" aria-label="Medida de la pared"><div class="sheetIn"><div class="cpHead"><b>📏 Medida de la pared</b><button class="x" id="msX" aria-label="Cerrar">×</button></div><div class="mu" id="msE"></div><div class="row"><input id="msV" inputmode="decimal" placeholder="Metros, ej: 3,45" style="font-size:22px;font-weight:700;text-align:center"><span class="fix" style="font-weight:700">m</span></div><button class="sec" id="msAR" type="button">📱 Medir con la cámara</button><div class="mu" id="msSt" style="font-weight:600"></div><div class="row"><button class="pri" id="msOk" type="button">Guardar medida</button><button class="sec fix" id="msDel" type="button">Quitar</button></div><div class="mu" style="font-size:13px">Con la cámara la medida es aproximada (±1–2 cm en pocos metros). Para cortes exactos usa huincha.</div></div></div>
+<div id="arOv" style="display:none;position:fixed;inset:0;z-index:95;flex-direction:column;justify-content:space-between;align-items:center;pointer-events:none;color:#fff;font-family:var(--f)"><div id="arTx" style="margin-top:calc(16px + env(safe-area-inset-top,0px));background:rgba(0,0,0,.65);padding:10px 14px;border-radius:12px;max-width:90%;text-align:center;font-weight:600"></div><div style="display:flex;flex-direction:column;align-items:center;gap:8px"><div id="arC" style="width:34px;height:34px;border:3px solid #fff;border-radius:50%;box-shadow:0 0 0 2px rgba(0,0,0,.4)"></div><div id="arD" style="font:700 30px/1 var(--fc);text-shadow:0 2px 6px #000"></div></div><div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:calc(20px + env(safe-area-inset-bottom,0px));pointer-events:auto"><button class="pri" id="arPt" type="button">Marcar inicio</button><button class="ok" id="arUse" type="button" style="display:none">Usar medida</button><button class="sec" id="arRe" type="button" style="background:rgba(0,0,0,.5);color:#fff">Reiniciar</button><button class="sec" id="arNo" type="button" style="background:rgba(0,0,0,.5);color:#fff">Cancelar</button></div></div>
 <div id="cp" class="sheet" role="dialog" aria-label="Elegir color"><div class="sheetIn cpIn"><div class="cpHead"><button type="button" class="x" id="cpEye" aria-label="Cuentagotas"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m2 22 1-1h3l9-9M3 21v-3l9-9M15 6l3.4-3.4a2.1 2.1 0 1 1 3 3L18 9l.4.4a2.1 2.1 0 1 1-3 3l-3.8-3.8a2.1 2.1 0 1 1 3-3z"/></svg></button><b>Color</b><span style="display:flex;gap:4px"><button type="button" class="x" id="cpReset" aria-label="Volver al color anterior"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.8 9.8 0 0 0-6.7 2.7L3 8"/><path d="M3 3v5h5"/></svg></button><button type="button" class="x" id="cpX" aria-label="Cerrar"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button></span></div><div class="cpTabs"><button type="button" data-cpt="pre">Predefinidos</button><button type="button" data-cpt="spec">Espectro</button></div><div id="cpPre"></div><div id="cpSpec"><div id="cpSV"><div id="cpSVd"></div></div><div id="cpHue"><div id="cpHd"></div></div></div><div class="cpBot"><span id="cpSw"></span><input id="cpHex" maxlength="7" inputmode="text" aria-label="Código del color" spellcheck="false" autocomplete="off"><button type="button" class="pri" id="cpUse" style="flex:none;padding:10px 18px">Usar</button></div></div></div>
 <div id="norm" class="sheet" role="dialog" aria-labelledby="nT"><div class="sheetIn"><div class="cpHead"><b id="nT"><span aria-hidden="true">📑</span> Normativa</b><button type="button" class="x" id="nX" aria-label="Cerrar"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div><div id="nTabs"><button type="button" data-nc="ele">Eléctrico</button><button type="button" data-nc="gas">Gas</button><button type="button" data-nc="agua">Agua</button></div><div id="nOff" class="nOff"></div><input id="nQ" placeholder="Buscar: tablero, tierra, empalme…"><div id="nLead"></div><div id="nList"></div><div id="nSrc"></div></div></div>
 <div id="quiz" role="dialog" aria-labelledby="qzT"><div id="qzHead"><button class="sec" id="qzBack" aria-label="Volver a la lista"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button><span id="qzT">Cuestionarios</span><button class="sec" id="qzX" aria-label="Cerrar"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div><div id="qzBar" style="display:none"><div><span id="qzS">Puntaje: 0</span><span id="qzP">Pregunta 1 / 20</span></div><span id="qzTm">10:00</span></div><div id="qzBody"></div></div>
@@ -645,21 +656,30 @@ const ok=()=>toast("Resumen copiado");
 const fb=()=>{const a=document.createElement("textarea");a.value=t;document.body.appendChild(a);a.select();try{document.execCommand("copy");ok()}catch(e){toast("No se pudo copiar")}a.remove()};
 try{navigator.clipboard.writeText(t).then(ok,fb)}catch(e){fb()}}
 
+const p2=n=>String(n).padStart(2,'0'),dIn=t=>{if(!t)return'';const d=new Date(t);return d.getFullYear()+'-'+p2(d.getMonth()+1)+'-'+p2(d.getDate())},tIn=t=>{if(!t)return'';const d=new Date(t);return p2(d.getHours())+':'+p2(d.getMinutes())};
+function heTime(r){const dv=$('heD').value;if(!dv){toast('Elige una fecha');return false}const [y,m,d]=dv.split('-').map(Number);
+const at=(hhmm,base)=>{const b=new Date(base||Date.now());const [h,mi]=(hhmm||'').split(':').map(Number);const x=new Date(y,m-1,d,isNaN(h)?b.getHours():h,isNaN(mi)?b.getMinutes():mi,isNaN(h)?b.getSeconds():0,0);return x.getTime()};
+if(r.tipo==='lev'){const ni=at(null,r.inicio),dl=ni-(r.inicio||ni);r.inicio=ni;r.fin=(r.fin||ni)+dl;return true}
+const ni=at($('heI').value,r.inicio);let nf=at($('heF').value,r.fin);if(nf<=ni)nf+=864e5;
+const oi=r.inicio||ni,dl=ni-oi;(r.pausas||[]).forEach(x=>{x.ini+=dl;if(x.fin)x.fin+=dl});
+r.pausas=(r.pausas||[]).filter(x=>x.ini<nf).map(x=>({ini:Math.max(x.ini,ni),fin:Math.min(x.fin||nf,nf)})).filter(x=>x.fin>x.ini);
+r.inicio=ni;r.fin=nf;return true}
 let histEd=-1;
 function renderHist(){
 fillMonths();renderSum();
-$("hist").innerHTML=(hf=hv()).length?hf.map(([r,i])=>`<div class="hist"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><b>${r.folio?'<span style="font-size:12px;color:var(--ac)">'+folioStr(r)+'</span><br>':''}${r.tipo==='lev'?'Levantamiento · '+fd(r.inicio):fd(r.inicio)+' · '+hm(r.inicio)+'–'+hm(r.fin)}</b><button class="pen" data-e="${i}" aria-label="Editar"><svg viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16v4z"/><path d="M13.5 6.5l4 4"/></svg></button></div><div class="mu">${esc(r.resp.join(", ")||"Sin responsable")} · ${esc(r.ubic||"Sin ubicación")}<br>${r.tipo==='lev'?r.antes.length+' fotos'+(vidsOf(r).length?' · '+vidsOf(r).length+' videos':'')+' · '+((r.lm||[]).length)+' materiales':'Tiempo efectivo '+dur(work(r))+' · '+(r.antes.length+r.despues.length)+' fotos'+(vidsOf(r).length?' · '+vidsOf(r).length+' videos':'')+' · '+r.mats.length+' materiales'}</div><div class="row hrow" style="margin-top:8px"><button class="ok" data-w="${i}">${IC("msg")}WhatsApp</button><button class="sec" data-p="${i}" aria-label="Descargar PDF">${IC("file")}PDF</button><button class="sec" data-c="${i}">${IC("copy")}Copiar</button></div>${i===histEd?`<div style="margin-top:10px;padding:10px;border:1px solid var(--bd);border-radius:10px"><div class="mu" style="margin-bottom:4px">Ubicación</div><input id="heU" value="${esc(r.ubic||'')}" placeholder="Ubicación"><div class="mu" style="margin:8px 0 4px">Notas</div><textarea id="heN" style="min-height:110px">${esc(r.notas||'')}</textarea><div class="row" style="margin-top:6px"><button class="sec" id="heCr"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17 7 7l4 10M4.5 13.5h5"/><path d="m13 15 3 3 6-7"/></svg>Corregir texto</button><button class="sec" data-ea="1" id="heAi">${IC("spark")}Mejorar texto con IA</button><button class="sec" data-eu="1" id="heUndo" style="display:none">↩ Deshacer</button><button class="sec aiRepB" id="heRep" style="display:none" aria-label="Reportar respuesta de la IA"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 22V4M4 4h12l-2 4 2 4H4"/></svg>Reportar</button></div><div class="mu" id="heSt" style="margin-top:4px"></div><div class="row" style="margin-top:8px"><button class="ok" data-es="${i}">Guardar cambios</button><button class="sec" data-ec="1">Cancelar</button></div><button class="er" data-d="${i}" style="width:100%;margin-top:10px">${IC("trash")}Eliminar reporte</button></div>`:''}</div>`).join(""):'<div class="mu">'+(list.length?'No hay resultados para esa búsqueda.':'Aún no hay reportes.')+'</div>';
+$("hist").innerHTML=(hf=hv()).length?hf.map(([r,i])=>`<div class="hist"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><b>${r.folio?'<span style="font-size:12px;color:var(--ac)">'+folioStr(r)+'</span><br>':''}${r.tipo==='lev'?'Levantamiento · '+fd(r.inicio):fd(r.inicio)+' · '+hm(r.inicio)+'–'+hm(r.fin)}</b><button class="pen" data-e="${i}" aria-label="Editar"><svg viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16v4z"/><path d="M13.5 6.5l4 4"/></svg></button></div><div class="mu">${esc(r.resp.join(", ")||"Sin responsable")} · ${esc(r.ubic||"Sin ubicación")}<br>${r.tipo==='lev'?r.antes.length+' fotos'+(vidsOf(r).length?' · '+vidsOf(r).length+' videos':'')+' · '+((r.lm||[]).length)+' materiales':'Tiempo efectivo '+dur(work(r))+' · '+(r.antes.length+r.despues.length)+' fotos'+(vidsOf(r).length?' · '+vidsOf(r).length+' videos':'')+' · '+r.mats.length+' materiales'}</div><div class="row hrow" style="margin-top:8px"><button class="ok" data-w="${i}">${IC("msg")}WhatsApp</button><button class="sec" data-p="${i}" aria-label="Descargar PDF">${IC("file")}PDF</button><button class="sec" data-c="${i}">${IC("copy")}Copiar</button></div>${i===histEd?`<div style="margin-top:10px;padding:10px;border:1px solid var(--bd);border-radius:10px"><div class="mu" style="margin-bottom:4px">📝 Fecha${r.tipo==='lev'?'':' y horario'}</div><input id="heD" type="date" value="${dIn(r.inicio)}">${r.tipo==='lev'?'':`<div class="row" style="margin-top:6px"><label class="mu" style="display:flex;flex-direction:column;gap:2px">Inicio<input id="heI" type="time" value="${tIn(r.inicio)}"></label><label class="mu" style="display:flex;flex-direction:column;gap:2px">Salida<input id="heF" type="time" value="${tIn(r.fin)}"></label></div>`}<div class="mu" style="margin:8px 0 4px">Ubicación</div><input id="heU" value="${esc(r.ubic||'')}" placeholder="Ubicación"><div class="mu" style="margin:8px 0 4px">Notas</div><textarea id="heN" style="min-height:110px">${esc(r.notas||'')}</textarea><div class="row" style="margin-top:6px"><button class="sec" id="heCr"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17 7 7l4 10M4.5 13.5h5"/><path d="m13 15 3 3 6-7"/></svg>Corregir texto</button><button class="sec" data-ea="1" id="heAi">${IC("spark")}Mejorar texto con IA</button><button class="sec" data-eu="1" id="heUndo" style="display:none">↩ Deshacer</button><button class="sec aiRepB" id="heRep" style="display:none" aria-label="Reportar respuesta de la IA"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 22V4M4 4h12l-2 4 2 4H4"/></svg>Reportar</button></div><div class="mu" id="heSt" style="margin-top:4px"></div><div class="row" style="margin-top:8px"><button class="ok" data-es="${i}">Guardar cambios</button><button class="sec" data-ec="1">Cancelar</button></div><button class="sec" data-eo="${i}" style="width:100%;margin-top:8px">✏️ Abrir completo para seguir editando (fotos, tiempo, materiales…)</button><button class="er" data-d="${i}" style="width:100%;margin-top:10px">${IC("trash")}Eliminar reporte</button></div>`:''}</div>`).join(""):'<div class="mu">'+(list.length?'No hay resultados para esa búsqueda.':'Aún no hay reportes.')+'</div>';
 }
 $("hist").onclick=e=>{const c=e.target.dataset.c,d=e.target.dataset.d,p=e.target.dataset.p,ed=e.target.dataset;
 if(ed.e!==undefined){histEd=histEd===+ed.e?-1:+ed.e;renderHist();setTimeout(()=>{const t=$('heN');if(t){t.focus();t.setSelectionRange(t.value.length,t.value.length)}},50);return}
 if(ed.ec!==undefined){histEd=-1;renderHist();return}
+if(ed.eo!==undefined){window.fdOpenSaved&&window.fdOpenSaved(+ed.eo);return}
 if(ed.ea!==undefined){(async()=>{const st=$('heSt'),b=$('heAi'),t=$('heN').value.trim();if(!t){st.textContent='Primero escribe la nota.';return}
 b.disabled=true;st.textContent='Mejorando el texto…';
 try{const out=await improveText(t,st);if(!out)throw new Error('vacío');window.heePrev=$('heN').value;$('heN').value=out;$('heUndo').style.display='inline-block';$('heRep').style.display='inline-flex';st.textContent='Texto mejorado. Revísalo y toca Guardar cambios.'}
 catch(e){st.textContent=aiErr(e)}
 b.disabled=false})();return}
 if(ed.eu!==undefined){if(window.heePrev!=null){$('heN').value=window.heePrev;window.heePrev=null;$('heUndo').style.display='none';$('heSt').textContent='Se recuperó el texto anterior.'}return}
-if(ed.es!==undefined){const r=list[+ed.es];r.notas=$('heN').value;const u=$('heU').value.trim();if(u!==(r.ubic||'')){r.ubic=u;r.maps=null}put(KL,list);histEd=-1;renderHist();toast('Reporte actualizado');return}
+if(ed.es!==undefined){const r=list[+ed.es];if(!heTime(r))return;r.notas=$('heN').value;const u=$('heU').value.trim();if(u!==(r.ubic||'')){r.ubic=u;r.maps=null}put(KL,list);histEd=-1;renderHist();toast('Reporte actualizado');return}
 if(d!==undefined&&histEd>=0)histEd=-1;
 if(p!==undefined)pdf(list[+p]);
 if(e.target.dataset.w!==undefined)wa(list[+e.target.dataset.w]);
@@ -668,12 +688,12 @@ if(d!==undefined){const idx=+d,gone=list.splice(idx,1)[0];if(!gone)return;put(KL
 
 $("bSave").onclick=()=>{
 if(!s.resp.length){toast("Agrega al menos un responsable");return}
-if(mode==='lev'){const n=Date.now();s.tipo='lev';s.inicio=n;s.fin=n;if(activeT>=0&&tasks[activeT]){tasks[activeT].done=true;saveT();renderT();activeT=-1}}
+if(mode==='lev'){const n=Date.now();s.tipo='lev';if(!s._reF||!s.inicio){s.inicio=n;s.fin=n}if(activeT>=0&&tasks[activeT]){tasks[activeT].done=true;saveT();renderT();activeT=-1}}
 else{if(!s.inicio){toast("Primero marca la hora de inicio");return}
 if(!s.fin){toast("Marca la salida antes de guardar");return}}
-const fk=mode==='lev'?'rep_folio_lev':'rep_folio',fnum=(load(fk)||0)+1;s.folio=fnum;
+const fk=mode==='lev'?'rep_folio_lev':'rep_folio',reF=s._reF,fnum=reF||(load(fk)||0)+1;s.folio=fnum;delete s._reF;delete s._fdN;
 list.unshift(JSON.parse(JSON.stringify(s)));
-if(!put(KL,list)){list.shift();delete s.folio;return}put(fk,fnum);$(mode==='lev'?'fN2':'fN1').value=fnum+1;
+if(!put(KL,list)){list.shift();if(!reF)delete s.folio;else s._reF=reF;return}if(!reF){put(fk,fnum);$(mode==='lev'?'fN2':'fN1').value=fnum+1}
 const keepR=s.resp;s=blank();s.resp=keepR;whoEdit=false;persist();renderAll();renderHist();showDone()};
 function showDone(){const r=list[0];if(!r)return;$("dnT").textContent=(r.tipo==="lev"?"Levantamiento ":"Reporte ")+folioStr(r)+" guardado";$("dnS").textContent=[fd(r.inicio),r.task&&r.task.t,r.ubic].filter(Boolean).join(" · ");$("done").classList.add("on");$("dnW").focus()}
 const closeDone=()=>$("done").classList.remove("on");
@@ -685,8 +705,46 @@ $('mRep').onclick=()=>setMode('rep');
 $('mLev').onclick=()=>setMode('lev');
 let newArm=0;$("bNew").onclick=()=>{const nf=s.antes.length+s.despues.length,nv=vidsOf(s).length,has=nf||nv||s.mats.length||(s.lm||[]).length||(s.notas||"").trim()||s.firma||s.inicio;
 if(has&&!newArm){newArm=setTimeout(()=>{newArm=0;$("bNew").className="sec";$("bNew").textContent="Nuevo"},4500);$("bNew").className="er";$("bNew").textContent="Toca otra vez para borrar";const parts=[nf&&nf+" foto(s)",nv&&nv+" video(s)",s.mats.length&&s.mats.length+" material(es)",(s.notas||"").trim()&&"notas",s.firma&&"firma",s.inicio&&"tiempo"].filter(Boolean);toast("Se borrará este borrador: "+parts.join(", "));return}
-clearTimeout(newArm);newArm=0;$("bNew").className="sec";$("bNew").textContent="Nuevo";s.mats.forEach(m=>giveBack(m));vidsOf(s).forEach(([k,v])=>delV(v.id));const keep=s.resp;s=blank();s.resp=keep;whoEdit=false;persist();renderAll();window.scrollTo({top:0,behavior:"smooth"});toast("Reporte nuevo")};
+clearTimeout(newArm);newArm=0;$("bNew").className="sec";$("bNew").textContent="Nuevo";if(window.fdRestoreCur&&window.fdRestoreCur()){const keep=s.resp;s=blank();s.resp=keep;whoEdit=false;persist();renderAll();toast('Edición cancelada: el reporte volvió a Reportes guardados');return}s.mats.forEach(m=>giveBack(m));vidsOf(s).forEach(([k,v])=>delV(v.id));const keep=s.resp;s=blank();s.resp=keep;whoEdit=false;persist();renderAll();window.scrollTo({top:0,behavior:"smooth"});toast("Reporte nuevo")};
 
+
+/* ---- Carpeta de trabajos por terminar ---- */
+(()=>{const FK=()=>mode==='lev'?'rep_fold_lev':'rep_fold';let fold=load(FK())||[];const save=()=>put(FK(),fold);
+const has=r=>!!(r.antes.length||r.despues.length||vidsOf(r).length||r.mats.length||(r.lm||[]).length||(r.notas||'').trim()||r.firma||r.inicio||r.ubic||(r.planos||[]).length);
+const autoN=r=>r._fdN||r.ubic||(r.task&&r.task.t)||('Borrador '+fd(Date.now())+' '+hm(Date.now()));
+function park(name){if(!has(s)){toast('El reporte está vacío, no hay nada que guardar');return false}
+const r=JSON.parse(JSON.stringify(s));r._fdN=(name||'').trim()||autoN(r);r._fdAt=Date.now();
+if(r.inicio&&!r.fin&&!openP(r)){r.pausas.push({ini:Date.now(),fin:null});r._fdP=1}
+fold.unshift(r);if(!save()){fold.shift();return false}
+const keep=s.resp;s=blank();s.resp=keep;whoEdit=false;persist();renderAll();return true}
+function openAt(i){const r=fold[i];if(!r)return;let msg='Abierto: '+r._fdN;
+if(has(s)){if(!park(''))return;i++;msg+=' · el que tenías quedó en la carpeta'}
+fold.splice(i,1);save();if(r._fdP){const lp=r.pausas[r.pausas.length-1];if(lp&&!lp.fin)lp.fin=Date.now();delete r._fdP}
+delete r._fdAt;s=Object.assign(blank(),r);persist();renderAll();renderF();window.scrollTo({top:0,behavior:'smooth'});toast(msg)}
+window.fdOpenSaved=idx=>{const r=list[idx];if(!r)return;let msg='Reporte '+(folioStr(r)||'')+' abierto para editar. Al guardar mantiene su folio.';
+if(has(s)){if(!park(''))return;msg+=' El que tenías quedó en la carpeta.'}
+list.splice(idx,1);put(KL,list);const c=JSON.parse(JSON.stringify(r));c._reF=r.folio;c._fdN=r._fdN||(folioStr(r)+(r.ubic?' · '+r.ubic:''));delete c.folio;
+s=Object.assign(blank(),c);histEd=-1;persist();renderAll();renderHist();renderF();window.scrollTo({top:0,behavior:'smooth'});toast(msg)};
+function renderF(){fold=load(FK())||[];$('fdC').textContent=fold.length?'('+fold.length+')':'';const L=$('fdList');if(!fold.length){L.innerHTML='<div class="mu">La carpeta está vacía.</div>';return}
+L.innerHTML=fold.map((r,i)=>{const nf=r.antes.length+r.despues.length,parts=[r._reF?'Folio '+r._reF+' (editando)':'',r.inicio?'Tiempo '+dur(work(r)):'',nf?nf+' fotos':'',r.mats.length?r.mats.length+' materiales':'',(r.notas||'').trim()?'notas':''].filter(Boolean).join(' · ');
+return `<div class="hist"><b>📁 ${esc(r._fdN||'Sin nombre')}</b><div class="mu">Guardado ${r._fdAt?fd(r._fdAt)+' '+hm(r._fdAt):''}${parts?'<br>'+esc(parts):''}</div><div class="row" style="margin-top:6px"><button class="ok" data-fo="${i}">Abrir y seguir</button><button class="sec fix" data-fr="${i}">Renombrar</button><button class="er fix" data-fx="${i}" aria-label="Eliminar">🗑</button></div></div>`}).join('')}
+window.renderFold=renderF;
+function restore(r){if(r._fdP){const lp=r.pausas[r.pausas.length-1];if(lp&&!lp.fin)lp.fin=Date.now()}r.folio=r._reF;['_reF','_fdN','_fdP','_fdAt'].forEach(k=>delete r[k]);list.unshift(r);put(KL,list);renderHist()}
+window.fdRestoreCur=()=>{if(!s._reF)return false;restore(JSON.parse(JSON.stringify(s)));return true};
+$('fdList').onclick=e=>{const b=e.target.closest('button');if(!b)return;const d=b.dataset;
+if(d.fo!==undefined)openAt(+d.fo);
+if(d.fr!==undefined){const r=fold[+d.fr],n=window.prompt('Nuevo nombre',r._fdN||'');if(n&&n.trim()){r._fdN=n.trim();save();renderF()}}
+if(d.fx!==undefined){const i=+d.fx;if(fold[i]&&fold[i]._reF){const r=fold.splice(i,1)[0];save();restore(r);renderF();toast('Folio '+r.folio+' devuelto a Reportes guardados');return}const gone=fold.splice(i,1)[0];save();renderF();let undone=false;
+toast('"'+gone._fdN+'" eliminado de la carpeta',{label:'Deshacer',ms:8000,fn:()=>{undone=true;fold.splice(i,0,gone);save();renderF();toast('Recuperado')}});
+setTimeout(()=>{if(!undone){gone.mats.forEach(m=>{try{giveBack(m)}catch(_){}});vidsOf(gone).forEach(([k,v])=>delV(v.id));}},8600)}};
+const doPark=()=>{const n=$('fdN').value;if(park(n)){$('fdN').value='';renderF();toast('Guardado en la carpeta: '+fold[0]._fdN);$('secFold').scrollIntoView({behavior:'smooth',block:'start'})}};
+const fdOpen=o=>{$('fdBody').style.display=o?'':'none';$('fdArr').style.transform=o?'':'rotate(-90deg)';$('fdH').setAttribute('aria-expanded',o?'true':'false');try{localStorage.setItem('rep_fdOpen',o?'1':'0')}catch(_){}};
+let fdO=true;try{fdO=localStorage.getItem('rep_fdOpen')!=='0'}catch(_){}fdOpen(fdO);
+$('fdH').onclick=()=>fdOpen($('fdBody').style.display==='none');$('fdH').onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();$('fdH').click()}};
+$('fdSave').onclick=doPark;$('bPark').onclick=doPark;
+const oSM=window.setMode;renderF();
+document.addEventListener('click',e=>{if(e.target.closest('#mRep,#mLev'))setTimeout(renderF,50)},true);
+})();
 let bod=load("rep_bod")||[];
 const saveBod=()=>put("rep_bod",bod);
 function showCfg(o){setTimeout(()=>{if(!o&&window.firmaRender)firmaRender()},0);$("cfgBtn").className=o?"fix":"sec fix";$("cfg").style.display=o?"block":"none";$("main").style.display=o?"none":"block";if(o){renderBod();renderFmt()}else if($("pB").style.display==="block")fillBod();window.scrollTo(0,0)}
@@ -1050,6 +1108,24 @@ $('dbR').onclick=()=>{mn=1e9;mx=0;sum=0;n=0};
 $('dbG').onclick=async()=>{if(st){off();return}msg('');try{st=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false}});ctx=new(window.AudioContext||window.webkitAudioContext)();const an=ctx.createAnalyser();an.fftSize=2048;ctx.createMediaStreamSource(st).connect(an);const buf=new Float32Array(an.fftSize);$('dbG').textContent='⏸ Detener';let sm=0,tk=0;
 const loop=()=>{an.getFloatTimeDomainData(buf);let s2=0;for(let i=0;i<buf.length;i++)s2+=buf[i]*buf[i];const v=Math.max(0,20*Math.log10(Math.sqrt(s2/buf.length)+1e-9)+94);sm=sm?sm*0.8+v*0.2:v;
 if(++tk%6===0){$('dbN').textContent=sm.toFixed(0);$('dbF').style.width=Math.min(100,sm/120*100)+'%';$('dbF').style.background=sm<60?'#2fc272':sm<85?'#f0a82a':'#ff6159';mn=Math.min(mn,sm);mx=Math.max(mx,sm);sum+=sm;n++;$('dbS').textContent='Mín '+mn.toFixed(0)+' · Prom '+(sum/n).toFixed(0)+' · Máx '+mx.toFixed(0);$('dbC').textContent=lv(sm)}raf=requestAnimationFrame(loop)};loop()}catch(e){off();msg(blocked('el micrófono'))}}},
+mg(){B.innerHTML='<div class="mVal"><span id="mgN">--</span> <small id="mgU">%</small></div><div class="mBar" style="position:relative"><div id="mgF"></div><i id="mgPk" style="position:absolute;top:0;bottom:0;width:3px;background:var(--tx);left:0"></i></div><div id="mgC" style="text-align:center;font-weight:700;font-size:18px;min-height:24px"></div><div class="row" style="margin-top:8px"><button id="mgZ">Calibrar</button><button class="sec" id="mgS">🔇 Sonido</button><button class="sec fix" id="mgR" aria-label="Borrar máximo">↺</button></div><div class="mu" id="mgM" style="margin-top:8px;font-size:13px"></div><div class="mu" style="margin-top:6px;font-size:13px">1) Aleja el celular de metales y toca Calibrar. 2) Pasa la <b>parte de arriba</b> del celular pegada a la pared, despacio y sin girarlo. Donde sube el número hay fierro: clavos, tornillos, perfiles, fierro de construcción. No detecta cobre, aluminio, PVC ni madera.</div>';
+let sen=null,base=null,cur=null,sm=0,pk=0,snd=false,ac=null,osc=null,gn=null,bt=0,raf=0,mode='',got=false,ra=null,aa=null,tmr=0;
+const wrap=d=>{d=((d+180)%360+360)%360-180;return d};
+const show=()=>{raf=0;if(cur==null)return;const v=base==null?0:cur;sm=sm*0.7+v*0.3;const pct=Math.min(100,mode==='mag'?sm/40*100:sm/25*100);pk=Math.max(pk,pct);
+$('mgN').textContent=mode==='mag'?sm.toFixed(1):Math.round(pct);$('mgU').textContent=mode==='mag'?'µT':'%';$('mgF').style.width=pct+'%';$('mgF').style.background=pct<15?'#2fc272':pct<45?'#f0a82a':'#ff3b30';$('mgPk').style.left='calc('+pk+'% - 2px)';
+$('mgC').textContent=base==null?'Toca Calibrar lejos de metales':pct<15?'Sin metal':pct<45?'Metal cerca…':'¡METAL AQUÍ!';beep(pct)};
+const req=()=>{if(!raf)raf=requestAnimationFrame(show)};
+const beep=p=>{if(!snd||!ac)return;const now=ac.currentTime;if(p<12){return}const gap=Math.max(.06,.8-p/100*.74);if(now-bt<gap)return;bt=now;osc.frequency.setValueAtTime(500+p*12,now);gn.gain.cancelScheduledValues(now);gn.gain.setValueAtTime(.25,now);gn.gain.setValueAtTime(0,now+.05)};
+$('mgS').onclick=()=>{snd=!snd;$('mgS').textContent=snd?'🔊 Sonido':'🔇 Sonido';if(snd&&!ac){try{ac=new(window.AudioContext||window.webkitAudioContext)();osc=ac.createOscillator();gn=ac.createGain();gn.gain.value=0;osc.type='square';osc.connect(gn).connect(ac.destination);osc.start()}catch(e){snd=false;msg('No se pudo activar el sonido.')}}else if(ac&&ac.state==='suspended')ac.resume()};
+$('mgR').onclick=()=>{pk=0;req()};
+let raw=null;$('mgZ').onclick=()=>{if(raw==null){msg('Esperando el sensor…');return}base=raw;pk=0;sm=0;msg('Calibrado. Ahora recorre la pared.');try{navigator.vibrate&&navigator.vibrate(30)}catch(_){}};
+const feedMag=(x,y,z)=>{got=true;raw={x,y,z};if(base)cur=Math.hypot(x-base.x,y-base.y,z-base.z);else cur=0;req()};
+const feedAng=()=>{if(aa==null||ra==null)return;got=true;const d=wrap(aa-ra);if(raw!=null&&typeof raw==='number'){/*suavizado*/}raw=d;cur=base==null?0:Math.abs(wrap(d-base));req()};
+const hA=e=>{if(e.alpha==null)return;aa=e.alpha;feedAng()},hR=e=>{if(e.alpha==null||e.absolute)return;ra=e.alpha;feedAng()};
+const startAng=()=>{mode='ang';$('mgM').textContent='Modo brújula (aproximado): este navegador no entrega el sensor magnético directo, así que se mide cuánto se desvía la brújula. Reacciona más lento: avanza despacio.';addEventListener('deviceorientationabsolute',hA);addEventListener('deviceorientation',hR)};
+stop=()=>{if(sen){try{sen.stop()}catch(_){}sen=null}removeEventListener('deviceorientationabsolute',hA);removeEventListener('deviceorientation',hR);if(ac){try{ac.close()}catch(_){}ac=null}if(raf)cancelAnimationFrame(raf);clearTimeout(tmr)};
+try{if('Magnetometer' in window){sen=new Magnetometer({frequency:30});sen.addEventListener('reading',()=>feedMag(sen.x,sen.y,sen.z));sen.addEventListener('error',()=>{try{sen.stop()}catch(_){}sen=null;if(mode==='mag'){raw=null;base=null;startAng()}});sen.start();mode='mag';$('mgM').textContent='Sensor magnético directo (µT de diferencia con la calibración).'}else startAng()}catch(e){sen=null;startAng()}
+tmr=setTimeout(()=>{if(!got&&cur===null)msg(blocked('la brújula del celular'))},3000)},
 lux(){B.innerHTML='<div class="mVal"><span id="lxN">--</span> <small>lux</small></div><div class="mBar"><div id="lxF"></div></div><div id="lxC" style="text-align:center;font-weight:600"></div><div class="row" style="margin-top:8px"><button id="lxG">▶ Medir</button></div><div class="mu" id="lxNote" style="margin-top:6px">Apunta el celular hacia la fuente de luz o hacia la superficie de trabajo.</div>';
 let sen=null,st=null,tm=0;const off=()=>{if(sen){try{sen.stop()}catch(e){}sen=null}clearInterval(tm);if(st)st.getTracks().forEach(t=>t.stop());st=null;if($('lxG'))$('lxG').textContent='▶ Medir'};stop=off;
 const cat=v=>v<10?'Oscuro':v<100?'Poca luz':v<300?'Pasillo o bodega':v<750?'Interior bien iluminado (oficina)':v<2000?'Muy iluminado':'Exterior / luz de día';
@@ -1152,11 +1228,12 @@ else if(it.t==='text'){c.font='600 '+it.size+'px Barlow,system-ui,sans-serif';c.
 else if(it.t==='line'||it.t==='arrow'){c.beginPath();c.moveTo(it.x1,it.y1);c.lineTo(it.x2,it.y2);c.stroke();if(it.t==='arrow')arrowHead(c,it.x1,it.y1,it.x2,it.y2,it.w)}
 else if(it.t==='dim'){const a=Math.atan2(it.y2-it.y1,it.x2-it.x1),nx=-Math.sin(a)*7,ny=Math.cos(a)*7;c.beginPath();c.moveTo(it.x1,it.y1);c.lineTo(it.x2,it.y2);c.moveTo(it.x1+nx,it.y1+ny);c.lineTo(it.x1-nx,it.y1-ny);c.moveTo(it.x2+nx,it.y2+ny);c.lineTo(it.x2-nx,it.y2-ny);c.stroke();arrowHead(c,it.x2-Math.cos(a)*.01,it.y2-Math.sin(a)*.01,it.x2,it.y2,Math.min(it.w,2));arrowHead(c,it.x1+Math.cos(a)*.01,it.y1+Math.sin(a)*.01,it.x1,it.y1,Math.min(it.w,2));
 const lbl=it.txt||fmtM(dimLen(it));c.translate((it.x1+it.x2)/2,(it.y1+it.y2)/2);let r=a;if(r>Math.PI/2||r<-Math.PI/2)r+=Math.PI;c.rotate(r);c.font='700 14px Barlow,system-ui,sans-serif';const tw=c.measureText(lbl).width;c.globalAlpha=1;c.fillStyle='#fffdf3';c.fillRect(-tw/2-4,-22,tw+8,18);c.fillStyle=it.c;c.textAlign='center';c.fillText(lbl,0,-8)}
-else{const o=outline(it);c.beginPath();c.moveTo(o[0][0],o[0][1]);o.slice(1).forEach(q=>c.lineTo(q[0],q[1]));c.closePath();if(it.f){c.save();c.globalAlpha=.22;c.fillStyle=it.f;c.fill();c.restore()}c.stroke()}c.restore()}
+else{const o=outline(it);c.beginPath();c.moveTo(o[0][0],o[0][1]);o.slice(1).forEach(q=>c.lineTo(q[0],q[1]));c.closePath();if(it.f){c.save();c.globalAlpha=.22;c.fillStyle=it.f;c.fill();c.restore()}c.stroke()}c.restore();if(it.ml)paintMeas(c,it,false)}
 function draw(){const r=CV.getBoundingClientRect();X.save();X.fillStyle=annot?'#111316':(P.bgc||'#fffbea');X.fillRect(0,0,r.width,r.height);X.translate(view.ox,view.oy);X.scale(view.s,view.s);if(annot&&annotImg)X.drawImage(annotImg,0,0);const[x0,y0]=S2W(0,0),[x1,y1]=S2W(r.width,r.height);paintGrid(X,x0,y0,x1,y1,view.s,P.bg,dkc(P.bgc));
 P.items.forEach(it=>paintItem(X,it));if(cur)paintItem(X,cur);
 if(guides.length){X.save();X.strokeStyle='#e53935';X.lineWidth=1.2/view.s;X.setLineDash([]);guides.forEach(([a,b,c,d])=>{X.beginPath();X.moveTo(a,b);X.lineTo(c,d);X.stroke();X.fillStyle='#e53935';X.beginPath();X.arc(a,b,3/view.s,0,7);X.fill()});X.restore()}
 if((tool==='shape'||tool==='move'||tool==='dim')&&magnet){X.save();X.fillStyle='rgba(27,42,74,.55)';P.items.forEach(it=>{if(['rect','ell','tri','poly'].includes(it.t)){const[a,b,c,d]=bbox(it);X.beginPath();X.arc((a+c)/2,(b+d)/2,2.5/view.s,0,7);X.fill()}});X.restore()}
+if(tool==='meas'){P.items.forEach(it=>{if(MEAS_T.includes(it.t))paintMeas(X,it,true)});if(mSel&&P.items[mSel.i]){const e=edgesOf(P.items[mSel.i])[mSel.k];if(e){X.save();X.strokeStyle='#0b57d0';X.globalAlpha=.45;X.lineWidth=10/view.s;X.lineCap='round';X.beginPath();X.moveTo(e[0][0],e[0][1]);X.lineTo(e[1][0],e[1][1]);X.stroke();X.restore()}}}
 if(snapMark){X.beginPath();X.arc(snapMark[0],snapMark[1],7/view.s,0,7);X.fillStyle='#e91e8c';X.fill();X.lineWidth=2/view.s;X.strokeStyle='#fff';X.stroke()}
 if(erPos){X.beginPath();X.arc(erPos[0],erPos[1],er.size/view.s,0,7);X.lineWidth=1.5/view.s;X.strokeStyle='rgba(60,60,60,.8)';X.fillStyle='rgba(255,255,255,.35)';X.fill();X.stroke()}
 if(sel>=0&&P.items[sel]){const[a,b,c,d]=bbox(P.items[sel]),m=8/view.s;X.setLineDash([6/view.s,4/view.s]);X.lineWidth=1.5/view.s;X.strokeStyle='#1f6feb';X.strokeRect(a-m,b-m,c-a+2*m,d-b+2*m);X.setLineDash([])}X.restore();
@@ -1168,6 +1245,7 @@ const widH=[2,3,6].map((w,i)=>`<button class="plw${w===wid?' on':''}" data-w="${
 if(tool==='pen'||tool==='hl')h=colorsH+'<span class="plsep"></span>'+widH+(tool==='pen'?`<span class="plsep"></span><button class="plt${holdShape?' on':''}" id="plHold">Mantener = forma</button>`:'');
 else if(tool==='shape')h=[['line','Línea'],['arrow','Flecha'],['rect','Rect.'],['ell','Círculo'],['tri','Triáng.']].map(([k,l])=>`<button class="plt${k===shape?' on':''}" data-sh="${k}">${l}</button>`).join('')+'<span class="plsep"></span>'+pal(3)+widH+'<span class="plsep"></span>'+`<button class="plt${magnet?' on':''}" data-tg="mag">Imán</button><button class="plt${fillOn?' on':''}" data-tg="fill">Relleno</button>`;
 else if(tool==='dim')h=`<button class="plt${magnet?' on':''}" data-tg="mag">Imán</button><label class="pll">Escala: 1 cuadro =<input id="plEsc" type="number" inputmode="decimal" step="0.05" min="0.01" value="${P.esc}"> m</label><input id="plDimT" placeholder="Texto propio (opcional)" style="flex:1;min-width:120px">`;
+else if(tool==='meas')h=`<span class="pll" style="white-space:normal">Toca una pared para poner su medida real${P.escSet?'':'. La primera medida define la escala.'}</span>`+(P.items.some(o=>o.ml&&Object.keys(o.ml).length)?`<span class="pll"><b>${(()=>{let t=0;P.items.forEach(o=>{if(o.ml)Object.values(o.ml).forEach(v=>t+=v)});return 'Total medido: '+mFmt(t)})()}</b></span>`:'');
 else if(tool==='text')h=`<input id="plTxt" placeholder="Escribe y toca en el plano" style="flex:1;min-width:150px">`+pal(4);
 else if(tool==='erase'){const tg=(k,l)=>`<button class="plt${er[k]?' on':''}" data-er="${k}">${l}</button>`;h=[8,14,24].map(z=>`<button class="plw${er.size===z?' on':''}" data-ez="${z}" aria-label="Tamaño ${z}"><span style="width:${Math.round(z*.9)}px;height:${Math.round(z*.9)}px;border-radius:50%"></span></button>`).join('')+'<span class="plsep"></span>'+tg('whole','Trazo completo')+tg('back','Volver a herramienta')+'<span class="plsep"></span>'+tg('fPen','Solo lápiz')+tg('fHl','Solo resaltador')+tg('fSh','Solo formas')+'<span class="plsep"></span><button class="plt er" id="plClr">Borrar página</button>'}
 else if(tool==='move')h=`<button class="plt${magnet?' on':''}" data-tg="mag">Imán</button>`+(sel>=0?`<button class="plt" id="plDup">Duplicar</button><button class="plt er" id="plDel">Eliminar</button>`:`<span class="pll">Toca un elemento y arrástralo</span>`);
@@ -1228,6 +1306,54 @@ if(pieces.length===1&&pieces[0].length===it.pts.length){out.push(it);return}chan
 if(changed){if(!erSnap){snap();erSnap=true}P.items=out;sel=-1;dirty=true}}
 
 
+/* ---- Medir paredes (manual o con cámara AR) ---- */
+const MEAS_T=['line','arrow','rect','poly','tri'];
+function edgesOf(it){if(!MEAS_T.includes(it.t))return[];const o=outline(it),e=[];for(let k=1;k<o.length;k++)e.push([o[k-1],o[k]]);return e}
+function findEdge(x,y){const tol=18/view.s;let best=null,bd=tol;for(let i=P.items.length-1;i>=0;i--){const it=P.items[i];edgesOf(it).forEach(([p,q],k)=>{const d=segD(x,y,p,q);if(d<bd&&Math.hypot(q[0]-p[0],q[1]-p[1])>4){bd=d;best={i,k}}})}return best}
+const mFmt=v=>{const n=Math.round(v*100)/100;return n.toFixed(2).replace('.',',')+' m'};
+function edgeLbl(c,p,q,txt,meas){const mx=(p[0]+q[0])/2,my=(p[1]+q[1])/2;let a=Math.atan2(q[1]-p[1],q[0]-p[0]);const nx=-Math.sin(a),ny=Math.cos(a);c.save();c.translate(mx+nx*0,my+ny*0);if(a>Math.PI/2||a<-Math.PI/2)a+=Math.PI;c.rotate(a);c.font=(meas?'700 ':'italic 600 ')+'13px Barlow,system-ui,sans-serif';const tw=c.measureText(txt).width;c.globalAlpha=1;c.fillStyle=meas?'#0b57d0':'rgba(255,255,255,.85)';c.beginPath();c.roundRect?c.roundRect(-tw/2-5,-9,tw+10,18,9):c.rect(-tw/2-5,-9,tw+10,18);c.fill();if(!meas){c.strokeStyle='#8a8f96';c.lineWidth=1;c.stroke()}c.fillStyle=meas?'#fff':'#545a62';c.textAlign='center';c.textBaseline='middle';c.fillText(txt,0,.5);c.restore()}
+function paintMeas(c,it,est){const ml=it.ml||{};edgesOf(it).forEach(([p,q],k)=>{if(ml[k]!=null)edgeLbl(c,p,q,mFmt(ml[k]),true);else if(est)edgeLbl(c,p,q,'≈'+mFmt(Math.hypot(q[0]-p[0],q[1]-p[1])/G*P.esc),false)})}
+function toPoly(it){if(it.t==='rect'||it.t==='tri'){const o=outline(it);it.t='poly';it.pts=o.map(q=>[q[0],q[1]]);delete it.x1;delete it.y1;delete it.x2;delete it.y2}}
+function movePts(f){P.items.forEach(it=>{if(it.pts)it.pts=it.pts.map(q=>f(q));if('x1' in it){[it.x1,it.y1]=f([it.x1,it.y1]);[it.x2,it.y2]=f([it.x2,it.y2])}if(it.t==='text'){[it.x,it.y]=f([it.x,it.y])}})}
+function setMeas(i,k,m){const it=P.items[i];if(!it)return;snap();toPoly(it);const e=edgesOf(it)[k];if(!e)return;const[p,q]=e,L=Math.hypot(q[0]-p[0],q[1]-p[1]);
+const any=P.items.some(o=>o.ml&&Object.keys(o.ml).length);
+if(!any||!P.escSet){P.esc=Math.round(m/(L/G)*10000)/10000;P.escSet=true}
+else{const want=m/P.esc*G,D=want-L,ux=(q[0]-p[0])/L,uy=(q[1]-p[1])/L,eps=1;
+if(Math.abs(ux)>.985){const s=Math.sign(ux),thr=q[0];movePts(([x,y])=>((s>0?x>=thr-eps:x<=thr+eps)?[x+s*D,y]:[x,y]))}
+else if(Math.abs(uy)>.985){const s=Math.sign(uy),thr=q[1];movePts(([x,y])=>((s>0?y>=thr-eps:y<=thr+eps)?[x,y+s*D]:[x,y]))}
+else{const nq=[p[0]+ux*want,p[1]+uy*want];if(it.pts){const n=it.pts.length,j=k+1;it.pts[j]=nq;if(j===n-1&&Math.hypot(it.pts[0][0]-q[0],it.pts[0][1]-q[1])<.01)it.pts[0]=nq;if(j===0)it.pts[n-1]=nq}else{it.x2=nq[0];it.y2=nq[1]}}}
+it.ml=it.ml||{};it.ml[k]=m;dirty=true;req();opts()}
+let mSel=null;
+function measTap(x,y){const e=findEdge(x,y);if(!e){toast('Toca una pared (línea o lado de una forma). Dibújalas con Formas o con el lápiz manteniendo al final.');return}mSel=e;req();openMeasSheet()}
+function openMeasSheet(){const it=P.items[mSel.i],e=edgesOf(it)[mSel.k],L=Math.hypot(e[1][0]-e[0][0],e[1][1]-e[0][1]),cur=it.ml&&it.ml[mSel.k];
+$('msV').value=cur!=null?String(cur).replace('.',','):'';$('msE').textContent=cur!=null?'':(P.escSet?'Según el dibujo mide ≈'+mFmt(L/G*P.esc):'Es la primera medida: el plano tomará su escala de esta pared.');$('msDel').style.display=cur!=null?'':'none';$('msSt').textContent='';$('measSh').classList.add('on');setTimeout(()=>$('msV').focus(),60)}
+const closeMeas=()=>{$('measSh').classList.remove('on');mSel=null;req()};
+$('msX').onclick=closeMeas;$('measSh').onclick=e=>{if(e.target.id==='measSh')closeMeas()};
+$('msOk').onclick=()=>{const v=parseFloat(String($('msV').value).replace(',','.'));if(!(v>0&&v<1000)){$('msSt').textContent='Escribe la medida en metros, por ejemplo 3,45';return}const s0=mSel;closeMeas();setMeas(s0.i,s0.k,Math.round(v*1000)/1000);toast('Medida guardada: '+mFmt(v))};
+$('msV').onkeydown=e=>{if(e.key==='Enter')$('msOk').click()};
+$('msDel').onclick=()=>{const it=P.items[mSel.i];snap();if(it.ml){delete it.ml[mSel.k];if(!Object.keys(it.ml).length)delete it.ml}if(!P.items.some(o=>o.ml&&Object.keys(o.ml).length))P.escSet=false;closeMeas();toast('Medida quitada')};
+$('msAR').onclick=async()=>{const st=$('msSt');st.textContent='Abriendo cámara…';try{const m=await arMeasure();if(m>0){$('msV').value=String(Math.round(m*100)/100).replace('.',',');st.textContent='Medido con cámara: '+mFmt(m)+'. Revisa y toca Guardar.'}else st.textContent=''}catch(err){st.textContent=err&&err.message||'No se pudo usar la cámara para medir.'}};
+async function arMeasure(){
+if(!window.isSecureContext||!navigator.xr)throw new Error('Este teléfono o navegador no permite medir con cámara (falta realidad aumentada). Escribe la medida.');
+let ok=false;try{ok=await navigator.xr.isSessionSupported('immersive-ar')}catch(_){}
+if(!ok)throw new Error('Tu teléfono no tiene activa la realidad aumentada. Instala o actualiza "Servicios de Google Play para AR" desde Play Store y prueba de nuevo.');
+const ov=$('arOv');ov.style.display='flex';$('arTx').textContent='Mueve el teléfono despacio apuntando al piso para que detecte la superficie…';$('arPt').disabled=true;$('arUse').style.display='none';
+const cv=document.createElement('canvas'),gl=cv.getContext('webgl',{xrCompatible:true,alpha:true});
+let sess;try{sess=await navigator.xr.requestSession('immersive-ar',{requiredFeatures:['hit-test'],optionalFeatures:['dom-overlay'],domOverlay:{root:ov}})}catch(e){ov.style.display='none';throw new Error('No se pudo abrir la cámara de medición ('+(e.message||e)+').')}
+return await new Promise(async(resolve)=>{let done=false,refS,hitSrc,last=null,pA=null,dist=0;
+const fin=v=>{if(done)return;done=true;try{sess.end()}catch(_){}ov.style.display='none';resolve(v)};
+sess.addEventListener('end',()=>{ov.style.display='none';if(!done){done=true;resolve(0)}});
+try{await gl.makeXRCompatible()}catch(_){}
+sess.updateRenderState({baseLayer:new XRWebGLLayer(sess,gl)});
+refS=await sess.requestReferenceSpace('local');const vs=await sess.requestReferenceSpace('viewer');
+try{hitSrc=await sess.requestHitTestSource({space:vs,entityTypes:['plane','point']})}catch(_){hitSrc=await sess.requestHitTestSource({space:vs})}
+const show=()=>{$('arTx').textContent=!last?'Buscando superficie… apunta al piso o a la pared, con buena luz.':!pA?'Pon la cruz en el primer extremo (por ejemplo, la esquina donde la pared toca el piso) y toca Marcar.':'Ahora apunta al otro extremo: '+mFmt(dist);$('arPt').disabled=!last;$('arPt').textContent=pA?'Marcar fin':'Marcar inicio';$('arD').textContent=pA?mFmt(dist):'';$('arC').style.borderColor=last?'#2fc272':'#fff'};
+$('arPt').onclick=()=>{if(!last)return;try{navigator.vibrate&&navigator.vibrate(20)}catch(_){}if(!pA){pA=last;show();return}const d=Math.hypot(last.x-pA.x,last.y-pA.y,last.z-pA.z);$('arD').textContent=mFmt(d);$('arTx').textContent='Medida: '+mFmt(d)+'. Toca "Usar medida" o vuelve a marcar.';$('arUse').style.display='';$('arUse').onclick=()=>fin(d);pA=null;dist=d};
+$('arRe').onclick=()=>{pA=null;$('arUse').style.display='none';show()};$('arNo').onclick=()=>fin(0);
+const frame=(t,fr)=>{if(done)return;sess.requestAnimationFrame(frame);const L=sess.renderState.baseLayer;gl.bindFramebuffer(gl.FRAMEBUFFER,L.framebuffer);gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT);
+const hs=fr.getHitTestResults(hitSrc);if(hs.length){const p=hs[0].getPose(refS);if(p){last=p.transform.position;if(pA)dist=Math.hypot(last.x-pA.x,last.y-pA.y,last.z-pA.z)}}else last=null;show()};
+sess.requestAnimationFrame(frame)})}
+
 const snapAng=(x1,y1,x2,y2)=>{const a=Math.atan2(y2-y1,x2-x1),st=Math.PI/12,ra=Math.round(a/st)*st,L=Math.hypot(x2-x1,y2-y1);return Math.abs(ra-a)<.06?[x1+L*Math.cos(ra),y1+L*Math.sin(ra)]:[x2,y2]};
 CV.addEventListener('pointerdown',e=>{CV.setPointerCapture(e.pointerId);pts.set(e.pointerId,[...cxy(e)]);
 if(pts.size===2){cur=null;moving=null;const[p1,p2]=[...pts.values()];pinch={d:Math.hypot(p1[0]-p2[0],p1[1]-p2[1]),cx:(p1[0]+p2[0])/2,cy:(p1[1]+p2[1])/2,v:{...view}};req();return}
@@ -1235,6 +1361,7 @@ if(pts.size>2)return;const[x,y]=S2W(...cxy(e));start=[x,y];
 if(tool==='pen'||tool==='hl'){cur={t:'pen',c:col,w:(tool==='hl'?wid*4:wid)*WK(),a:tool==='hl'?.35:1,pts:[[x,y]]}}
 else if(tool==='shape'){const sv=snapV(x,y,-1);let[sx,sy]=sv?sv:alignPt(x,y,-1);if(sv)guides=[];snapMark=sv;cur={t:shape,c:col,w:wid*WK(),x1:sx,y1:sy,x2:sx,y2:sy};if(fillOn&&shape!=='line'&&shape!=='arrow')cur.f=col}
 else if(tool==='dim'){const sv=snapV(x,y,-1);let[sx,sy]=sv?sv:alignPt(x,y,-1);if(sv)guides=[];snapMark=sv;cur={t:'dim',c:'#c62828',w:2,x1:sx,y1:sy,x2:sx,y2:sy,txt:($('plDimT')&&$('plDimT').value.trim())||''}}
+else if(tool==='meas'){if(pts.size===1)measTap(x,y)}
 else if(tool==='erase'){erSnap=false;erPos=[x,y];eraseAt(x,y)}
 else if(tool==='text'){const t=$('plTxt')&&$('plTxt').value.trim();if(!t){toast('Escribe el texto arriba y luego toca donde va');return}snap();P.items.push({t:'text',c:col,size:Math.round(18*WK()),x,y,txt:t});$('plTxt').value='';req()}
 else if(tool==='move'){const i=hit(x,y);sel=i;opts();if(i>=0){snap();moving={sx:x,sy:y,orig:JSON.parse(JSON.stringify(P.items[i]))}}req()}
@@ -1446,7 +1573,7 @@ let leaveArm=0;function confirmLeave(){if(st&&st.i<st.qs.length&&$('qzBar').styl
 $('qzBack').onclick=()=>{if(!st||confirmLeave())home()};
 $('fQuiz').onclick=()=>{fabOpen=false;fab();home();W.classList.add('on');document.body.style.overflow='hidden'}})();
 
-const APP_VER='1.7.3';
+const APP_VER='1.7.8';
 (()=>{try{$('cfg').insertAdjacentHTML('beforeend','<p class="mu" id="appVer" style="text-align:center;margin:18px 0 6px">Reportes de trabajo · versión '+APP_VER+'</p>')}catch(e){}
 let prevV=null;try{prevV=localStorage.getItem('rep_ver');localStorage.setItem('rep_ver',APP_VER)}catch(e){}
 if(prevV&&prevV!==APP_VER)setTimeout(()=>toast('App actualizada a la versión '+APP_VER),900);
