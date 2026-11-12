@@ -1576,8 +1576,17 @@ let leaveArm=0;function confirmLeave(){if(st&&st.i<st.qs.length&&$('qzBar').styl
 $('qzBack').onclick=()=>{if(!st||confirmLeave())home()};
 $('fQuiz').onclick=()=>{fabOpen=false;fab();home();W.classList.add('on');document.body.style.overflow='hidden'}})();
 
-const APP_VER='1.8.1';
-(()=>{try{$('cfg').insertAdjacentHTML('beforeend','<p class="mu" id="appVer" style="text-align:center;margin:18px 0 6px">Reportes de trabajo · versión '+APP_VER+'</p>')}catch(e){}
+const APP_VER='1.8.2';
+(()=>{try{$('cfg').insertAdjacentHTML('beforeend','<p class="mu" id="appVer" style="text-align:center;margin:18px 0 6px">Reportes de trabajo · versión '+APP_VER+'</p><div style="text-align:center;margin-bottom:10px"><button class="sec" id="updB" type="button">🔄 Buscar actualización</button><div class="mu" id="updSt" style="margin-top:6px;font-size:14px"></div></div>')}catch(e){}
+const web=location.protocol==='https:'&&!/claude|anthropic/.test(location.hostname);
+const vnum=v=>String(v).split('.').map(n=>+n||0),newer=(a,b)=>{const x=vnum(a),y=vnum(b);for(let i=0;i<Math.max(x.length,y.length);i++){if((x[i]||0)!==(y[i]||0))return (x[i]||0)>(y[i]||0)}return false};
+const hard=async()=>{try{const rs=await (navigator.serviceWorker&&navigator.serviceWorker.getRegistrations?navigator.serviceWorker.getRegistrations():[]);await Promise.all(rs.map(r=>r.update().catch(()=>{})))}catch(e){}try{const ks=await caches.keys();await Promise.all(ks.filter(k=>k.startsWith('reportes-')).map(k=>caches.delete(k)))}catch(e){}location.replace(location.pathname+'?v='+Date.now())};
+const check=async manual=>{if(!web){if(manual)$('updSt').textContent='Las actualizaciones se buscan en la versión de GitHub o en la APK.';return}
+if(manual)$('updSt').textContent='Buscando…';let v=null;try{const r=await fetch('./index.html?chk='+Date.now(),{cache:'no-store'});const t=await r.text();const m=t.match(/APP_VER='([0-9.]+)'/);v=m&&m[1]}catch(e){if(manual)$('updSt').textContent='Sin internet: no se pudo revisar.';return}
+if(v&&newer(v,APP_VER)){if(manual)$('updSt').textContent='Hay una versión nueva: '+v+'. Actualizando…';if(manual)hard();else toast('Versión nueva disponible: '+v,{label:'Actualizar',ms:15000,fn:hard})}else if(manual)$('updSt').textContent='Ya tienes la última versión ('+APP_VER+').'};
+try{$('updB').onclick=()=>check(true)}catch(e){}
+if(web)setTimeout(()=>{if(navigator.onLine!==false)check(false)},4000);
+try{if(/[?&]v=\d+/.test(location.search))history.replaceState(null,'',location.pathname+location.hash)}catch(e){}
 let prevV=null;try{prevV=localStorage.getItem('rep_ver');localStorage.setItem('rep_ver',APP_VER)}catch(e){}
 if(prevV&&prevV!==APP_VER)setTimeout(()=>toast('App actualizada a la versión '+APP_VER),900);
 try{if('serviceWorker' in navigator&&navigator.serviceWorker.controller){let shown=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(shown)return;shown=true;toast('Hay una versión nueva de la app',{label:'Actualizar',ms:15000,fn:()=>location.reload()})})}}catch(e){}})();
