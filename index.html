@@ -536,11 +536,11 @@ body.noTools #fTools,body.noTools #tools{display:none!important}
 <div id="wkList" style="display:none;margin-top:10px;border:1px solid var(--bd2);border-radius:12px;padding:10px"><div class="pgH" style="margin-top:0">Canales guardados</div><div id="wkLL"></div>
 <div class="mu" style="font-size:13px;margin:8px 0 4px">Guardar un canal:</div><input id="wkSN" placeholder="Nombre (ej: Equipo hotel mina)" maxlength="40"><div class="row" style="margin-top:6px"><input id="wkSC" placeholder="Código" autocomplete="off" autocapitalize="off"><button class="sec fix" id="wkSAdd" type="button">💾 Guardar</button></div></div></div>
 <div id="wkIn" style="display:none"><div class="row" style="align-items:center"><div style="flex:1;min-width:0"><div id="wkCurN" style="font-weight:700"></div>Canal: <b id="wkCur" style="font-size:18px"></b></div><button class="sec fix" id="wkSave" type="button" aria-label="Guardar canal">💾</button><button class="sec fix" id="wkShare" type="button">Compartir</button><button class="sec fix" id="wkLeave" type="button">Salir</button></div>
-<button id="wkPTT" type="button" aria-label="Mantén presionado para hablar"><span style="font-size:44px;line-height:1">🎙️</span><small id="wkPL">Mantén presionado para hablar</small></button>
+<div id="wkLive" class="mu" style="text-align:center;font-weight:600;margin-top:8px;min-height:20px"></div><div id="wkHear" style="text-align:center;font-weight:700;color:var(--ok);min-height:22px"></div><button id="wkPTT" type="button" aria-label="Mantén presionado para hablar"><span style="font-size:44px;line-height:1">🎙️</span><small id="wkPL">Mantén presionado para hablar</small></button>
 <label class="cbTg" style="justify-content:center"><input type="checkbox" id="wkAuto" checked> Reproducir mensajes automáticamente</label>
 <div class="pgH">Mensajes</div><div id="wkLog"></div></div>
 <div class="mu" id="wkSt" style="font-weight:600;min-height:20px;text-align:center"></div>
-<div class="mu" style="font-size:12px">Funciona con internet en cualquier distancia. Los audios pasan por el servicio público ntfy.sh y se borran a las pocas horas; cualquiera que sepa el código del canal puede escuchar, así que no lo publiques. Con la app cerrada no llegan los mensajes.</div>
+<div class="mu" style="font-size:12px">Funciona con internet en cualquier distancia. Si la red lo permite se escucha en vivo (🟢); si no, el mensaje llega grabado. Los audios pasan por el servicio público ntfy.sh y se borran a las pocas horas; cualquiera que sepa el código del canal puede escuchar, así que no lo publiques. Con la app cerrada no llegan los mensajes.</div>
 </div></div>
 <div id="measSh" class="sheet" role="dialog" aria-label="Medida de la pared"><div class="sheetIn"><div class="cpHead"><b>📏 Medida de la pared</b><button class="x" id="msX" aria-label="Cerrar">×</button></div><div class="mu" id="msE"></div><div class="row"><input id="msV" inputmode="decimal" placeholder="Metros, ej: 3,45" style="font-size:22px;font-weight:700;text-align:center"><span class="fix" style="font-weight:700">m</span></div><button class="sec" id="msAR" type="button">📱 Medir con la cámara</button><div class="mu" id="msSt" style="font-weight:600"></div><div class="row"><button class="pri" id="msOk" type="button">Guardar medida</button><button class="sec fix" id="msDel" type="button">Quitar</button></div><div class="mu" style="font-size:13px">Con la cámara la medida es aproximada (±1–2 cm en pocos metros). Para cortes exactos usa huincha.</div></div></div>
 <div id="arOv" style="display:none;position:fixed;inset:0;z-index:95;flex-direction:column;justify-content:space-between;align-items:center;pointer-events:none;color:#fff;font-family:var(--f)"><div id="arTx" style="margin-top:calc(16px + env(safe-area-inset-top,0px));background:rgba(0,0,0,.65);padding:10px 14px;border-radius:12px;max-width:90%;text-align:center;font-weight:600"></div><div style="display:flex;flex-direction:column;align-items:center;gap:8px"><div id="arC" style="width:34px;height:34px;border:3px solid #fff;border-radius:50%;box-shadow:0 0 0 2px rgba(0,0,0,.4)"></div><div id="arD" style="font:700 30px/1 var(--fc);text-shadow:0 2px 6px #000"></div></div><div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:calc(20px + env(safe-area-inset-bottom,0px));pointer-events:auto"><button class="pri" id="arPt" type="button">Marcar inicio</button><button class="ok" id="arUse" type="button" style="display:none">Usar medida</button><button class="sec" id="arRe" type="button" style="background:rgba(0,0,0,.5);color:#fff">Reiniciar</button><button class="sec" id="arNo" type="button" style="background:rgba(0,0,0,.5);color:#fff">Cancelar</button></div></div>
@@ -1715,39 +1715,64 @@ try{const b=localStorage.getItem('rep_fmBrand');if(b)$('rdBrand').value=b}catch(
 window.openRadio=async()=>{W.classList.add('on');render();if(await load())render()};
 $('fRadio').onclick=()=>{fabOpen=false;fab();openRadio()};})();
 
-/* ---- Walkie-talkie (canal por código, mensajes de voz vía ntfy.sh) ---- */
-(()=>{const W=$('walk'),H='https://ntfy.sh/';let es=null,seenIds=new Set(),ch='',me='',rec=null,chunks=[],t0=0,tmr=0,mic=null,log=[],auto=true,lim=0;
+/* ---- Walkie-talkie (canal por código; en vivo por WebRTC + respaldo de mensajes de voz vía ntfy.sh) ---- */
+(()=>{const W=$('walk'),H=window.WK_H||'https://ntfy.sh/';let es=null,seenIds=new Set(),ch='',me='',rec=null,chunks=[],t0=0,tmr=0,mic=null,log=[],auto=true,lim=0,talking=false;
+const PC={},ICE=[{urls:['stun:stun.l.google.com:19302','stun:stun1.l.google.com:19302']},{urls:'stun:stun.cloudflare.com:3478'}];
 try{me=localStorage.getItem('rep_wkId')||'';if(!me){me=Math.random().toString(36).slice(2,10);localStorage.setItem('rep_wkId',me)}auto=localStorage.getItem('rep_wkAuto')!=='0'}catch(e){me=me||Math.random().toString(36).slice(2,10)}
 const nm=()=>($('wkN').value.trim()||'Sin nombre').slice(0,30);const st=t=>{$('wkSt').textContent=t};
 const topic=c=>'redstone-wt-'+c.toLowerCase().replace(/[^a-z0-9]/g,'');
 const newCode=()=>{const a='abcdefghjkmnpqrstuvwxyz23456789';let c='';const r=crypto.getRandomValues(new Uint8Array(8));r.forEach(x=>c+=a[x%a.length]);return c.slice(0,4)+'-'+c.slice(4)};
-function renderLog(){$('wkLog').innerHTML=log.length?log.slice(0,30).map((m,i)=>`<div class="nIt"><button class="sec fix" data-wp="${i}" style="min-height:44px;width:44px;padding:0">▶</button><div class="nTx" style="flex:1"><b>${esc(m.mine?'Tú':m.n)}</b><span>${hm(m.t)}${m.d?' · '+m.d+' s':''}</span></div></div>`).join(''):'<div class="mu">Aún no hay mensajes en este canal.</div>'}
+function renderLog(){$('wkLog').innerHTML=log.length?log.slice(0,30).map((m,i)=>`<div class="nIt"><button class="sec fix" data-wp="${i}" style="min-height:44px;width:44px;padding:0">▶</button><div class="nTx" style="flex:1"><b>${esc(m.mine?'Tú':m.n)}</b><span>${hm(m.t)}${m.d?' · '+m.d+' s':''}${m.lv?' · 🔴 escuchado en vivo':''}</span></div></div>`).join(''):'<div class="mu">Aún no hay mensajes en este canal.</div>'}
 function playMsg(m){try{const a=new Audio(m.u);a.play().catch(()=>st('Toca ▶ para escuchar el mensaje de '+m.n))}catch(e){}}
+/* ---- en vivo ---- */
+const live=()=>Object.entries(PC).filter(([k,p])=>p.ok).map(([k])=>k);
+function liveUI(){const n=live().length,el=$('wkLive');if(!el)return;el.textContent=n?'🟢 En vivo con '+n+(n===1?' persona':' personas'):(mic?'⚪ Sin conexión en vivo: los mensajes se envían grabados':'');}
+const sig=o=>{if(!ch)return;o.from=me;o.n=nm();fetch(H+topic(ch)+'-sig',{method:'POST',body:JSON.stringify(o)}).catch(()=>{})};
+async function ensureMic(){if(mic)return mic;mic=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}});mic.getAudioTracks().forEach(t=>t.enabled=false);return mic}
+function drop(id){const p=PC[id];if(!p)return;try{p.pc.close()}catch(e){}try{p.au.remove()}catch(e){}delete PC[id];liveUI()}
+function mkPC(id,name){drop(id);const pc=new RTCPeerConnection({iceServers:ICE});const au=document.createElement('audio');au.autoplay=true;au.playsInline=true;au.style.display='none';document.body.appendChild(au);
+const p={pc,au,n:name||'',ok:false,dc:null};PC[id]=p;if(mic)mic.getAudioTracks().forEach(t=>pc.addTrack(t,mic));else pc.addTransceiver('audio',{direction:'recvonly'});
+pc.ontrack=e=>{au.srcObject=e.streams[0]||new MediaStream([e.track]);au.play().catch(()=>{})};
+const upd=()=>{const s=pc.connectionState||pc.iceConnectionState;p.ok=(s==='connected'||s==='completed');if(s==='failed'||s==='closed')drop(id);liveUI()};pc.onconnectionstatechange=upd;pc.oniceconnectionstatechange=upd;
+const setDC=dc=>{p.dc=dc;dc.onmessage=e=>{let j;try{j=JSON.parse(e.data)}catch(_){return}if(j.t==='ptt'){p.n=j.n||p.n;$('wkHear').textContent=j.on?'🔊 '+p.n+' está hablando…':''}}};pc.ondatachannel=e=>setDC(e.channel);p.setDC=setDC;return p}
+const gather=pc=>new Promise(r=>{if(pc.iceGatheringState==='complete')return r();const t=setTimeout(r,2500);pc.addEventListener('icegatheringstatechange',()=>{if(pc.iceGatheringState==='complete'){clearTimeout(t);r()}})});
+async function call(id,name){const p=mkPC(id,name);p.setDC(p.pc.createDataChannel('ctl'));await p.pc.setLocalDescription(await p.pc.createOffer());await gather(p.pc);sig({t:'offer',to:id,sdp:p.pc.localDescription.sdp})}
+async function onSig(j){if(!j||j.from===me||(j.to&&j.to!==me))return;const id=j.from;
+if(j.t==='hello'||j.t==='hi'){if(j.t==='hello')sig({t:'hi',to:id});if(me<id&&!(PC[id]&&PC[id].ok))call(id,j.n);return}
+if(j.t==='offer'){const p=mkPC(id,j.n);await p.pc.setRemoteDescription({type:'offer',sdp:j.sdp});await p.pc.setLocalDescription(await p.pc.createAnswer());await gather(p.pc);sig({t:'answer',to:id,sdp:p.pc.localDescription.sdp});return}
+if(j.t==='answer'&&PC[id]){try{await PC[id].pc.setRemoteDescription({type:'answer',sdp:j.sdp})}catch(e){}return}
+if(j.t==='bye')drop(id)}
 function join(c){c=(c||'').trim().toLowerCase();if(!/^[a-z0-9-]{4,30}$/.test(c)){st('Escribe un código de canal válido (letras y números).');return}leave(true);ch=c;try{localStorage.setItem('rep_wkCh',c);localStorage.setItem('rep_wkName',nm())}catch(e){}
 $('wkCh').value=c;$('wkIn').style.display='';$('wkOut').style.display='none';$('wkCur').textContent=c;try{const sv=JSON.parse(localStorage.getItem('rep_wkChans')||'[]').find(x=>x.c===c);$('wkCurN').textContent=sv?sv.n:''}catch(e){}st('Conectando…');if(inClaude()){st('Dentro de la app de Claude el walkie-talkie está bloqueado. Úsalo desde la APK o desde fenixxdeflou08-sys.github.io.');return}
-try{es=new EventSource(H+topic(c)+'/sse');es.onopen=()=>st('Conectado. Mantén presionado el botón para hablar.');es.onerror=()=>st('Reconectando… revisa tu internet.');
-es.onmessage=e=>{let j;try{j=JSON.parse(e.data)}catch(_){return}if(j.event&&j.event!=='message')return;const tg=j.tags||[];if(tg.includes('id-'+me))return;if(j.id){if(seenIds.has(j.id))return;seenIds.add(j.id)}const a=j.attachment;if(!a||!a.url)return;
-const m={n:(j.title||'Alguien').slice(0,30),t:(j.time||Date.now()/1000)*1000,u:a.url,d:+(tg.find(x=>/^d-\d+$/.test(x))||'d-0').slice(2)||0};log.unshift(m);renderLog();try{navigator.vibrate&&navigator.vibrate([60,40,60])}catch(_){}
-if(auto)playMsg(m);if(!W.classList.contains('on'))toast('🎙️ Mensaje de '+m.n,{label:'Escuchar',ms:8000,fn:()=>playMsg(m)})}}catch(e){st('No se pudo conectar al canal.')}}
-function leave(silent){if(es){es.close();es=null}ch='';if(!silent){$('wkIn').style.display='none';$('wkOut').style.display='';st('');try{localStorage.removeItem('rep_wkCh')}catch(e){}}log=[];renderLog()}
-async function startRec(){if(!ch||rec)return;try{if(!mic)mic=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true}})}catch(e){st('Necesito permiso de micrófono para hablar.');return}
+ensureMic().catch(()=>{}).then(()=>{liveUI()});
+try{es=new EventSource(H+topic(c)+','+topic(c)+'-sig/sse');es.onopen=()=>{st('Conectado. Mantén presionado el botón para hablar.');const go=()=>sig({t:'hello'});mic?go():setTimeout(go,1200)};es.onerror=()=>st('Reconectando… revisa tu internet.');
+es.onmessage=async e=>{let j;try{j=JSON.parse(e.data)}catch(_){return}if(j.event&&j.event!=='message')return;if(j.id){if(seenIds.has(j.id))return;seenIds.add(j.id)}
+if(j.topic&&/-sig$/.test(j.topic)){let body=j.message;if(j.attachment&&j.attachment.url){try{body=await (await fetch(j.attachment.url)).text()}catch(_){return}}try{onSig(JSON.parse(body))}catch(_){}return}
+const tg=j.tags||[];if(tg.includes('id-'+me))return;const a=j.attachment;if(!a||!a.url)return;const lvT=tg.find(x=>/^lv-/.test(x));const heard=!!(lvT&&lvT.slice(3).split('-').includes(me));
+const m={n:(j.title||'Alguien').slice(0,30),t:(j.time||Date.now()/1000)*1000,u:a.url,d:+(tg.find(x=>/^d-\d+$/.test(x))||'d-0').slice(2)||0,lv:heard};log.unshift(m);renderLog();
+if(!heard){try{navigator.vibrate&&navigator.vibrate([60,40,60])}catch(_){}if(auto)playMsg(m);if(!W.classList.contains('on'))toast('🎙️ Mensaje de '+m.n,{label:'Escuchar',ms:8000,fn:()=>playMsg(m)})}}}catch(e){st('No se pudo conectar al canal.')}}
+function leave(silent){if(ch)sig({t:'bye'});Object.keys(PC).forEach(drop);if(es){es.close();es=null}ch='';$('wkHear').textContent='';if(!silent){$('wkIn').style.display='none';$('wkOut').style.display='';st('');try{localStorage.removeItem('rep_wkCh')}catch(e){}if(mic){mic.getTracks().forEach(t=>t.stop());mic=null}}log=[];renderLog();liveUI()}
+const ptt=on=>{Object.values(PC).forEach(p=>{try{p.dc&&p.dc.readyState==='open'&&p.dc.send(JSON.stringify({t:'ptt',on,n:nm()}))}catch(e){}})};
+async function startRec(){if(!ch||rec)return;try{await ensureMic()}catch(e){st('Necesito permiso de micrófono para hablar.');return}
 const mt=['audio/webm;codecs=opus','audio/ogg;codecs=opus','audio/mp4'].find(t=>window.MediaRecorder&&MediaRecorder.isTypeSupported(t))||'';
+mic.getAudioTracks().forEach(t=>t.enabled=true);talking=true;ptt(true);
 try{rec=new MediaRecorder(mic,mt?{mimeType:mt,audioBitsPerSecond:24000}:{})}catch(e){st('Este teléfono no permite grabar audio aquí.');return}chunks=[];rec.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data)};
-rec.onstop=()=>send(new Blob(chunks,{type:rec.mimeType||mt||'audio/webm'}),(Date.now()-t0)/1000);rec.start();t0=Date.now();$('wkPTT').classList.add('on');try{navigator.vibrate&&navigator.vibrate(25)}catch(_){}
-const tick=()=>{const s=(Date.now()-t0)/1000;$('wkPL').textContent='Hablando… '+Math.floor(s)+' s';if(s>=60)stopRec();else tmr=setTimeout(tick,250)};tick()}
-function stopRec(){clearTimeout(tmr);$('wkPTT').classList.remove('on');$('wkPL').textContent='Mantén presionado para hablar';if(rec&&rec.state!=='inactive')rec.stop()}
-async function send(b,dur){const r0=rec;rec=null;if(dur<.6){st('Muy corto: mantén presionado mientras hablas.');return}if(Date.now()-lim<1500){st('Espera un segundo entre mensajes.');return}lim=Date.now();
-const ext=/mp4/.test(b.type)?'m4a':/ogg/.test(b.type)?'ogg':'webm';st('Enviando…');
-try{const r=await fetch(H+topic(ch)+'?filename='+encodeURIComponent('voz-'+Date.now()+'.'+ext)+'&title='+encodeURIComponent(nm())+'&tags='+encodeURIComponent('id-'+me+',d-'+Math.round(dur)),{method:'PUT',body:b});if(!r.ok)throw new Error(r.status);
-log.unshift({n:nm(),t:Date.now(),u:URL.createObjectURL(b),d:Math.round(dur),mine:true});renderLog();st('Enviado ✓')}catch(e){st('No se pudo enviar ('+(e.message||'sin internet')+').')}}
+const lvAt=live();rec.onstop=()=>send(new Blob(chunks,{type:rec.mimeType||mt||'audio/webm'}),(Date.now()-t0)/1000,lvAt.filter(x=>PC[x]&&PC[x].ok));rec.start();t0=Date.now();$('wkPTT').classList.add('on');try{navigator.vibrate&&navigator.vibrate(25)}catch(_){}
+const tick=()=>{const s=(Date.now()-t0)/1000;$('wkPL').textContent=(lvAt.length?'🔴 En vivo… ':'Hablando… ')+Math.floor(s)+' s';if(s>=60)stopRec();else tmr=setTimeout(tick,250)};tick()}
+function stopRec(){clearTimeout(tmr);$('wkPTT').classList.remove('on');$('wkPL').textContent='Mantén presionado para hablar';if(mic)mic.getAudioTracks().forEach(t=>t.enabled=false);if(talking){talking=false;ptt(false)}if(rec&&rec.state!=='inactive')rec.stop()}
+async function send(b,dur,lv){rec=null;if(dur<.6){st('Muy corto: mantén presionado mientras hablas.');return}if(Date.now()-lim<1500){st('Espera un segundo entre mensajes.');return}lim=Date.now();
+const ext=/mp4/.test(b.type)?'m4a':/ogg/.test(b.type)?'ogg':'webm';st(lv&&lv.length?'Enviado en vivo; guardando copia…':'Enviando…');
+const tags=['id-'+me,'d-'+Math.round(dur)];if(lv&&lv.length)tags.push('lv-'+lv.slice(0,8).join('-'));
+try{const r=await fetch(H+topic(ch)+'?filename='+encodeURIComponent('voz-'+Date.now()+'.'+ext)+'&title='+encodeURIComponent(nm())+'&tags='+encodeURIComponent(tags.join(',')),{method:'PUT',body:b});if(!r.ok)throw new Error(r.status);
+log.unshift({n:nm(),t:Date.now(),u:URL.createObjectURL(b),d:Math.round(dur),mine:true,lv:!!(lv&&lv.length)});renderLog();st(lv&&lv.length?'Escuchado en vivo ✓':'Enviado ✓')}catch(e){st('No se pudo enviar ('+(e.message||'sin internet')+').')}}
 const P=$('wkPTT');P.addEventListener('pointerdown',e=>{e.preventDefault();try{P.setPointerCapture(e.pointerId)}catch(_){}startRec()});['pointerup','pointercancel','lostpointercapture'].forEach(t=>P.addEventListener(t,()=>{if(rec)stopRec()}));P.oncontextmenu=e=>e.preventDefault();
 $('wkLog').onclick=e=>{const b=e.target.closest('[data-wp]');if(b)playMsg(log[+b.dataset.wp])};
 $('wkNew').onclick=()=>{$('wkCh').value=newCode();join($('wkCh').value)};$('wkJoin').onclick=()=>join($('wkCh').value);$('wkLeave').onclick=()=>leave(false);
 $('wkShare').onclick=()=>{const t='Únete a mi canal de walkie-talkie en la app Reportes: código '+ch+'\nhttps://fenixxdeflou08-sys.github.io/';if(navigator.share)navigator.share({text:t}).catch(()=>{});else location.href='https://wa.me/?text='+encodeURIComponent(t)};
 $('wkAuto').checked=auto;$('wkAuto').onchange=e=>{auto=e.target.checked;try{localStorage.setItem('rep_wkAuto',auto?'1':'0')}catch(_){}};
 $('wkX').onclick=()=>W.classList.remove('on');W.onclick=e=>{if(e.target===W)W.classList.remove('on')};
+addEventListener('pagehide',()=>{if(ch)try{navigator.sendBeacon&&navigator.sendBeacon(H+topic(ch)+'-sig',JSON.stringify({t:'bye',from:me}))}catch(e){}});
 try{$('wkN').value=localStorage.getItem('rep_wkName')||(s.resp&&s.resp[0]?String(s.resp[0]).replace(/^\S+\.\s*/,''):'')}catch(e){}
-
 /* lista de canales guardados */
 (()=>{let L=[];try{L=JSON.parse(localStorage.getItem('rep_wkChans')||'[]')}catch(e){}const sv=()=>{try{localStorage.setItem('rep_wkChans',JSON.stringify(L))}catch(e){}};
 const norm=c=>(c||'').trim().toLowerCase();const ok=c=>/^[a-z0-9-]{4,30}$/.test(c);
@@ -1796,7 +1821,7 @@ return {S,make,get,set:k=>{try{localStorage.setItem('rep_cpStyle',k)}catch(e){}}
 
 (()=>{const W=$('cpPick');const r=()=>{const cur=CPS.get();W.innerHTML=Object.entries(CPS.S).map(([k,v])=>`<button type="button" data-cp="${k}" aria-pressed="${k===cur}" style="flex-direction:column;gap:4px;padding:8px;min-height:0;background:var(--card);color:var(--tx);border:3px solid ${k===cur?'var(--ac)':'var(--bd)'};border-radius:14px">${CPS.make(k)}<b style="font-size:14px">${v.n}${k===cur?' ✓':''}</b></button>`).join('')};
 W.onclick=e=>{const b=e.target.closest('[data-cp]');if(!b)return;CPS.set(b.dataset.cp);r();toast('Brújula: estilo '+CPS.S[b.dataset.cp].n)};r()})();
-const APP_VER='1.9.8';
+const APP_VER='1.9.9';
 (()=>{try{$('cfg').insertAdjacentHTML('beforeend','<p class="mu" id="appVer" style="text-align:center;margin:18px 0 6px">Reportes de trabajo · versión '+APP_VER+'</p><div style="text-align:center;margin-bottom:10px"><button class="sec" id="updB" type="button">🔄 Buscar actualización</button><div class="mu" id="updSt" style="margin-top:6px;font-size:14px"></div><a class="btn sec" href="Guia%20de%20instalacion%20-%20App%20Reportes.pdf" target="_blank" rel="noopener" style="margin-top:8px;text-decoration:none">📄 Guía de instalación (PDF)</a></div>')}catch(e){}
 const web=location.protocol==='https:'&&!/claude|anthropic/.test(location.hostname);
 const vnum=v=>String(v).split('.').map(n=>+n||0),newer=(a,b)=>{const x=vnum(a),y=vnum(b);for(let i=0;i<Math.max(x.length,y.length);i++){if((x[i]||0)!==(y[i]||0))return (x[i]||0)>(y[i]||0)}return false};
