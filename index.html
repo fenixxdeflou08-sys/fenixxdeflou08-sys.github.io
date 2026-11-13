@@ -532,8 +532,10 @@ body.noTools #fTools,body.noTools #tools{display:none!important}
 <input id="wkN" placeholder="Tu nombre (lo ven los demás)" maxlength="30">
 <div id="wkOut"><div class="mu" style="margin-bottom:8px">Crea un canal y comparte el código con tu equipo, o escribe el código que te mandaron.</div>
 <div class="row"><input id="wkCh" placeholder="Código, ej: k7pq-3mzx" autocomplete="off" autocapitalize="off"><button class="sec fix" id="wkJoin" type="button">Unirme</button></div>
-<button class="pri" id="wkNew" type="button" style="width:100%;margin-top:8px">+ Crear canal nuevo</button></div>
-<div id="wkIn" style="display:none"><div class="row" style="align-items:center"><div style="flex:1">Canal: <b id="wkCur" style="font-size:18px"></b></div><button class="sec fix" id="wkShare" type="button">Compartir</button><button class="sec fix" id="wkLeave" type="button">Salir</button></div>
+<div class="row" style="margin-top:8px"><button class="pri" id="wkNew" type="button">+ Nuevo canal</button><button class="pri" id="wkLB" type="button">📋 Lista</button></div>
+<div id="wkList" style="display:none;margin-top:10px;border:1px solid var(--bd2);border-radius:12px;padding:10px"><div class="pgH" style="margin-top:0">Canales guardados</div><div id="wkLL"></div>
+<div class="mu" style="font-size:13px;margin:8px 0 4px">Guardar un canal:</div><input id="wkSN" placeholder="Nombre (ej: Equipo hotel mina)" maxlength="40"><div class="row" style="margin-top:6px"><input id="wkSC" placeholder="Código" autocomplete="off" autocapitalize="off"><button class="sec fix" id="wkSAdd" type="button">💾 Guardar</button></div></div></div>
+<div id="wkIn" style="display:none"><div class="row" style="align-items:center"><div style="flex:1;min-width:0"><div id="wkCurN" style="font-weight:700"></div>Canal: <b id="wkCur" style="font-size:18px"></b></div><button class="sec fix" id="wkSave" type="button" aria-label="Guardar canal">💾</button><button class="sec fix" id="wkShare" type="button">Compartir</button><button class="sec fix" id="wkLeave" type="button">Salir</button></div>
 <button id="wkPTT" type="button" aria-label="Mantén presionado para hablar"><span style="font-size:44px;line-height:1">🎙️</span><small id="wkPL">Mantén presionado para hablar</small></button>
 <label class="cbTg" style="justify-content:center"><input type="checkbox" id="wkAuto" checked> Reproducir mensajes automáticamente</label>
 <div class="pgH">Mensajes</div><div id="wkLog"></div></div>
@@ -1722,7 +1724,7 @@ const newCode=()=>{const a='abcdefghjkmnpqrstuvwxyz23456789';let c='';const r=cr
 function renderLog(){$('wkLog').innerHTML=log.length?log.slice(0,30).map((m,i)=>`<div class="nIt"><button class="sec fix" data-wp="${i}" style="min-height:44px;width:44px;padding:0">▶</button><div class="nTx" style="flex:1"><b>${esc(m.mine?'Tú':m.n)}</b><span>${hm(m.t)}${m.d?' · '+m.d+' s':''}</span></div></div>`).join(''):'<div class="mu">Aún no hay mensajes en este canal.</div>'}
 function playMsg(m){try{const a=new Audio(m.u);a.play().catch(()=>st('Toca ▶ para escuchar el mensaje de '+m.n))}catch(e){}}
 function join(c){c=(c||'').trim().toLowerCase();if(!/^[a-z0-9-]{4,30}$/.test(c)){st('Escribe un código de canal válido (letras y números).');return}leave(true);ch=c;try{localStorage.setItem('rep_wkCh',c);localStorage.setItem('rep_wkName',nm())}catch(e){}
-$('wkCh').value=c;$('wkIn').style.display='';$('wkOut').style.display='none';$('wkCur').textContent=c;st('Conectando…');if(inClaude()){st('Dentro de la app de Claude el walkie-talkie está bloqueado. Úsalo desde la APK o desde fenixxdeflou08-sys.github.io.');return}
+$('wkCh').value=c;$('wkIn').style.display='';$('wkOut').style.display='none';$('wkCur').textContent=c;try{const sv=JSON.parse(localStorage.getItem('rep_wkChans')||'[]').find(x=>x.c===c);$('wkCurN').textContent=sv?sv.n:''}catch(e){}st('Conectando…');if(inClaude()){st('Dentro de la app de Claude el walkie-talkie está bloqueado. Úsalo desde la APK o desde fenixxdeflou08-sys.github.io.');return}
 try{es=new EventSource(H+topic(c)+'/sse');es.onopen=()=>st('Conectado. Mantén presionado el botón para hablar.');es.onerror=()=>st('Reconectando… revisa tu internet.');
 es.onmessage=e=>{let j;try{j=JSON.parse(e.data)}catch(_){return}if(j.event&&j.event!=='message')return;const tg=j.tags||[];if(tg.includes('id-'+me))return;if(j.id){if(seenIds.has(j.id))return;seenIds.add(j.id)}const a=j.attachment;if(!a||!a.url)return;
 const m={n:(j.title||'Alguien').slice(0,30),t:(j.time||Date.now()/1000)*1000,u:a.url,d:+(tg.find(x=>/^d-\d+$/.test(x))||'d-0').slice(2)||0};log.unshift(m);renderLog();try{navigator.vibrate&&navigator.vibrate([60,40,60])}catch(_){}
@@ -1745,6 +1747,19 @@ $('wkShare').onclick=()=>{const t='Únete a mi canal de walkie-talkie en la app 
 $('wkAuto').checked=auto;$('wkAuto').onchange=e=>{auto=e.target.checked;try{localStorage.setItem('rep_wkAuto',auto?'1':'0')}catch(_){}};
 $('wkX').onclick=()=>W.classList.remove('on');W.onclick=e=>{if(e.target===W)W.classList.remove('on')};
 try{$('wkN').value=localStorage.getItem('rep_wkName')||(s.resp&&s.resp[0]?String(s.resp[0]).replace(/^\S+\.\s*/,''):'')}catch(e){}
+
+/* lista de canales guardados */
+(()=>{let L=[];try{L=JSON.parse(localStorage.getItem('rep_wkChans')||'[]')}catch(e){}const sv=()=>{try{localStorage.setItem('rep_wkChans',JSON.stringify(L))}catch(e){}};
+const norm=c=>(c||'').trim().toLowerCase();const ok=c=>/^[a-z0-9-]{4,30}$/.test(c);
+const r=()=>{$('wkLL').innerHTML=L.length?L.map((x,i)=>`<div class="nIt"><div class="nTx" style="flex:1"><b>${esc(x.n)}</b><span>${esc(x.c)}</span></div><button class="pri fix" data-wj="${i}" style="min-height:40px;padding:4px 12px">Entrar</button><button class="x" data-wx="${i}" aria-label="Eliminar" style="color:var(--er)">🗑</button></div>`).join(''):'<div class="mu">No tienes canales guardados.</div>'};
+const add=(n,c)=>{c=norm(c);n=(n||'').trim();if(!ok(c)){toast('Código no válido');return false}if(!n)n='Canal '+c;const i=L.findIndex(x=>x.c===c);if(i>=0)L[i].n=n;else L.unshift({n,c});sv();r();toast('Canal guardado: '+n);return true};
+$('wkLB').onclick=()=>{const b=$('wkList');const o=b.style.display==='none';b.style.display=o?'':'none';if(o)r()};
+$('wkSAdd').onclick=()=>{if(add($('wkSN').value,$('wkSC').value||$('wkCh').value)){$('wkSN').value='';$('wkSC').value=''}};
+$('wkSave').onclick=()=>{const c=norm($('wkCur').textContent);const cur=L.find(x=>x.c===c);const n=window.prompt('Nombre para este canal',cur?cur.n:'');if(n!==null&&add(n,c))$('wkCurN').textContent=(L.find(x=>x.c===c)||{}).n||''};
+$('wkLL').onclick=e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.wj!==undefined){const x=L[+b.dataset.wj];$('wkCh').value=x.c;$('wkList').style.display='none';$('wkJoin').click()}
+if(b.dataset.wx!==undefined){const i=+b.dataset.wx,x=L.splice(i,1)[0];sv();r();toast('"'+x.n+'" eliminado',{label:'Deshacer',ms:7000,fn:()=>{L.splice(i,0,x);sv();r()}})}};
+const cur=()=>{const c=norm($('wkCur').textContent),x=L.find(y=>y.c===c);$('wkCur').title=x?x.n:''};
+r()})();
 $('fWalk').onclick=()=>{fabOpen=false;fab();W.classList.add('on');if(!ch){let c='';try{c=localStorage.getItem('rep_wkCh')||''}catch(e){}if(c)join(c)}};renderLog();})();
 
 /* ---- Brújula: 5 estilos ---- */
@@ -1781,7 +1796,7 @@ return {S,make,get,set:k=>{try{localStorage.setItem('rep_cpStyle',k)}catch(e){}}
 
 (()=>{const W=$('cpPick');const r=()=>{const cur=CPS.get();W.innerHTML=Object.entries(CPS.S).map(([k,v])=>`<button type="button" data-cp="${k}" aria-pressed="${k===cur}" style="flex-direction:column;gap:4px;padding:8px;min-height:0;background:var(--card);color:var(--tx);border:3px solid ${k===cur?'var(--ac)':'var(--bd)'};border-radius:14px">${CPS.make(k)}<b style="font-size:14px">${v.n}${k===cur?' ✓':''}</b></button>`).join('')};
 W.onclick=e=>{const b=e.target.closest('[data-cp]');if(!b)return;CPS.set(b.dataset.cp);r();toast('Brújula: estilo '+CPS.S[b.dataset.cp].n)};r()})();
-const APP_VER='1.9.7';
+const APP_VER='1.9.8';
 (()=>{try{$('cfg').insertAdjacentHTML('beforeend','<p class="mu" id="appVer" style="text-align:center;margin:18px 0 6px">Reportes de trabajo · versión '+APP_VER+'</p><div style="text-align:center;margin-bottom:10px"><button class="sec" id="updB" type="button">🔄 Buscar actualización</button><div class="mu" id="updSt" style="margin-top:6px;font-size:14px"></div><a class="btn sec" href="Guia%20de%20instalacion%20-%20App%20Reportes.pdf" target="_blank" rel="noopener" style="margin-top:8px;text-decoration:none">📄 Guía de instalación (PDF)</a></div>')}catch(e){}
 const web=location.protocol==='https:'&&!/claude|anthropic/.test(location.hostname);
 const vnum=v=>String(v).split('.').map(n=>+n||0),newer=(a,b)=>{const x=vnum(a),y=vnum(b);for(let i=0;i<Math.max(x.length,y.length);i++){if((x[i]||0)!==(y[i]||0))return (x[i]||0)>(y[i]||0)}return false};
