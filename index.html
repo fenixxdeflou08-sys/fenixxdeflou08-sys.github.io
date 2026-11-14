@@ -336,6 +336,19 @@ section.col .sTog::after{transform:rotate(-90deg)}section.col>.sHide{display:non
 .asC{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.asC button{min-height:38px;padding:4px 12px;font-size:14px;font-weight:600}
 .asSp{position:absolute;top:4px;right:4px;width:32px;height:32px;font-size:16px}
 #asMic.on{background:var(--er)!important;color:#fff!important;border-color:var(--er)!important}
+#lvFS{position:fixed;inset:0;z-index:300;background:#111316;color:#F1EFEA;display:none;overflow:hidden;touch-action:none}#lvFS.on{display:block}
+#lvFS .fr{position:absolute;left:50%;top:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:16px 22px;box-sizing:border-box;background-image:linear-gradient(#ffcc0012 1px,transparent 1px),linear-gradient(90deg,#ffcc0012 1px,transparent 1px);background-size:16px 16px}
+#lvFS .dg{font:800 64px/1 var(--fc);font-variant-numeric:tabular-nums}#lvFS.ok .dg{color:#5BE37F}
+#lvFS .tb{position:relative;width:100%;height:70px;border-radius:35px;border:3px solid #1d2a14;background:linear-gradient(180deg,#3f7d34,#9cc33a 55%,#c9dc3a);overflow:hidden;box-shadow:inset 0 0 14px rgba(0,0,0,.45)}
+#lvFS .tb i{position:absolute;top:6px;bottom:6px;width:3px;background:rgba(20,30,10,.7)}#lvFS .tb i:first-child{left:calc(50% - 40px)}#lvFS .tb i:nth-child(2){left:calc(50% + 37px)}
+#lvFS .tb b{position:absolute;left:50%;top:50%;width:70px;height:46px;margin:-23px -35px;border-radius:23px;background:radial-gradient(circle at 40% 35%,#f4ff9a,#c6ef2a 60%,#9fd11c);will-change:transform}#lvFS.ok .tb b{background:radial-gradient(circle at 40% 35%,#d9ffe3,#33d16b 60%,#16a34a)}
+#lvFS .ft{display:flex;justify-content:space-between;width:100%;color:#A2A8B0;font-size:14px}
+#lvFS .x{position:absolute;top:10px;right:12px;width:48px;height:48px;min-height:48px;border-radius:24px;background:#2a2f36;color:#fff;font-size:24px;border:0;padding:0}
+#lvFS .z{position:absolute;top:10px;left:12px;min-height:44px;background:#2a2f36;color:#fff;border:0;border-radius:22px;padding:0 16px;font-size:14px}
+#bgL{position:fixed;inset:0;z-index:-1;background:center/cover no-repeat;pointer-events:none}#bgL::after{content:"";position:absolute;inset:0;background:var(--bg);opacity:.35}
+html.hasBg{background:var(--bg)}html.hasBg body{background:transparent}
+.bgPk{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.bgPk button{flex-direction:column;gap:4px;padding:5px;min-height:0;background:var(--card);color:var(--tx);border:3px solid var(--bd);border-radius:12px;font-size:12px;font-weight:700}
+.bgPk button[aria-pressed=true]{border-color:var(--ac)}.bgPk .th{width:100%;aspect-ratio:9/16;border-radius:7px;background:center/cover no-repeat var(--bg);display:flex;align-items:center;justify-content:center;font-size:22px;border:1px solid var(--bd)}
 </style>
 </head>
 <body>
@@ -531,6 +544,11 @@ section.col .sTog::after{transform:rotate(-90deg)}section.col>.sHide{display:non
 <h2>🧭 Brújula: estilo</h2>
 <div class="mu" style="margin-bottom:8px">Elige cómo se ve la brújula de Herramientas.</div>
 <div id="cpPick" style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px"></div>
+</section>
+<section id="secBg">
+<h2>🖼️ Fondo de la app</h2>
+<div class="mu" style="margin-bottom:8px">"Según brújula" cambia el fondo solo cuando eliges otro estilo de brújula.</div>
+<div id="bgPick" class="bgPk"></div>
 </section>
 <section>
 <h2>Herramientas</h2>
@@ -1184,10 +1202,10 @@ const K='rep_lvOff';let off={x:0,y:0,e:0};try{Object.assign(off,JSON.parse(local
 let v=null,got=false,mode='',raw={x:0,y:0,e:0};const D=180/Math.PI,cl=(a,m)=>Math.max(-m,Math.min(m,a));
 const put=(id,px,py)=>{const el=$(id);if(el)el.style.transform='translate('+px.toFixed(1)+'px,'+py.toFixed(1)+'px)'};
 const fmt=a=>Math.abs(a)<.05?'0°':(Math.abs(a)<10?a.toFixed(1):Math.round(a))+'°';
-const draw=()=>{if(!v)return;const ang=((screen.orientation&&screen.orientation.angle)||window.orientation||0)*Math.PI/180;
+const draw=()=>{if(!v)return;const physLong=Math.abs(v.x)>Math.abs(v.y);const ang=((screen.orientation&&screen.orientation.angle)||window.orientation||0)*Math.PI/180;
 const sx=v.x*Math.cos(ang)+v.y*Math.sin(ang),sy=-v.x*Math.sin(ang)+v.y*Math.cos(ang),sz=v.z,n=Math.hypot(sx,sy,sz)||1;
 const flat=Math.abs(sz)/n>.6;
-if(flat){if(mode!=='f'){mode='f';$('lvFlat').style.display='';$('lvEdge').style.display='none'}
+if(flat){window.lvFull&&lvFull(null);if(mode!=='f'){mode='f';$('lvFlat').style.display='';$('lvEdge').style.display='none'}
 const tx=Math.atan2(sx,Math.abs(sz))*D,ty=Math.atan2(sy,Math.abs(sz))*D;raw.x=tx;raw.y=ty;const ax=tx-off.x,ay=ty-off.y;
 const H=$('lvHb').parentNode.clientWidth/2-26,V=$('lvVb').parentNode.clientHeight/2-26,R=$('lvCb').parentNode.clientWidth/2-26;
 put('lvHb',cl(ax*4,H),0);put('lvVb',0,cl(-ay*4,V));const rr=Math.hypot(ax,ay)*4,k=rr>R?R/rr:1;put('lvCb',ax*4*k,-ay*4*k);
@@ -1197,14 +1215,14 @@ else{if(mode!=='e'){mode='e';$('lvFlat').style.display='none';$('lvEdge').style.
 const long=Math.abs(sy)>=Math.abs(sx);let d=long?Math.atan2(sx,Math.abs(sy))*D:Math.atan2(-sy,Math.abs(sx))*D;raw.e=d;d-=off.e;
 const T=$('lvEt'),L=T.clientWidth/2-26;put('lvEb',cl(d*6,L),0);$('lvEd').textContent=fmt(d);const ok=Math.abs(d)<.5;$('lvEdge').classList.toggle('ok',ok);
 const tilt=Math.atan2(sz,Math.hypot(sx,sy))*D;$('lvEs').textContent=(long?'Apoyado en el borde corto (de pie)':'Apoyado en el borde largo (de lado)')+' · Inclinación adelante/atrás '+fmt(tilt);
-$('lvT').textContent=ok?'✓ Nivelado':'Celular de canto'}};
+$('lvT').textContent=ok?'✓ Nivelado':'Celular de canto';window.lvFull&&lvFull(physLong?{sx,sy}:null)}};
 let raf=0;const tick=()=>{raf=0;draw()};const feed=(x,y,z)=>{if(!got){const q=$('lvP');if(q)q.remove()}got=true;msg('');const a=.18;v=v?{x:v.x+(x-v.x)*a,y:v.y+(y-v.y)*a,z:v.z+(z-v.z)*a}:{x,y,z};if(!raf)raf=requestAnimationFrame(tick)};
 const hm=e=>{const g=e.accelerationIncludingGravity;if(!g||g.x==null)return;feed(g.x,g.y,g.z)};
 const ho=e=>{if(e.beta==null||usingM)return;const b=e.beta*Math.PI/180,gm=e.gamma*Math.PI/180;feed(-Math.cos(b)*Math.sin(gm)*-9.8,Math.sin(b)*9.8,Math.cos(b)*Math.cos(gm)*9.8)};
 let usingM=false;const hm2=e=>{const g=e.accelerationIncludingGravity;if(g&&g.x!=null){usingM=true;hm(e)}};
 $('lvZ').onclick=()=>{if(!got)return;if(mode==='f'){off.x=raw.x;off.y=raw.y}else off.e=raw.e;try{localStorage.setItem(K,JSON.stringify(off))}catch(e){}msg('Calibrado: la posición actual queda como 0°.')};
 $('lvR').onclick=()=>{off={x:0,y:0,e:0};try{localStorage.removeItem(K)}catch(e){}msg('Calibración borrada.')};
-const go=()=>{addEventListener('devicemotion',hm2);addEventListener('deviceorientation',ho);stop=()=>{removeEventListener('devicemotion',hm2);removeEventListener('deviceorientation',ho);if(raf)cancelAnimationFrame(raf)};setTimeout(()=>{if(!got&&cur==='lvl')msg(blocked('los sensores de inclinación'))},2500)};
+const go=()=>{addEventListener('devicemotion',hm2);addEventListener('deviceorientation',ho);stop=()=>{window.lvFull&&lvFull(null);removeEventListener('devicemotion',hm2);removeEventListener('deviceorientation',ho);if(raf)cancelAnimationFrame(raf)};setTimeout(()=>{if(!got&&cur==='lvl')msg(blocked('los sensores de inclinación'))},2500)};
 const P=window.DeviceMotionEvent&&typeof DeviceMotionEvent.requestPermission==='function';
 go();if(P)setTimeout(()=>{if(got||cur!=='lvl')return;msg('');B.insertAdjacentHTML('beforeend','<button id="lvP" style="margin-top:8px;width:100%">Activar sensor</button>');$('lvP').onclick=()=>DeviceMotionEvent.requestPermission().then(r=>{if(r==='granted'){$('lvP').remove()}else msg('Permiso denegado.')}).catch(()=>msg(blocked('los sensores')))},1200);
 window.__lvFeed=feed},
@@ -1890,6 +1908,55 @@ return {S,make,get,set:k=>{try{localStorage.setItem('rep_cpStyle',k)}catch(e){}}
 
 (()=>{const W=$('cpPick');const r=()=>{const cur=CPS.get();W.innerHTML=Object.entries(CPS.S).map(([k,v])=>`<button type="button" data-cp="${k}" aria-pressed="${k===cur}" style="flex-direction:column;gap:4px;padding:8px;min-height:0;background:var(--card);color:var(--tx);border:3px solid ${k===cur?'var(--ac)':'var(--bd)'};border-radius:14px">${CPS.make(k)}<b style="font-size:14px">${v.n}${k===cur?' ✓':''}</b></button>`).join('')};
 W.onclick=e=>{const b=e.target.closest('[data-cp]');if(!b)return;CPS.set(b.dataset.cp);r();toast('Brújula: estilo '+CPS.S[b.dataset.cp].n)};r()})();
+/* ---- Fondos de la app (según brújula) y nivel a pantalla completa ---- */
+(()=>{const W=390,H=844;let seed=7;const R=()=>{seed=(seed*16807)%2147483647;return seed/2147483647};
+const rose=(cx,cy,r,col,op)=>{let h=`<g opacity="${op}" stroke="${col}" fill="none">`;for(let i=0;i<32;i++){const a=i*Math.PI/16;h+=`<line x1="${cx}" y1="${cy}" x2="${cx+Math.cos(a)*r*3}" y2="${cy+Math.sin(a)*r*3}" stroke-width="${i%4?0.5:1}"/>`}h+=`<circle cx="${cx}" cy="${cy}" r="${r}" stroke-width="1.2"/><circle cx="${cx}" cy="${cy}" r="${r*0.8}"/>`;for(let i=0;i<8;i++){const a=i*Math.PI/4,l=i%2?r*.55:r*.95;const x=cx+Math.sin(a)*l,y=cy-Math.cos(a)*l,a1=a+Math.PI/2,w=r*.09;h+=`<path d="M${cx+Math.sin(a1)*w} ${cy-Math.cos(a1)*w} L${x} ${y} L${cx-Math.sin(a1)*w} ${cy+Math.cos(a1)*w}Z" fill="${col}" fill-opacity=".5"/>`}return h+'</g>'};
+const contour=(n,col,op,sw,amp,cx,cy)=>{let h=`<g fill="none" stroke="${col}" opacity="${op}" stroke-width="${sw}">`;for(let k=1;k<=n;k++){let d='';const r0=k*28;for(let t=0;t<=64;t++){const a=t/64*Math.PI*2;const r=r0+amp*Math.sin(a*3+k*.7)+amp*.6*Math.cos(a*5-k);const x=cx+Math.cos(a)*r*1.25,y=cy+Math.sin(a)*r;d+=(t?'L':'M')+x.toFixed(1)+' '+y.toFixed(1)}h+=`<path d="${d}Z" stroke-width="${k%5===0?sw*2.2:sw}"/>`}return h+'</g>'};
+const B={
+pirata:()=>{let h=`<defs><radialGradient id="g" cx="50%" cy="45%" r="75%"><stop offset="0" stop-color="#f3e2bb"/><stop offset=".7" stop-color="#dcbf86"/><stop offset="1" stop-color="#8f6a35"/></radialGradient><filter id="n"><feTurbulence type="fractalNoise" baseFrequency=".8" numOctaves="3" seed="4"/><feColorMatrix values="0 0 0 0 .4 0 0 0 0 .27 0 0 0 0 .1 0 0 0 .35 0"/></filter><filter id="n2"><feTurbulence type="fractalNoise" baseFrequency=".012" numOctaves="3" seed="9"/><feColorMatrix values="0 0 0 0 .45 0 0 0 0 .3 0 0 0 0 .12 0 0 0 .5 0"/></filter></defs><rect width="${W}" height="${H}" fill="url(#g)"/><rect width="${W}" height="${H}" filter="url(#n2)"/><rect width="${W}" height="${H}" filter="url(#n)"/>`;
+h+=rose(120,250,70,'#5e3d12',.55)+rose(300,640,45,'#5e3d12',.4);
+h+=`<g fill="none" stroke="#6b4a1e" stroke-width="2" opacity=".6"><path d="M-10 420 q40 -30 80 -10 q30 16 60 -6 q40 -30 70 0 q20 22 50 10 q30 -14 60 4 q30 20 90 -6"/><path d="M200 120 q30 -20 60 0 q24 16 50 2 q30 -16 60 8 l40 30"/><path d="M-10 760 q60 -40 120 -10 q50 26 100 -4"/></g>`;
+h+=`<path d="M70 600 C120 540 170 620 220 560 S300 470 330 420" fill="none" stroke="#8b1a12" stroke-width="2.5" stroke-dasharray="5 7" opacity=".75"/><g stroke="#8b1a12" stroke-width="5" stroke-linecap="round" opacity=".8"><line x1="322" y1="408" x2="340" y2="426"/><line x1="340" y1="408" x2="322" y2="426"/></g>`;
+h+=`<text x="195" y="800" text-anchor="middle" font-family="DejaVu Serif" font-style="italic" font-size="20" fill="#4a2f0f" opacity=".55">Mare Incognitum</text><rect x="10" y="10" width="${W-20}" height="${H-20}" fill="none" stroke="#5e3d12" stroke-width="2" opacity=".4"/>`;return h},
+militar:()=>{let h=`<rect width="${W}" height="${H}" fill="#3a4224"/>`;h+=contour(26,'#a9b37a',.35,.8,14,150,330)+contour(16,'#a9b37a',.28,.8,10,320,720);
+h+=`<g stroke="#c8d29a" stroke-width=".6" opacity=".25">`;for(let x=0;x<=W;x+=65)h+=`<line x1="${x}" y1="0" x2="${x}" y2="${H}"/>`;for(let y=0;y<=H;y+=65)h+=`<line x1="0" y1="${y}" x2="${W}" y2="${y}"/>`;h+='</g>';
+h+=`<g font-family="DejaVu Sans Mono" font-size="9" fill="#c8d29a" opacity=".5">`;for(let x=0;x<W;x+=65)h+=`<text x="${x+3}" y="12">${String(28+x/65).padStart(2,'0')}</text>`;for(let y=65;y<H;y+=65)h+=`<text x="3" y="${y-3}">${String(64-y/65).padStart(2,'0')}</text>`;h+='</g>';
+h+=`<g stroke="#e8ecd0" stroke-width="1.5" fill="none" opacity=".45"><path d="M100 520 l16 0 m-8 -8 l0 16"/><circle cx="108" cy="520" r="12"/><path d="M270 260 l12 -20 l12 20z"/></g><text x="292" y="${H-18}" font-family="DejaVu Sans Mono" font-size="11" fill="#c8d29a" opacity=".55">ESC 1:25.000</text>`;return h},
+terreno:()=>{let h=`<rect width="${W}" height="${H}" fill="#111316"/><g stroke="#FFCC00" opacity=".07">`;for(let x=0;x<=W;x+=13)h+=`<line x1="${x}" y1="0" x2="${x}" y2="${H}" stroke-width="${x%65?0.5:1.2}"/>`;for(let y=0;y<=H;y+=13)h+=`<line x1="0" y1="${y}" x2="${W}" y2="${y}" stroke-width="${y%65?0.5:1.2}"/>`;h+='</g>';
+h+=`<g fill="none" stroke="#FFCC00" stroke-width="1.6" opacity=".28"><path d="M39 117 H195 V260 H351"/><path d="M39 650 H130 V560 H260 V780"/><circle cx="195" cy="117" r="5"/><circle cx="351" cy="260" r="5"/><path d="M120 117 l8 -10 l8 20 l8 -20 l8 20 l8 -10"/><path d="M240 560 v-14 m-10 0 h20 m-15 -5 h10 m-6 -4 h2"/><circle cx="260" cy="780" r="10"/><path d="M253 773 l14 14 m0 -14 l-14 14"/></g>`;
+h+=rose(195,430,90,'#FFCC00',.12)+`<text x="195" y="${H-20}" text-anchor="middle" font-family="DejaVu Sans" font-weight="bold" font-size="13" letter-spacing="4" fill="#FFCC00" opacity=".25">REDSTONE</text>`;return h},
+nautica:()=>{let h=`<defs><linearGradient id="s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#123a63"/><stop offset="1" stop-color="#0a2340"/></linearGradient></defs><rect width="${W}" height="${H}" fill="url(#s)"/><g stroke="#9cc3e8" stroke-width=".7" opacity=".3">`;for(let x=0;x<=W;x+=78)h+=`<line x1="${x}" y1="0" x2="${x}" y2="${H}"/>`;for(let y=0;y<=H;y+=78)h+=`<line x1="0" y1="${y}" x2="${W}" y2="${y}"/>`;h+='</g>';
+h+=`<g font-family="DejaVu Sans" font-size="9" fill="#cfe3f7" opacity=".45">`;for(let i=0;i<50;i++)h+=`<text x="${(R()*W).toFixed(0)}" y="${(R()*H).toFixed(0)}">${Math.floor(R()*90+5)}</text>`;h+='</g>';
+h+=`<path d="M${W} 300 q-60 30 -70 90 q-10 60 -60 80 q-40 20 -30 80 q10 60 -40 100 L${W} 650Z" fill="#e8dcc0" opacity=".85"/><path d="M${W} 300 q-60 30 -70 90 q-10 60 -60 80 q-40 20 -30 80 q10 60 -40 100" fill="none" stroke="#cfe3f7" stroke-width="6" opacity=".25"/>`;
+h+=rose(130,240,75,'#e9f2fb',.45)+`<g stroke="#e9f2fb" fill="none" opacity=".3" stroke-width="1.2">`;for(let y=600;y<H;y+=26)h+=`<path d="M0 ${y} q20 -8 40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0"/>`;h+='</g>';
+h+=`<g transform="translate(70 420) rotate(-15)" fill="#e9f2fb" opacity=".5"><path d="M0 0 l60 0 l-10 14 l-40 0z"/><path d="M28 -3 v-34 l18 30z"/></g>`;return h},
+digital:()=>{let h=`<rect width="${W}" height="${H}" fill="#04101a"/><defs><radialGradient id="sw" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#18e0ff" stop-opacity=".25"/><stop offset="1" stop-color="#18e0ff" stop-opacity="0"/></radialGradient></defs><g stroke="#18e0ff" opacity=".1">`;for(let x=0;x<=W;x+=26)h+=`<line x1="${x}" y1="0" x2="${x}" y2="${H}"/>`;for(let y=0;y<=H;y+=26)h+=`<line x1="0" y1="${y}" x2="${W}" y2="${y}"/>`;h+='</g>';
+const cx=195,cy=420;h+=`<g fill="none" stroke="#18e0ff" opacity=".35">`;[60,120,180,240].forEach(r=>h+=`<circle cx="${cx}" cy="${cy}" r="${r}" stroke-dasharray="${r>200?'4 6':''}"/>`);h+=`<line x1="${cx}" y1="${cy-260}" x2="${cx}" y2="${cy+260}"/><line x1="${cx-260}" y1="${cy}" x2="${cx+260}" y2="${cy}"/></g>`;
+h+=`<path d="M${cx} ${cy} L${cx+240} ${cy-60} A247 247 0 0 0 ${cx+150} ${cy-196}Z" fill="url(#sw)"/>`;for(let i=0;i<9;i++){const a=R()*Math.PI*2,r=R()*230;h+=`<circle cx="${cx+Math.cos(a)*r}" cy="${cy+Math.sin(a)*r}" r="${2+R()*2}" fill="#ff3d71" opacity=".7"/>`}
+h+=`<g font-family="DejaVu Sans Mono" font-size="10" fill="#18e0ff" opacity=".5"><text x="14" y="30">LAT -33.4489</text><text x="14" y="44">LON -70.6693</text><text x="${W-90}" y="30">ALT 570 m</text><text x="${W-90}" y="44">GPS ±4 m</text><text x="14" y="${H-20}">SYS OK · SAT 12</text></g>`;return h}};
+const N={pirata:'Pirata',militar:'Militar',terreno:'Terreno',nautica:'Náutica',digital:'Digital'};const cache={};
+const url=k=>{if(!cache[k]){seed=7;cache[k]='url("data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid slice">'+B[k]()+'</svg>')+'")'}return cache[k]};
+const get=()=>{try{return localStorage.getItem('rep_bg')||'auto'}catch(e){return 'auto'}};
+const eff=()=>{const g=get();if(g==='none')return null;if(g==='auto'){const c=window.CPS&&CPS.get();return B[c]?c:null}return B[g]?g:null};
+let L=null;const apply=()=>{const k=eff();if(!k){document.documentElement.classList.remove('hasBg');if(L)L.style.display='none';return}
+if(!L){L=document.createElement('div');L.id='bgL';document.body.prepend(L)}L.style.display='';L.style.backgroundImage=url(k);document.documentElement.classList.add('hasBg')};
+const P=$('bgPick');const r=()=>{if(!P)return;const cur=get();const opts=[['none','Ninguno',''],['auto','Según brújula','']].concat(Object.keys(N).map(k=>[k,N[k],k]));
+P.innerHTML=opts.map(([k,n,b])=>`<button type="button" data-bg="${k}" aria-pressed="${k===cur}"><span class="th" style="${b?'background-image:'+url(b).replace(/"/g,"'"):''}">${k==='none'?'⬜':k==='auto'?'🧭':''}</span>${n}</button>`).join('')};
+if(P)P.onclick=e=>{const b=e.target.closest('[data-bg]');if(!b)return;try{localStorage.setItem('rep_bg',b.dataset.bg)}catch(_){}r();apply();toast('Fondo: '+b.textContent.trim())};
+if(window.CPS&&CPS.set){const o=CPS.set;CPS.set=function(){const x=o.apply(this,arguments);try{apply()}catch(e){}return x}}
+r();apply();window.bgApply=apply;
+/* nivel: pantalla completa cuando el celular está apoyado en su borde largo */
+let F=null,shut=false,zero=0,lastD=0;try{zero=+localStorage.getItem('rep_lvFz')||0}catch(e){}
+const mk=()=>{F=document.createElement('div');F.id='lvFS';F.innerHTML='<div class="fr"><button class="z" id="lvFz">Calibrar 0°</button><button class="x" id="lvFx" aria-label="Cerrar">×</button><div class="dg" id="lvFd">0°</div><div class="tb"><i></i><i></i><b id="lvFb"></b></div><div class="ft"><span>◀</span><span>Apoyado en el borde largo</span><span>▶</span></div></div>';document.body.appendChild(F);
+$('lvFx').onclick=()=>{shut=true;F.classList.remove('on')};$('lvFz').onclick=()=>{zero=lastD;try{localStorage.setItem('rep_lvFz',zero)}catch(e){}toast('Nivel calibrado: esta posición queda como 0°')}};
+const fmt=a=>Math.abs(a)<.05?'0°':(Math.abs(a)<10?Math.abs(a).toFixed(1):Math.round(Math.abs(a)))+'°';
+window.lvFull=o=>{if(!o){if(F)F.classList.remove('on');shut=false;return}if(shut)return;if(!F)mk();
+const{sx,sy}=o,D=180/Math.PI;let rot,d;if(Math.abs(sx)>Math.abs(sy)){rot=sx>0?90:-90;d=Math.atan2(-Math.sign(sx)*sy,Math.abs(sx))*D}else{rot=sy>0?0:180;d=Math.atan2(Math.sign(sy)*sx,Math.abs(sy))*D}
+const fr=F.firstChild,sw=rot%180!==0,w=sw?innerHeight:innerWidth,h=sw?innerWidth:innerHeight;fr.style.width=w+'px';fr.style.height=h+'px';fr.style.transform='translate(-50%,-50%) rotate('+rot+'deg)';
+lastD=d;d-=zero;const tb=F.querySelector('.tb'),lim=tb.clientWidth/2-40;$('lvFb').style.transform='translateX('+Math.max(-lim,Math.min(lim,d*12)).toFixed(1)+'px)';
+$('lvFd').textContent=(Math.abs(d)<.5?'✓ ':'')+fmt(d);F.classList.toggle('ok',Math.abs(d)<.5);F.classList.add('on')};
+setInterval(()=>{if(F&&F.classList.contains('on')){const e=$('lvEdge');if(!e||!e.getClientRects().length)F.classList.remove('on')}},700)})();
+
 /* ---- Ayudas cuando se olvida marcar la hora ---- */
 (()=>{const p2=n=>String(n).padStart(2,'0');
 const dayOpts=sel=>{let h='';for(let i=0;i<8;i++){const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-i);const v=d.getTime();h+=`<option value="${v}"${v===sel?' selected':''}>${i===0?'Hoy':i===1?'Ayer':''} ${dS(v)}</option>`}return h};
@@ -1925,7 +1992,7 @@ $('hmSvM').onclick=()=>{closeSv();horaPanel()};
 $('hmSvW').onclick=()=>{const n=Date.now();s.inicio=n;s.fin=n;s.pausas=[];s.noTime=true;persist();renderAll();closeSv();$('bSave').click()};
 $('hmSvX').onclick=closeSv;btnUI();})();
 
-const APP_VER='2.3.0';
+const APP_VER='2.4.0';
 /* ===== Asistente IA (chat con sugerencias seleccionables) ===== */
 setTimeout(()=>{const W=$('asis'),L=$('asL');let hist=[],busy=false,rec=null;const U=['pza','m','m²','kg','lt','caja','bolsa'];
 const SYS='Eres el asistente de la app "Reportes de trabajo" para técnicos de mantención en Chile (electricidad, gasfitería, obras civiles, pintura, cerámica, etc.). Respondes en español de Chile, claro y práctico. Siempre respondes SOLO un JSON con esta forma: {"respuesta":"texto breve (máx 4 frases)","textos":["redacción lista para pegar en las notas del reporte, en tercera persona, estilo informe técnico: Se realiza..."],"materiales":[{"n":"nombre","c":"cantidad numérica como texto","u":"pza|m|m²|kg|lt|caja|bolsa"}],"preguntas":[{"q":"pregunta corta para afinar","opciones":["opción 1","opción 2","opción 3"]}]}. Incluye 2-3 "textos" solo si la persona necesita redactar un reporte; incluye "materiales" solo si aplica (cantidades aproximadas si faltan datos); incluye 1-2 "preguntas" cuando falten datos importantes. Si es una duda técnica, responde en "respuesta" y deja vacías las otras listas. Si mencionas normativa chilena (RIC, DS 8, DS 66, RIDAA) di el número pero recomienda verificarla. No inventes datos; si no sabes, dilo.';
@@ -1985,7 +2052,7 @@ const cfgOn=$('cfg').style.display==='block';if(v==='aj'&&!cfgOn)showCfg(true);i
 window.setView=view;$('botNav').onclick=e=>{const b=e.target.closest('[data-v]');if(b)view(b.dataset.v)};
 /* ajustes agrupados */
 const C=$('cfg'),secs=[...C.querySelectorAll(':scope>section')];const h2t=x=>((x.querySelector('h2')||{}).textContent||'').toLowerCase();
-const G=[['📦','Bodega de materiales','Materiales y cantidades disponibles',x=>/bodega/.test(h2t(x))],['🤖','Inteligencia artificial','Clave Gemini, IA sin internet, lector de fotos',x=>/\bia\b/.test(h2t(x))],['📄','Reportes y PDF','Folio, cobro y presupuesto, formato de hoja',x=>/folio|cobro|formato/.test(h2t(x))],['🎨','Apariencia y herramientas','Estilo de brújula, herramientas',x=>/brújula|herramientas/.test(h2t(x))],['🔒','Seguridad y respaldo','Protector contra estafas, respaldo de datos',x=>/protector|respaldo/.test(h2t(x))]];
+const G=[['📦','Bodega de materiales','Materiales y cantidades disponibles',x=>/bodega/.test(h2t(x))],['🤖','Inteligencia artificial','Clave Gemini, IA sin internet, lector de fotos',x=>/\bia\b/.test(h2t(x))],['📄','Reportes y PDF','Folio, cobro y presupuesto, formato de hoja',x=>/folio|cobro|formato/.test(h2t(x))],['🎨','Apariencia y herramientas','Fondo, estilo de brújula, herramientas',x=>/brújula|herramientas|fondo de la app/.test(h2t(x))],['🔒','Seguridad y respaldo','Protector contra estafas, respaldo de datos',x=>/protector|respaldo/.test(h2t(x))]];
 const used=new Set();const wrap=document.createElement('div');wrap.id='cfgGroups';
 const mk=(e,t,sub,items)=>{const g=document.createElement('div');g.className='cfgG';g.innerHTML=`<button type="button" class="cfgGH"><span aria-hidden="true">${e}</span><div><b>${t}</b><small>${sub}</small></div><i>›</i></button><div class="cfgGB"></div>`;const B=g.querySelector('.cfgGB');items.forEach(x=>B.appendChild(x));g.firstChild.onclick=()=>{g.classList.toggle('open');if(g.classList.contains('open')){try{renderBod();renderFmt()}catch(e){}}};return g};
 G.forEach(([e,t,sub,f])=>{const it=secs.filter(x=>!used.has(x)&&f(x));it.forEach(x=>used.add(x));if(it.length)wrap.appendChild(mk(e,t,sub,it))});
