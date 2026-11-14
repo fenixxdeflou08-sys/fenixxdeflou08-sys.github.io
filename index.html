@@ -308,7 +308,7 @@ body:not(.v-rep) #fab,body:not(.v-rep) #fabMenu,body:not(.v-rep) #tBar{display:n
 #rsLogo{font:800 26px/1 var(--fc);letter-spacing:.06em;margin:0}#rsLogo b{color:var(--ac)}
 #ttl{display:none}
 #modeLbl{font-weight:700}
-#fabMenu #fTools,#fabMenu #fQuiz,#fabMenu #fNorm,#fabMenu #fRadio,#fabMenu #fWalk{display:none!important}
+#fabMenu button.cir.dOff{display:none!important}
 #fabMenu #fFoto{background:#1f6feb!important;color:#fff!important;font-size:12px!important}
 .sStat{font:700 12px/1 var(--f);letter-spacing:0;text-transform:none;border-radius:999px;padding:4px 8px;margin-left:8px;white-space:nowrap;vertical-align:middle}
 .sStat.ok{background:rgba(47,194,114,.16);color:var(--ok)}.sStat.no{background:rgba(255,176,32,.16);color:#d98a00}.sStat.op{background:transparent;color:var(--mu);border:1px solid var(--bd)}
@@ -345,10 +345,31 @@ section.col .sTog::after{transform:rotate(-90deg)}section.col>.sHide{display:non
 #lvFS .ft{display:flex;justify-content:space-between;width:100%;color:#A2A8B0;font-size:14px}
 #lvFS .x{position:absolute;top:10px;right:12px;width:48px;height:48px;min-height:48px;border-radius:24px;background:#2a2f36;color:#fff;font-size:24px;border:0;padding:0}
 #lvFS .z{position:absolute;top:10px;left:12px;min-height:44px;background:#2a2f36;color:#fff;border:0;border-radius:22px;padding:0 16px;font-size:14px}
+:root{--glass:68%}@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--glass:30%}}:root[data-theme="dark"]{--glass:30%}
+html.hasBg section,html.hasBg .cfgG,html.hasBg .herT,html.hasBg #herAsis{background:color-mix(in srgb,var(--card) var(--glass),transparent)!important;-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);border-color:color-mix(in srgb,var(--tx) 22%,transparent)!important;text-shadow:0 1px 3px color-mix(in srgb,var(--bg) 85%,transparent)}
+html.hasBg #curTask{border-color:var(--ac)!important}html.hasBg .cfgGB>section,html.hasBg #herView{background:transparent!important;-webkit-backdrop-filter:none;backdrop-filter:none;border-color:color-mix(in srgb,var(--tx) 15%,transparent)!important}
+html.hasBg section input,html.hasBg section select,html.hasBg section textarea{background:color-mix(in srgb,var(--bg) 45%,transparent)}
 #bgL{position:fixed;inset:0;z-index:-1;background:center/cover no-repeat;pointer-events:none}#bgL::after{content:"";position:absolute;inset:0;background:var(--bg);opacity:.35}
 html.hasBg{background:var(--bg)}html.hasBg body{background:transparent}
 .bgPk{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.bgPk button{flex-direction:column;gap:4px;padding:5px;min-height:0;background:var(--card);color:var(--tx);border:3px solid var(--bd);border-radius:12px;font-size:12px;font-weight:700}
 .bgPk button[aria-pressed=true]{border-color:var(--ac)}.bgPk .th{width:100%;aspect-ratio:9/16;border-radius:7px;background:center/cover no-repeat var(--bg);display:flex;align-items:center;justify-content:center;font-size:22px;border:1px solid var(--bd)}
+#dialC .hr{position:absolute;left:-9px;top:-9px;width:94px;height:94px;transform:rotate(-90deg);pointer-events:none;overflow:visible}#dialC .hr circle{fill:none;stroke:#FFCC00;stroke-width:7;stroke-linecap:round;stroke-dasharray:100;stroke-dashoffset:100;transition:stroke-dashoffset .15s}
+#dialC.hold .hr circle{stroke-dashoffset:0;transition:stroke-dashoffset 3s linear}
+body.dEdit #dialC span{transform:none;font-size:0}body.dEdit #dialC span::before{content:"✓";font-size:38px}
+body.dEdit #fabMenu button.cir:not(#fTiempo){animation:dWig .28s ease-in-out infinite alternate;overflow:visible}
+body.dEdit #fabMenu button.cir:not(#fTiempo)::after{content:"−";position:absolute;top:-5px;right:-5px;width:24px;height:24px;border-radius:50%;background:#E53935;color:#fff;border:2px solid #fff;font:900 18px/20px var(--f);text-align:center}
+body.dEdit #fabMenu button.cir.dDrag{animation:none;z-index:5;transform:scale(1.15);transition:none}
+@keyframes dWig{from{transform:rotate(-5deg)}to{transform:rotate(5deg)}}
+body.dEdit{-webkit-user-select:none;user-select:none}#dialEd{display:none;position:fixed;left:10px;right:10px;bottom:calc(72px + env(safe-area-inset-bottom,0px));z-index:23;background:var(--card);color:var(--tx);border:1px solid var(--bd);border-radius:18px;padding:12px;box-shadow:0 10px 30px rgba(0,0,0,.45);max-width:540px;margin:0 auto}body.dEdit #dialEd{display:block}
+#dialEd .deH{display:flex;align-items:center;gap:10px}#dialEd .deH>div{flex:1}#dialEd .deH b{display:block;font-size:16px}#dialEd .deH small{display:block;color:var(--mu);font-size:12.5px;line-height:1.3}
+#deOk{background:var(--ac)!important;color:var(--acx)!important;border:0;border-radius:22px;min-height:44px;padding:0 18px;font-weight:800;flex:none}
+#dialEd .deS{font:700 12px/1 var(--fc);letter-spacing:.08em;text-transform:uppercase;color:var(--mu);margin:12px 2px 8px}
+#dialEd .deG{display:grid;grid-template-columns:repeat(auto-fill,minmax(64px,1fr));gap:12px 8px;justify-items:center}
+#dialEd .deI{position:relative;width:62px;height:62px;min-height:0;border-radius:50%;padding:0;border:0;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font:700 11px/1 var(--f)}
+#dialEd .deI .i{width:20px;height:20px}#dialEd .deI .nEm,#fabMenu .nEm{font-size:20px;line-height:1}#dialEd .deI i{position:absolute;top:-5px;right:-5px;width:24px;height:24px;border-radius:50%;background:#2FA84F;border:2px solid #fff;font:900 18px/20px var(--f);font-style:normal;text-align:center}
+#botNav{background:rgba(11,12,14,.72)!important}
+.saveRow.stick{background:color-mix(in srgb,var(--card) 72%,transparent)!important;border-color:color-mix(in srgb,var(--tx) 14%,transparent)!important}
+#fab{background:rgba(10,92,255,.72)!important;box-shadow:0 4px 14px rgba(0,0,0,.25),inset 0 0 0 1px rgba(255,255,255,.18)!important}
 </style>
 </head>
 <body>
@@ -1603,7 +1624,7 @@ document.addEventListener('click',e=>{const im=e.target.closest('img[data-ak]');
 const c=document.createElement('button');c.id='dialC';c.type='button';c.setAttribute('aria-label','Cerrar menú');c.innerHTML='<span>+</span>';M.appendChild(c);
 c.onclick=e=>{e.stopPropagation();fabOpen=false;fab()};
 const items=()=>[...M.querySelectorAll('button.cir')].filter(b=>getComputedStyle(b).display!=='none');
-function place(){const F=$('fab').getBoundingClientRect();let cx=F.left+F.width/2,cy=F.top+F.height/2;cx=Math.max(D/2+6,Math.min(innerWidth-D/2-6,cx));cy=Math.max(D/2+6,Math.min(innerHeight-D/2-6,cy));M.style.left=(cx-D/2)+'px';M.style.top=(cy-D/2)+'px'}
+function place(){const F=$('fab').getBoundingClientRect();let cx=F.left+F.width/2,cy=F.top+F.height/2;cx=Math.max(D/2+6,Math.min(innerWidth-D/2-6,cx));cy=Math.max(D/2+6,Math.min(innerHeight-D/2-6,cy));if(document.body.classList.contains('dEdit')){const t=$('dialEd');if(t){const tt=t.getBoundingClientRect().top;if(tt>0){cx=innerWidth/2;cy=Math.max(D/2+6,Math.min(tt-D/2-12,tt/2+30))}}}M.style.left=(cx-D/2)+'px';M.style.top=(cy-D/2)+'px'}
 window.layDial=()=>{if(!M.classList.contains('open'))return;const it=items(),n=it.length||1,step=360/Math.max(n,5);R=Math.max(94,Math.ceil(n*(S+6)/(2*Math.PI)));D=2*R+S+12;M.style.width=M.style.height=D+'px';place();it.forEach((b,i)=>{const a=(rot+i*step)*Math.PI/180;b.style.left=(D/2+R*Math.cos(a)-S/2)+'px';b.style.top=(D/2+R*Math.sin(a)-S/2)+'px';b.style.right=b.style.bottom='auto'})};
 let drag=null,moved=false;
 M.addEventListener('pointerdown',e=>{if(e.target===c||e.target.closest('#dialC'))return;const r=M.getBoundingClientRect(),cx=r.left+D/2,cy=r.top+D/2;drag={cx,cy,a:Math.atan2(e.clientY-cy,e.clientX-cx),r0:rot,x:e.clientX,y:e.clientY,id:e.pointerId};moved=false});
@@ -1611,7 +1632,7 @@ M.addEventListener('pointermove',e=>{if(!drag)return;if(!moved&&Math.hypot(e.cli
 const end=()=>{if(!drag)return;drag=null;M.classList.remove('spin');if(moved){const n=items().length||1,step=360/Math.max(n,5);rot=Math.round((rot+90)/step)*step-90;layDial();try{localStorage.setItem('rep_dialRot',rot)}catch(_){}setTimeout(()=>{moved=false},50)}};
 M.addEventListener('pointerup',end);M.addEventListener('pointercancel',end);
 M.addEventListener('click',e=>{if(moved){e.stopPropagation();e.preventDefault()}},true);
-document.addEventListener('pointerdown',e=>{if(fabOpen&&!tbOpen&&!M.contains(e.target)&&!e.target.closest('#fab'))setTimeout(()=>{fabOpen=false;fab()},0)});
+document.addEventListener('pointerdown',e=>{if(fabOpen&&!tbOpen&&!document.body.classList.contains('dEdit')&&!M.contains(e.target)&&!e.target.closest('#fab'))setTimeout(()=>{fabOpen=false;fab()},0)});
 addEventListener('resize',()=>layDial())})();
 
 (()=>{const S=$('cp');let H=0,Sa=1,V=1,init='#000000',cb=null;
@@ -1957,6 +1978,46 @@ lastD=d;d-=zero;const tb=F.querySelector('.tb'),lim=tb.clientWidth/2-40;$('lvFb'
 $('lvFd').textContent=(Math.abs(d)<.5?'✓ ':'')+fmt(d);F.classList.toggle('ok',Math.abs(d)<.5);F.classList.add('on')};
 setInterval(()=>{if(F&&F.classList.contains('on')){const e=$('lvEdge');if(!e||!e.getClientRects().length)F.classList.remove('on')}},700)})();
 
+/* ---- Editar el menú + (mantener 3 s el botón central) ---- */
+setTimeout(()=>{const M=$('fabMenu'),C=$('dialC');if(!M||!C)return;const MAX=7;
+const tl=t=>{fabOpen=false;fab();const T=$('tools');if(!T.classList.contains('open'))$('fTools').click();setTimeout(()=>{const b=document.querySelector('#tlTabs [data-tl="'+t+'"]');b&&b.click()},30)};
+const NEW=[['fCmp','🧭','Brújula','#0D47A1',()=>tl('cmp')],['fLvl','📐','Nivel','#33691E',()=>tl('lvl')],['fLin','🔦','Linterna','#E08A00',()=>tl('lin')],['fEndo','🔍','Endosc.','#37474F',()=>tl('endo')],['fAsis','🤖','IA','#5B4BDB',()=>{fabOpen=false;fab();const a=$('herAsis');a&&a.click()}]];
+NEW.forEach(([id,e,n,c,fn])=>{M.insertAdjacentHTML('beforeend',`<button class="cir" id="${id}" aria-label="${n}" style="background:${c}!important;color:#fff!important;font-size:12px"><span class="nEm" aria-hidden="true">${e}</span>${n}</button>`);$(id).onclick=fn});
+const CAT=['fTar','fCalc','fPlano','fFoto','fTools','fCmp','fLvl','fLin','fEndo','fAsis','fWalk','fRadio','fNorm','fQuiz'].filter(id=>$(id));
+let set;try{set=JSON.parse(localStorage.getItem('rep_dialSet')||'null')}catch(e){}
+if(!Array.isArray(set))set=['fTar','fCalc','fPlano','fFoto'];set=set.filter(id=>CAT.includes(id)).slice(0,MAX);
+const save=()=>{try{localStorage.setItem('rep_dialSet',JSON.stringify(set))}catch(e){}};
+const apply=()=>{CAT.forEach(id=>$(id).classList.toggle('dOff',!set.includes(id)));set.forEach(id=>M.appendChild($(id)));M.appendChild(C);if(window.layDial)layDial()};
+apply();
+/* bandeja de edición */
+const E=document.createElement('div');E.id='dialEd';document.body.appendChild(E);
+const lab=id=>{const b=$(id);return b.innerHTML};
+const rT=()=>{const av=CAT.filter(id=>!set.includes(id));E.innerHTML=`<div class="deH"><div><b>Editar menú +</b><small>Toca un botón del círculo para quitarlo · arrástralo para moverlo</small></div><button id="deOk">Listo</button></div><div class="deS">Disponibles · toca para agregar (${set.length}/${MAX})</div><div class="deG">${av.length?av.map(id=>`<button type="button" class="deI" data-add="${id}" style="background:${getComputedStyle($(id)).backgroundColor}">${lab(id)}<i>+</i></button>`).join(''):'<div class="mu">Ya están todas en el menú.</div>'}</div>`;
+$('deOk').onclick=exit;if(window.layDial)layDial()};
+let edit=false;const enter=()=>{edit=true;document.body.classList.add('dEdit');rT();if(window.layDial)layDial();try{navigator.vibrate&&navigator.vibrate([40,30,40])}catch(e){}};
+function exit(){if(!edit)return;edit=false;document.body.classList.remove('dEdit');save();if(window.layDial)layDial();toast('Menú + guardado')}
+E.addEventListener('click',e=>{const b=e.target.closest('[data-add]');if(!b)return;if(set.length>=MAX){toast('Máximo '+(MAX+1)+' botones en el círculo. Quita uno primero.');return}set.push(b.dataset.add);apply();rT()});
+/* mantener 3 s */
+C.insertAdjacentHTML('beforeend','<svg class="hr" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" pathLength="100"/></svg>');
+let ht=0,ht2=0,fired=false;const cancel=()=>{clearTimeout(ht);clearTimeout(ht2);C.classList.remove('hold')};
+C.addEventListener('pointerdown',e=>{if(edit)return;fired=false;C.classList.add('hold');ht2=setTimeout(()=>toast('Sigue presionando para editar el menú…',{ms:1800}),700);ht=setTimeout(()=>{fired=true;C.classList.remove('hold');enter()},3000)});
+['pointerup','pointercancel','pointerleave'].forEach(t=>C.addEventListener(t,cancel));C.oncontextmenu=e=>e.preventDefault();
+const oc=C.onclick;C.onclick=e=>{e.stopPropagation();if(fired){fired=false;return}if(edit){exit();return}oc&&oc(e)};
+/* en edición: tocar quita, arrastrar reordena */
+let dg=null;
+M.addEventListener('pointerdown',e=>{if(!edit)return;const b=e.target.closest('button.cir');e.stopImmediatePropagation();e.preventDefault();if(!b||!set.includes(b.id))return;dg={b,x:e.clientX,y:e.clientY,mv:false,id:e.pointerId}},true);
+M.addEventListener('pointermove',e=>{if(!edit||!dg)return;e.stopImmediatePropagation();if(!dg.mv&&Math.hypot(e.clientX-dg.x,e.clientY-dg.y)<8)return;if(!dg.mv){dg.mv=true;try{M.setPointerCapture(dg.id)}catch(_){}dg.b.classList.add('dDrag')}const r=M.getBoundingClientRect();dg.b.style.left=(e.clientX-r.left-32)+'px';dg.b.style.top=(e.clientY-r.top-32)+'px'},true);
+const up=e=>{if(!edit||!dg)return;e.stopImmediatePropagation();const d=dg;dg=null;d.b.classList.remove('dDrag');
+if(!d.mv){set=set.filter(x=>x!==d.b.id);apply();rT();return}
+const it=[...M.querySelectorAll('button.cir')].filter(b=>getComputedStyle(b).display!=='none'&&b!==d.b);const r=M.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;
+let best=0,bd=1e9;it.forEach((b,i)=>{const q=b.getBoundingClientRect(),dd=Math.hypot(q.left+q.width/2-e.clientX,q.top+q.height/2-e.clientY);if(dd<bd){bd=dd;best=i}});
+const tgt=it[best];set=set.filter(x=>x!==d.b.id);let k=set.indexOf(tgt&&tgt.id);if(k<0)k=0;const ang=(el)=>{const q=el.getBoundingClientRect();return Math.atan2(q.top+q.height/2-cy,q.left+q.width/2-cx)};
+const after=tgt&&((Math.atan2(e.clientY-cy,e.clientX-cx)-ang(tgt)+Math.PI*3)%(Math.PI*2)-Math.PI)>0;set.splice(after?k+1:k,0,d.b.id);apply();rT()};
+M.addEventListener('pointerup',up,true);M.addEventListener('pointercancel',up,true);
+M.addEventListener('click',e=>{if(edit&&e.target.closest('button.cir')){e.stopPropagation();e.preventDefault()}},true);
+const of=window.fab;window.fab=function(){const r=of.apply(this,arguments);if(edit&&!fabOpen)exit();return r};
+},120);
+
 /* ---- Ayudas cuando se olvida marcar la hora ---- */
 (()=>{const p2=n=>String(n).padStart(2,'0');
 const dayOpts=sel=>{let h='';for(let i=0;i<8;i++){const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-i);const v=d.getTime();h+=`<option value="${v}"${v===sel?' selected':''}>${i===0?'Hoy':i===1?'Ayer':''} ${dS(v)}</option>`}return h};
@@ -1992,7 +2053,7 @@ $('hmSvM').onclick=()=>{closeSv();horaPanel()};
 $('hmSvW').onclick=()=>{const n=Date.now();s.inicio=n;s.fin=n;s.pausas=[];s.noTime=true;persist();renderAll();closeSv();$('bSave').click()};
 $('hmSvX').onclick=closeSv;btnUI();})();
 
-const APP_VER='2.4.0';
+const APP_VER='2.5.1';
 /* ===== Asistente IA (chat con sugerencias seleccionables) ===== */
 setTimeout(()=>{const W=$('asis'),L=$('asL');let hist=[],busy=false,rec=null;const U=['pza','m','m²','kg','lt','caja','bolsa'];
 const SYS='Eres el asistente de la app "Reportes de trabajo" para técnicos de mantención en Chile (electricidad, gasfitería, obras civiles, pintura, cerámica, etc.). Respondes en español de Chile, claro y práctico. Siempre respondes SOLO un JSON con esta forma: {"respuesta":"texto breve (máx 4 frases)","textos":["redacción lista para pegar en las notas del reporte, en tercera persona, estilo informe técnico: Se realiza..."],"materiales":[{"n":"nombre","c":"cantidad numérica como texto","u":"pza|m|m²|kg|lt|caja|bolsa"}],"preguntas":[{"q":"pregunta corta para afinar","opciones":["opción 1","opción 2","opción 3"]}]}. Incluye 2-3 "textos" solo si la persona necesita redactar un reporte; incluye "materiales" solo si aplica (cantidades aproximadas si faltan datos); incluye 1-2 "preguntas" cuando falten datos importantes. Si es una duda técnica, responde en "respuesta" y deja vacías las otras listas. Si mencionas normativa chilena (RIC, DS 8, DS 66, RIDAA) di el número pero recomienda verificarla. No inventes datos; si no sabes, dilo.';
