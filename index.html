@@ -370,6 +370,7 @@ body.dEdit{-webkit-user-select:none;user-select:none}#dialEd{display:none;positi
 #botNav{background:rgba(11,12,14,.72)!important}
 .saveRow.stick{background:color-mix(in srgb,var(--card) 72%,transparent)!important;border-color:color-mix(in srgb,var(--tx) 14%,transparent)!important}
 #fab{background:rgba(10,92,255,.72)!important;box-shadow:0 4px 14px rgba(0,0,0,.25),inset 0 0 0 1px rgba(255,255,255,.18)!important}
+.tEd{flex-basis:100%;width:100%;display:flex;flex-direction:column;gap:8px;padding:12px;border:2px solid var(--ac);border-radius:14px;background:var(--card);margin:4px 0}.tEd b{font-size:15px}.tEd label{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.05em}.tEd input,.tEd textarea{width:100%;box-sizing:border-box;text-transform:none;letter-spacing:0;font-weight:400}
 </style>
 </head>
 <body>
@@ -848,6 +849,7 @@ if(!s.resp.length){toast("Agrega al menos un responsable");return}
 if(mode==='lev'){const n=Date.now();s.tipo='lev';if(!s._reF||!s.inicio){s.inicio=n;s.fin=n}if(activeT>=0&&tasks[activeT]){tasks[activeT].done=true;saveT();renderT();activeT=-1}}
 else{if(window.horaCheck&&!horaCheck())return;if(!s.inicio){toast("Primero marca la hora de inicio");return}
 if(!s.fin){toast("Marca la salida antes de guardar");return}}
+try{if(s.task&&s.task.t){const nm=x=>(x||"").trim().toLowerCase();let k=(activeT>=0&&tasks[activeT]&&nm(tasks[activeT].t)===nm(s.task.t))?activeT:tasks.findIndex(t=>!t.done&&nm(t.t)===nm(s.task.t)&&nm(t.u)===nm(s.task.u));if(k<0)k=tasks.findIndex(t=>!t.done&&nm(t.t)===nm(s.task.t));if(k>=0&&!tasks[k].done){tasks[k].done=true;tasks[k].hecha=Date.now();saveT();renderT();setTimeout(()=>toast("✓ Tarea tachada: "+tasks[k].t),1600)}activeT=-1}}catch(e){}
 const fk=mode==='lev'?'rep_folio_lev':'rep_folio',reF=s._reF,fnum=reF||(load(fk)||0)+1;s.folio=fnum;delete s._reF;delete s._fdN;delete s._asked;
 list.unshift(JSON.parse(JSON.stringify(s)));
 if(!put(KL,list)){list.shift();if(!reF)delete s.folio;else s._reF=reF;return}if(!reF){put(fk,fnum);$(mode==='lev'?'fN2':'fN1').value=fnum+1}
@@ -944,10 +946,16 @@ function giveBack(m){if(!m||!m.b)return;const g=bod.find(x=>x.n===m.b.g),it=g&&g
 it.c=String(Math.round(((parseFloat(it.c)||0)+(parseFloat(m.c)||0))*1000)/1000);saveBod();if($("pB").style.display==="block")fillBod()}
 
 const KT="rep_tasks";let tasks=[],editT=-1,activeT=-1;try{tasks=JSON.parse(localStorage.getItem(KT)||"[]")}catch(e){tasks=[]}
+function tEdit(i){renderT();resetT();const L=$("tList"),c=L.children[i],t=tasks[i];if(!c||!t)return;const d=document.createElement("div");d.className="tEd";
+d.innerHTML='<b>Editar tarea</b><label>Tarea<input id="teT" autocomplete="off"></label><label>Lugar<input id="teU" autocomplete="off"></label><label>Nota<textarea id="teN" rows="2"></textarea></label><div class="row"><button class="pri" type="button" id="teOk">Guardar cambios</button><button class="sec" type="button" id="teNo">Cancelar</button></div>';
+c.replaceWith(d);$("teT").value=t.t;$("teU").value=t.u||"";$("teN").value=t.n||"";
+$("teOk").onclick=()=>{const v=$("teT").value.trim();if(!v){toast("Escribe la tarea");return}tasks[i]=Object.assign({},t,{t:v,u:$("teU").value.trim(),n:$("teN").value.trim()});saveT();renderT();toast("Tarea actualizada")};
+$("teNo").onclick=()=>renderT();d.addEventListener("keydown",e=>{if(e.key==="Escape")renderT()});
+setTimeout(()=>{d.scrollIntoView({behavior:"smooth",block:"center"});try{$("teT").focus({preventScroll:true})}catch(_){}},60)}
 function saveT(){try{localStorage.setItem(KT,JSON.stringify(tasks))}catch(e){toast("No se pudo guardar las tareas")}}
 function resetT(){editT=-1;$("tT").value="";$("tU").value="";$("tN").value="";$("tAdd").textContent="+ Agregar tarea";$("tCancel").style.display="none"}
 function pickT(i){activeT=i;const t=tasks[i];s.task={t:t.t,u:t.u||""};s.ubic=t.u||"";s.maps=null;const d=t.t+(t.n?" - "+t.n:"");s.notas=s.notas?s.notas.trimEnd()+"\n"+d:d;persist();renderAll();$("secTar").style.display="none";toast("Reporte creado con la tarea")}
-function renderT(){const L=$("tList");L.innerHTML="";if(!tasks.length){L.innerHTML='<small class="mu">Sin tareas. Agrega una con el botón de abajo.</small>';return}tasks.forEach((t,i)=>{const c=document.createElement("span");c.className="chip";c.style.opacity=t.done?".55":"1";c.style.textDecoration=t.done?"line-through":"none";c.innerHTML=esc(t.t)+(t.u?" · "+esc(t.u):"")+' <button data-a="ok" title="Marcar hecha">✓</button><button data-a="ed" title="Editar">✎</button><button data-a="del" title="Borrar">✖</button>';c.onclick=e=>{const a=e.target.dataset.a;if(!a){pickT(i);return}if(a==="ok"){t.done=!t.done;saveT();renderT()}if(a==="ed"){editT=i;$("tT").value=t.t;$("tU").value=t.u||"";$("tN").value=t.n||"";$("tAdd").textContent="Guardar cambios";$("tCancel").style.display="inline-block";$("secTar").scrollIntoView({behavior:"smooth"})}if(a==="del"){tasks.splice(i,1);saveT();renderT();resetT()}};L.appendChild(c)})}
+function renderT(){const L=$("tList");L.innerHTML="";if(!tasks.length){L.innerHTML='<small class="mu">Sin tareas. Agrega una con el botón de abajo.</small>';return}tasks.forEach((t,i)=>{const c=document.createElement("span");c.className="chip";c.style.opacity=t.done?".55":"1";c.style.textDecoration=t.done?"line-through":"none";c.innerHTML=esc(t.t)+(t.u?" · "+esc(t.u):"")+' <button data-a="ok" title="Marcar hecha">✓</button><button data-a="ed" title="Editar">✎</button><button data-a="del" title="Borrar">✖</button>';c.onclick=e=>{const a=e.target.dataset.a;if(!a){pickT(i);return}if(a==="ok"){t.done=!t.done;saveT();renderT()}if(a==="ed"){tEdit(i)}if(a==="del"){tasks.splice(i,1);saveT();renderT();resetT()}};L.appendChild(c)})}
 $("tAdd").onclick=()=>{const t=$("tT").value.trim();if(!t){toast("Escribe la tarea");return}const o={t:t,u:$("tU").value.trim(),n:$("tN").value.trim(),done:false};if(editT>=0){o.done=tasks[editT].done;tasks[editT]=o}else tasks.push(o);saveT();renderT();resetT()};
 $("tCancel").onclick=resetT;
 $("bFin").addEventListener("click",()=>{if(activeT>=0&&tasks[activeT]){tasks[activeT].done=true;saveT();renderT();activeT=-1}});
@@ -2018,6 +2026,29 @@ M.addEventListener('click',e=>{if(edit&&e.target.closest('button.cir')){e.stopPr
 const of=window.fab;window.fab=function(){const r=of.apply(this,arguments);if(edit&&!fabOpen)exit();return r};
 },120);
 
+/* ---- Botón atrás del teléfono: retrocede dentro de la app ---- */
+setTimeout(()=>{let armed=false,exitT=0,exitArm=false;
+const arm=()=>{if(armed)return;try{history.pushState({rbk:1},'');armed=true}catch(e){}};
+['pointerdown','keydown'].forEach(t=>addEventListener(t,arm,{capture:true,passive:true}));
+const vis=e=>{if(!e)return false;const c=getComputedStyle(e);return c.display!=='none'&&c.visibility!=='hidden'&&e.getClientRects().length>0};
+const SKIP=new Set(['bgL','fab','toast','botNav','tBar','dialEd','fabMenu']);
+const closeTop=()=>{
+if(document.body.classList.contains('dEdit')){const b=$('deOk');b&&b.click();return true}
+const lf=$('lvFS');if(lf&&lf.classList.contains('on')){$('lvFx').click();return true}
+const en=document.querySelector('.enFull');if(en){const b=$('enFB');if(b){b.click();return true}}
+if(document.fullscreenElement){try{document.exitFullscreen()}catch(e){}return true}
+let top=null,tz=-1e9;document.querySelectorAll('body *').forEach(e=>{if(SKIP.has(e.id)||e.closest('#fabMenu,#botNav,#toast'))return;const c=getComputedStyle(e);if(c.position!=='fixed'||!vis(e))return;if(e.offsetWidth<120||e.offsetHeight<120)return;const z=parseInt(c.zIndex)||0;if(z>=tz){tz=z;top=e}});
+if(top){const x=top.querySelector('.x,[aria-label="Cerrar"],[aria-label="Cerrar la ventana"],#'+(top.id||'zz')+'X,[id$="X"]');if(x&&vis(x)){x.click()}else{top.classList.remove('on','open');if(getComputedStyle(top).display!=='none'&&top.style)top.style.display='none'}return true}
+if(fabOpen){fabOpen=false;fab();return true}
+const ed=document.querySelector('.tEd');if(ed){renderT();return true}
+const st=$('secTar');if(st&&st.style.display==='block'){st.style.display='none';return true}
+if(!document.body.classList.contains('v-rep')&&window.setView){setView('rep');scrollTo(0,0);return true}
+return false};
+addEventListener('popstate',()=>{armed=false;let done=false;try{done=closeTop()}catch(e){}
+if(done){exitArm=false;arm();return}
+exitArm=true;toast('Presiona atrás otra vez para salir',{ms:2200});clearTimeout(exitT);exitT=setTimeout(()=>{exitArm=false;arm()},2300)});
+},200);
+
 /* ---- Ayudas cuando se olvida marcar la hora ---- */
 (()=>{const p2=n=>String(n).padStart(2,'0');
 const dayOpts=sel=>{let h='';for(let i=0;i<8;i++){const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-i);const v=d.getTime();h+=`<option value="${v}"${v===sel?' selected':''}>${i===0?'Hoy':i===1?'Ayer':''} ${dS(v)}</option>`}return h};
@@ -2053,7 +2084,7 @@ $('hmSvM').onclick=()=>{closeSv();horaPanel()};
 $('hmSvW').onclick=()=>{const n=Date.now();s.inicio=n;s.fin=n;s.pausas=[];s.noTime=true;persist();renderAll();closeSv();$('bSave').click()};
 $('hmSvX').onclick=closeSv;btnUI();})();
 
-const APP_VER='2.5.1';
+const APP_VER='2.5.4';
 /* ===== Asistente IA (chat con sugerencias seleccionables) ===== */
 setTimeout(()=>{const W=$('asis'),L=$('asL');let hist=[],busy=false,rec=null;const U=['pza','m','m²','kg','lt','caja','bolsa'];
 const SYS='Eres el asistente de la app "Reportes de trabajo" para técnicos de mantención en Chile (electricidad, gasfitería, obras civiles, pintura, cerámica, etc.). Respondes en español de Chile, claro y práctico. Siempre respondes SOLO un JSON con esta forma: {"respuesta":"texto breve (máx 4 frases)","textos":["redacción lista para pegar en las notas del reporte, en tercera persona, estilo informe técnico: Se realiza..."],"materiales":[{"n":"nombre","c":"cantidad numérica como texto","u":"pza|m|m²|kg|lt|caja|bolsa"}],"preguntas":[{"q":"pregunta corta para afinar","opciones":["opción 1","opción 2","opción 3"]}]}. Incluye 2-3 "textos" solo si la persona necesita redactar un reporte; incluye "materiales" solo si aplica (cantidades aproximadas si faltan datos); incluye 1-2 "preguntas" cuando falten datos importantes. Si es una duda técnica, responde en "respuesta" y deja vacías las otras listas. Si mencionas normativa chilena (RIC, DS 8, DS 66, RIDAA) di el número pero recomienda verificarla. No inventes datos; si no sabes, dilo.';
