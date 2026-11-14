@@ -371,6 +371,11 @@ body.dEdit{-webkit-user-select:none;user-select:none}#dialEd{display:none;positi
 .saveRow.stick{background:color-mix(in srgb,var(--card) 72%,transparent)!important;border-color:color-mix(in srgb,var(--tx) 14%,transparent)!important}
 #fab{background:rgba(10,92,255,.72)!important;box-shadow:0 4px 14px rgba(0,0,0,.25),inset 0 0 0 1px rgba(255,255,255,.18)!important}
 .tEd{flex-basis:100%;width:100%;display:flex;flex-direction:column;gap:8px;padding:12px;border:2px solid var(--ac);border-radius:14px;background:var(--card);margin:4px 0}.tEd b{font-size:15px}.tEd label{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.05em}.tEd input,.tEd textarea{width:100%;box-sizing:border-box;text-transform:none;letter-spacing:0;font-weight:400}
+#secT{position:relative}#tReset{position:absolute;top:8px;right:8px;width:42px;height:42px;min-height:42px;padding:0;justify-content:center;border-radius:50%;display:flex;align-items:center;gap:6px;background:color-mix(in srgb,var(--card) 60%,transparent);color:var(--tx);border:1.5px solid color-mix(in srgb,var(--tx) 30%,transparent);font:700 13px/1 var(--f);z-index:2}#tReset svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+#dSum{margin-bottom:10px;padding:12px;border:1px solid var(--ac);border-radius:12px}#dSum .dsH b{font-size:16px}
+#dSum .dsN{display:flex;gap:6px;align-items:center;margin:8px 0}#dSum .dsN input{flex:1;min-width:0}#dSum .dsN button{min-height:44px;padding:0 12px;flex:none}
+#dSum .dsL{font-weight:800;text-transform:capitalize}#dSum .mat b{font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--tx)}#dSum .dsT{display:flex;justify-content:flex-end;color:var(--mu);font-size:13px;margin-top:6px}
+#dSum .dsInc{display:flex;gap:8px;align-items:center;margin-top:8px;font-size:14px}#dSum .dsInc input{width:20px;height:20px}
 </style>
 </head>
 <body>
@@ -399,7 +404,7 @@ body.dEdit{-webkit-user-select:none;user-select:none}#dialEd{display:none;positi
 </section>
 
 <section id="secT" class="noLev">
-<h2>Tiempo</h2>
+<h2>Tiempo</h2><button type="button" id="tReset" aria-label="Reiniciar tiempo" title="Reiniciar tiempo" style="display:none"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.4-5.7"/><path d="M4 4v5h5"/></svg></button>
 <div class="timer" id="tm">00:00:00</div>
 <div class="st" id="st">Sin iniciar</div>
 <div class="times"><span id="tI">Inicio: —</span><span id="tF">Salida: —</span></div>
@@ -2049,6 +2054,33 @@ if(done){exitArm=false;arm();return}
 exitArm=true;toast('Presiona atrás otra vez para salir',{ms:2200});clearTimeout(exitT);exitT=setTimeout(()=>{exitArm=false;arm()},2300)});
 },200);
 
+/* ---- Reiniciar el tiempo (interrupciones) ---- */
+setTimeout(()=>{const B=$('tReset');if(!B)return;const K=['inicio','fin','pausas','manual','fotoHora','noTime','_asked'];
+const vis=()=>{B.style.display=(s.inicio&&mode!=='lev')?'flex':'none'};setInterval(vis,800);vis();
+B.onclick=()=>{const snap={};K.forEach(k=>snap[k]=s[k]===undefined?undefined:JSON.parse(JSON.stringify(s[k])));s.inicio=null;s.fin=null;s.pausas=[];['manual','fotoHora','noTime','_asked'].forEach(k=>delete s[k]);persist();renderAll();vis();try{navigator.vibrate&&navigator.vibrate(30)}catch(e){}
+toast('⏱ Tiempo reiniciado en 0',{label:'Deshacer',ms:9000,fn:()=>{K.forEach(k=>{if(snap[k]===undefined)delete s[k];else s[k]=snap[k]});persist();renderAll();vis();toast('Tiempo recuperado')}})}},150);
+/* ---- Materiales por día ---- */
+setTimeout(()=>{const H=$('hSum');if(!H)return;const pad=n=>String(n).padStart(2,'0');const dk=t=>{const d=new Date(t);return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())};
+H.insertAdjacentHTML('beforebegin',`<div id="dSum"><div class="dsH"><b>📦 Materiales por día</b></div><div class="dsN"><button type="button" class="sec" id="dsPrev" aria-label="Día anterior">◀</button><input type="date" id="dsD"><button type="button" class="sec" id="dsNext" aria-label="Día siguiente">▶</button><button type="button" class="sec" id="dsHoy">Hoy</button></div><div id="dsB"></div></div>`);
+const I=$('dsD');I.value=dk(Date.now());let inc=true;try{inc=localStorage.getItem('rep_dsInc')!=='0'}catch(e){}
+const fmtN=v=>String(Math.round(v*1000)/1000).replace('.',',');
+const lbl=k=>{const[y,m,d]=k.split('-');const t=new Date(+y,+m-1,+d);const h=dk(Date.now()),ay=dk(Date.now()-864e5);return (k===h?'Hoy · ':k===ay?'Ayer · ':'')+t.toLocaleDateString('es-CL',{weekday:'long',day:'2-digit',month:'2-digit',year:'2-digit'})};
+let last=null;
+const R=()=>{const k=I.value||dk(Date.now());const rs=list.filter(r=>r.tipo!=='lev'&&r.inicio&&dk(r.inicio)===k);const ms={};const add=x=>{const n=(x.n||'').trim();if(!n)return;const key=n.toLowerCase()+'|'+(x.u||'');ms[key]=ms[key]||{n,u:x.u||'',c:0,r:0};ms[key].c+=parseFloat(String(x.c).replace(',','.'))||0;ms[key].r++};
+rs.forEach(r=>(r.mats||[]).forEach(add));const dr=(s.mats||[]).length&&(s.inicio?dk(s.inicio):dk(Date.now()))===k&&!s._reF?s.mats:null;if(dr&&inc)dr.forEach(add);
+const L=Object.values(ms).sort((a,b)=>a.n.localeCompare(b.n,'es'));last={k,L,n:rs.length,dr:!!(dr&&inc)};
+$('dsB').innerHTML=`<div class="dsL">${esc(lbl(k))}</div><div class="mu" style="margin:2px 0 8px">${rs.length} reporte${rs.length===1?'':'s'} guardado${rs.length===1?'':'s'}${dr&&inc?' + el reporte en curso':''}</div>`+
+(L.length?L.map(x=>`<div class="mat"><span>${esc(x.n)}</span><b>${fmtN(x.c)} ${esc(x.u)}</b></div>`).join('')+`<div class="dsT"><span>${L.length} material${L.length===1?'':'es'} distinto${L.length===1?'':'s'}</span></div>`:'<div class="mu">Sin materiales registrados este día.</div>')+
+(dr?`<label class="dsInc"><input type="checkbox" id="dsInc" ${inc?'checked':''}> Sumar el reporte en curso (sin guardar)</label>`:'')+
+(L.length?`<div class="row" style="margin-top:8px"><button type="button" class="pri" id="dsSh">Compartir resumen</button></div>`:'')};
+const mv=d=>{const[y,m,dd]=(I.value||dk(Date.now())).split('-').map(Number);I.value=dk(new Date(y,m-1,dd+d).getTime());R()};
+$('dsPrev').onclick=()=>mv(-1);$('dsNext').onclick=()=>mv(1);$('dsHoy').onclick=()=>{I.value=dk(Date.now());R()};I.onchange=R;
+$('dsB').addEventListener('change',e=>{if(e.target.id==='dsInc'){inc=e.target.checked;try{localStorage.setItem('rep_dsInc',inc?'1':'0')}catch(_){}R()}});
+$('dsB').addEventListener('click',e=>{if(e.target.id!=='dsSh'||!last)return;const[y,m,d]=last.k.split('-');const t='📦 Materiales del '+d+'/'+m+'/'+y.slice(2)+' ('+last.n+' reporte'+(last.n===1?'':'s')+(last.dr?' + en curso':'')+')\n'+last.L.map(x=>'• '+x.n+': '+fmtN(x.c)+' '+x.u).join('\n');
+if(navigator.share)navigator.share({text:t}).catch(()=>{});else{try{navigator.clipboard.writeText(t);toast('Resumen copiado')}catch(_){location.href='https://wa.me/?text='+encodeURIComponent(t)}}});
+const oh=window.renderHist;if(typeof oh==='function')window.renderHist=function(){const x=oh.apply(this,arguments);try{R()}catch(e){}return x};
+const osv=window.setView;if(typeof osv==='function')window.setView=function(v){const x=osv.apply(this,arguments);if(v==='sav'){try{R()}catch(e){}}return x};
+R()},140);
 /* ---- Ayudas cuando se olvida marcar la hora ---- */
 (()=>{const p2=n=>String(n).padStart(2,'0');
 const dayOpts=sel=>{let h='';for(let i=0;i<8;i++){const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-i);const v=d.getTime();h+=`<option value="${v}"${v===sel?' selected':''}>${i===0?'Hoy':i===1?'Ayer':''} ${dS(v)}</option>`}return h};
@@ -2084,7 +2116,7 @@ $('hmSvM').onclick=()=>{closeSv();horaPanel()};
 $('hmSvW').onclick=()=>{const n=Date.now();s.inicio=n;s.fin=n;s.pausas=[];s.noTime=true;persist();renderAll();closeSv();$('bSave').click()};
 $('hmSvX').onclick=closeSv;btnUI();})();
 
-const APP_VER='2.5.4';
+const APP_VER='2.5.6';
 /* ===== Asistente IA (chat con sugerencias seleccionables) ===== */
 setTimeout(()=>{const W=$('asis'),L=$('asL');let hist=[],busy=false,rec=null;const U=['pza','m','m²','kg','lt','caja','bolsa'];
 const SYS='Eres el asistente de la app "Reportes de trabajo" para técnicos de mantención en Chile (electricidad, gasfitería, obras civiles, pintura, cerámica, etc.). Respondes en español de Chile, claro y práctico. Siempre respondes SOLO un JSON con esta forma: {"respuesta":"texto breve (máx 4 frases)","textos":["redacción lista para pegar en las notas del reporte, en tercera persona, estilo informe técnico: Se realiza..."],"materiales":[{"n":"nombre","c":"cantidad numérica como texto","u":"pza|m|m²|kg|lt|caja|bolsa"}],"preguntas":[{"q":"pregunta corta para afinar","opciones":["opción 1","opción 2","opción 3"]}]}. Incluye 2-3 "textos" solo si la persona necesita redactar un reporte; incluye "materiales" solo si aplica (cantidades aproximadas si faltan datos); incluye 1-2 "preguntas" cuando falten datos importantes. Si es una duda técnica, responde en "respuesta" y deja vacías las otras listas. Si mencionas normativa chilena (RIC, DS 8, DS 66, RIDAA) di el número pero recomienda verificarla. No inventes datos; si no sabes, dilo.';
