@@ -422,6 +422,15 @@ html.hasBg .hyCard{background:color-mix(in srgb,var(--card) var(--glass,30%),tra
 #tour .tB{display:flex;gap:8px;align-items:center;margin-top:12px}#tour .tB button{min-height:44px;padding:0 14px;width:auto;height:auto;font-size:14px;border-radius:12px}
 body.touring #fabMenu{display:none!important}
 .lvFadd{margin-top:6px;min-height:46px;border:0;border-radius:23px;background:#FFCC00;color:#111;font-weight:800;padding:0 20px}
+body.dHex #fabMenu{background:none!important;box-shadow:none!important;border-radius:0!important;filter:drop-shadow(0 5px 10px rgba(0,0,0,.55))}
+body.dHex #fabMenu button.cir,body.dHex #dialC,body.dHex #fab{clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%);border-radius:0!important;box-shadow:none!important}
+body.dHex #fabMenu button.cir{width:74px!important;height:64px!important}
+body.dHex #dialC{width:74px;height:64px;margin:-32px 0 0 -37px}body.dHex #fab{width:72px!important;height:62px!important}
+body.dHex #dialC .hr{left:9px;top:4px;width:56px;height:56px}
+body.dHex.dEdit #fabMenu button.cir:not(#fTiempo)::after{top:2px;right:auto;left:calc(50% - 11px);width:18px;height:18px;font:900 14px/15px var(--f)}
+@media (prefers-reduced-motion:no-preference){body.dHex:not(.dEdit) #fabMenu.open button.cir{animation:hexPop .24s cubic-bezier(.2,1.25,.4,1) both}}
+@keyframes hexPop{from{transform:scale(.2);opacity:0}to{transform:none;opacity:1}}
+.asMd{display:flex;gap:6px;overflow-x:auto;flex:none;padding-bottom:2px}.asMd button{flex:1 0 auto;min-height:40px;padding:0 7px;border-radius:20px;font-size:12.5px;font-weight:700;background:transparent;color:var(--mu);border:1.5px solid var(--bd);white-space:nowrap}.asMd button[aria-pressed=true]{background:var(--ac);color:var(--acx,#111);border-color:var(--ac)}
 </style>
 </head>
 <body>
@@ -622,6 +631,11 @@ body.touring #fabMenu{display:none!important}
 <div class="mu" style="margin-bottom:8px">Elige cómo se ve la brújula de Herramientas.</div>
 <div id="cpPick" style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px"></div>
 </section>
+<section id="secDial">
+<h2>➕ Botón +: estilo</h2>
+<div class="thPk" id="dsPick" style="grid-template-columns:1fr 1fr"><button type="button" data-ds="cir">⚪ Círculo</button><button type="button" data-ds="hex">⬡ Panal</button></div>
+<div class="mu" style="margin-top:6px;font-size:12.5px">Panal: los botones salen como hexágonos pegados alrededor del centro.</div>
+</section>
 <section id="secBg">
 <h2>🖼️ Tema y fondo de la app</h2>
 <div class="thPk" id="thPick"><button type="button" data-th="dark">🌙 Oscuro</button><button type="button" data-th="light">☀️ Claro</button><button type="button" data-th="auto">📱 Según el teléfono</button></div>
@@ -692,7 +706,7 @@ body.touring #fabMenu{display:none!important}
 <button class="sec" id="hmSvM" type="button" style="justify-content:flex-start">🕒 Escribir la hora a mano</button>
 <button class="sec" id="hmSvW" type="button" style="flex-direction:column;align-items:flex-start;text-align:left"><b>💾 Guardar sin hora</b><small class="mu" style="font-weight:500">El reporte dirá "Horario no registrado"</small></button>
 <button class="sec" id="hmSvX" type="button">Volver</button></div></div>
-<div id="asis" class="sheet" role="dialog" aria-label="Asistente IA"><div class="sheetIn"><div class="cpHead"><b>🤖 Asistente</b><span style="display:flex;gap:6px"><button class="sec fix" id="asUseN" type="button" style="min-height:40px;padding:4px 10px;font-size:13px">📝 Mis notas</button><button class="sec fix" id="asNew" type="button" style="min-height:40px;padding:4px 10px;font-size:13px">Nueva</button><button class="x" id="asX" aria-label="Cerrar">×</button></span></div>
+<div id="asis" class="sheet" role="dialog" aria-label="Asistente IA"><div class="sheetIn"><div class="cpHead"><b>🤖 Asistente</b><span style="display:flex;gap:6px"><button class="sec fix" id="asUseN" type="button" style="min-height:40px;padding:4px 10px;font-size:13px">📝 Mis notas</button><button class="sec fix" id="asNew" type="button" style="min-height:40px;padding:4px 10px;font-size:13px">Nueva</button><button class="x" id="asX" aria-label="Cerrar">×</button></span></div><div id="asMode" class="asMd"></div>
 <div id="asL"></div>
 <div class="row" style="align-items:flex-end"><textarea id="asIn" rows="2" placeholder="Escribe o toca 🎤 para hablar" style="min-height:48px;resize:none"></textarea><button class="sec fix" id="asMic" type="button" aria-label="Dictar por voz" style="width:48px;padding:0;font-size:20px">🎤</button><button class="pri fix" id="asGo" type="button" aria-label="Enviar" style="width:52px;padding:0;font-size:20px">➤</button></div>
 <div class="mu" style="font-size:11.5px">Usa tu clave de Gemini. La IA puede equivocarse: revisa lo que te propone antes de usarlo.</div></div></div>
@@ -1727,10 +1741,10 @@ document.addEventListener('click',e=>{const im=e.target.closest('img[data-ak]');
 const c=document.createElement('button');c.id='dialC';c.type='button';c.setAttribute('aria-label','Cerrar menú');c.innerHTML='<span>+</span>';M.appendChild(c);
 c.onclick=e=>{e.stopPropagation();fabOpen=false;fab()};
 const items=()=>[...M.querySelectorAll('button.cir')].filter(b=>getComputedStyle(b).display!=='none');
-function place(){const F=$('fab').getBoundingClientRect();let cx=F.left+F.width/2,cy=F.top+F.height/2;cx=Math.max(D/2+6,Math.min(innerWidth-D/2-6,cx));cy=Math.max(D/2+6,Math.min(innerHeight-D/2-6,cy));if(document.body.classList.contains('dEdit')){const t=$('dialEd');if(t){const tt=t.getBoundingClientRect().top;if(tt>0){cx=innerWidth/2;cy=Math.max(D/2+6,Math.min(tt-D/2-12,tt/2+30))}}}M.style.left=(cx-D/2)+'px';M.style.top=(cy-D/2)+'px'}
-window.layDial=()=>{if(!M.classList.contains('open'))return;const it=items(),n=it.length||1,step=360/Math.max(n,5);R=Math.max(94,Math.ceil(n*(S+6)/(2*Math.PI)));D=2*R+S+12;M.style.width=M.style.height=D+'px';place();it.forEach((b,i)=>{const a=(rot+i*step)*Math.PI/180;b.style.left=(D/2+R*Math.cos(a)-S/2)+'px';b.style.top=(D/2+R*Math.sin(a)-S/2)+'px';b.style.right=b.style.bottom='auto'})};
+function place(){const F=$('fab').getBoundingClientRect();let cx=F.left+F.width/2,cy=F.top+F.height/2;cx=Math.max(D/2+6,Math.min(innerWidth-D/2-6,cx));{const nv=$('botNav'),nh=nv&&nv.getClientRects().length?nv.offsetHeight:0;cy=Math.max(D/2+6,Math.min(innerHeight-nh-D/2-6,cy))}if(document.body.classList.contains('dEdit')){const t=$('dialEd');if(t){const tt=t.getBoundingClientRect().top;if(tt>0){cx=innerWidth/2;cy=Math.max(D/2+6,Math.min(tt-D/2-12,tt/2+30))}}}M.style.left=(cx-D/2)+'px';M.style.top=(cy-D/2)+'px'}
+window.layDial=()=>{if(!M.classList.contains('open'))return;if(document.body.classList.contains('dHex')){const it=items(),w=74,hh=64,d=hh+6,P=[[d,-90],[d,-30],[d,30],[d,90],[d,150],[d,210],[d*1.732,180],[d*1.732,0],[d*2,-90],[d*2,90]];const mx=Math.max(d,...it.map((_,i)=>(P[i]||P[9])[0]));D=2*mx+w+12;M.style.width=M.style.height=D+'px';place();it.forEach((b,i)=>{const[r,a]=P[i]||P[9],t=a*Math.PI/180;b.style.left=(D/2+r*Math.cos(t)-w/2)+'px';b.style.top=(D/2+r*Math.sin(t)-hh/2)+'px';b.style.right=b.style.bottom='auto'});return}const it=items(),n=it.length||1,step=360/Math.max(n,5);R=Math.max(94,Math.ceil(n*(S+6)/(2*Math.PI)));D=2*R+S+12;M.style.width=M.style.height=D+'px';place();it.forEach((b,i)=>{const a=(rot+i*step)*Math.PI/180;b.style.left=(D/2+R*Math.cos(a)-S/2)+'px';b.style.top=(D/2+R*Math.sin(a)-S/2)+'px';b.style.right=b.style.bottom='auto'})};
 let drag=null,moved=false;
-M.addEventListener('pointerdown',e=>{if(e.target===c||e.target.closest('#dialC'))return;const r=M.getBoundingClientRect(),cx=r.left+D/2,cy=r.top+D/2;drag={cx,cy,a:Math.atan2(e.clientY-cy,e.clientX-cx),r0:rot,x:e.clientX,y:e.clientY,id:e.pointerId};moved=false});
+M.addEventListener('pointerdown',e=>{if(e.target===c||e.target.closest('#dialC')||document.body.classList.contains('dHex'))return;const r=M.getBoundingClientRect(),cx=r.left+D/2,cy=r.top+D/2;drag={cx,cy,a:Math.atan2(e.clientY-cy,e.clientX-cx),r0:rot,x:e.clientX,y:e.clientY,id:e.pointerId};moved=false});
 M.addEventListener('pointermove',e=>{if(!drag)return;if(!moved&&Math.hypot(e.clientX-drag.x,e.clientY-drag.y)<6)return;if(!moved){try{M.setPointerCapture(drag.id)}catch(_){}}moved=true;M.classList.add('spin');let d=Math.atan2(e.clientY-drag.cy,e.clientX-drag.cx)-drag.a;rot=drag.r0+d*180/Math.PI;layDial()});
 const end=()=>{if(!drag)return;drag=null;M.classList.remove('spin');if(moved){const n=items().length||1,step=360/Math.max(n,5);rot=Math.round((rot+90)/step)*step-90;layDial();try{localStorage.setItem('rep_dialRot',rot)}catch(_){}setTimeout(()=>{moved=false},50)}};
 M.addEventListener('pointerup',end);M.addEventListener('pointercancel',end);
@@ -2103,8 +2117,8 @@ E.addEventListener('click',e=>{const b=e.target.closest('[data-add]');if(!b)retu
 /* mantener 3 s */
 C.insertAdjacentHTML('beforeend','<svg class="hr" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" pathLength="100"/></svg>');
 let ht=0,ht2=0,fired=false;const cancel=()=>{clearTimeout(ht);clearTimeout(ht2);C.classList.remove('hold')};
-C.addEventListener('pointerdown',e=>{if(edit)return;fired=false;C.classList.add('hold');ht2=setTimeout(()=>toast('Sigue presionando para editar el menú…',{ms:1800}),700);ht=setTimeout(()=>{fired=true;C.classList.remove('hold');enter()},3000)});
-['pointerup','pointercancel','pointerleave'].forEach(t=>C.addEventListener(t,cancel));C.oncontextmenu=e=>e.preventDefault();
+C.addEventListener('pointerdown',e=>{if(edit)return;try{C.setPointerCapture(e.pointerId)}catch(_){}fired=false;C.classList.add('hold');ht2=setTimeout(()=>toast('Sigue presionando para editar el menú…',{ms:1800}),700);ht=setTimeout(()=>{fired=true;C.classList.remove('hold');enter()},3000)});
+['pointerup','pointercancel'].forEach(t=>C.addEventListener(t,cancel));C.oncontextmenu=e=>e.preventDefault();
 const oc=C.onclick;C.onclick=e=>{e.stopPropagation();if(fired){fired=false;return}if(edit){exit();return}oc&&oc(e)};
 /* en edición: tocar quita, arrastrar reordena */
 let dg=null;
@@ -2409,6 +2423,10 @@ window.setView&&setView('rep');list2=STEPS.filter(st=>!st[0]||document.querySele
 const sec=document.createElement('section');sec.id='secTour';sec.innerHTML='<h2>📖 Tutorial</h2><div class="mu" style="margin-bottom:8px">Un recorrido rápido por las partes principales de la app.</div><button class="pri" type="button" id="tourGo" style="width:100%">Ver tutorial</button>';
 const ref=$('secBg')||$('secCp');if(ref)ref.after(sec);$('tourGo').onclick=()=>startTour();
 setTimeout(()=>{let d=false;try{d=localStorage.getItem('rep_tourDone')==='1'}catch(_){}if(!d&&!list.length)startTour();else if(!d){try{localStorage.setItem('rep_tourDone','1')}catch(_){}}},900)})();
+/* ---- Estilo del botón + (círculo / panal) ---- */
+(()=>{const P=$('dsPick');const cur=()=>{try{return localStorage.getItem('rep_dialStyle')||'cir'}catch(e){return 'cir'}};
+const ap=t=>{document.body.classList.toggle('dHex',t==='hex');if(P)P.querySelectorAll('[data-ds]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.ds===t));try{window.layDial&&layDial()}catch(e){}};
+if(P)P.onclick=e=>{const b=e.target.closest('[data-ds]');if(!b)return;try{localStorage.setItem('rep_dialStyle',b.dataset.ds)}catch(_){}ap(b.dataset.ds);toast('Botón +: '+b.textContent.trim())};ap(cur())})();
 /* ---- Ayudas cuando se olvida marcar la hora ---- */
 (()=>{const p2=n=>String(n).padStart(2,'0');
 const dayOpts=sel=>{let h='';for(let i=0;i<8;i++){const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-i);const v=d.getTime();h+=`<option value="${v}"${v===sel?' selected':''}>${i===0?'Hoy':i===1?'Ayer':''} ${dS(v)}</option>`}return h};
@@ -2444,12 +2462,49 @@ $('hmSvM').onclick=()=>{closeSv();horaPanel()};
 $('hmSvW').onclick=()=>{const n=Date.now();s.inicio=n;s.fin=n;s.pausas=[];s.noTime=true;persist();renderAll();closeSv();$('bSave').click()};
 $('hmSvX').onclick=closeSv;btnUI();})();
 
-const APP_VER='2.6.4';
+const APP_VER='2.6.6';
 /* ===== Asistente IA (chat con sugerencias seleccionables) ===== */
 setTimeout(()=>{const W=$('asis'),L=$('asL');let hist=[],busy=false,rec=null;const U=['pza','m','m²','kg','lt','caja','bolsa'];
 const SYS='Eres el asistente de la app "Reportes de trabajo" para técnicos de mantención en Chile (electricidad, gasfitería, obras civiles, pintura, cerámica, etc.). Respondes en español de Chile, claro y práctico. Siempre respondes SOLO un JSON con esta forma: {"respuesta":"texto breve (máx 4 frases)","textos":["redacción lista para pegar en las notas del reporte, en tercera persona, estilo informe técnico: Se realiza..."],"materiales":[{"n":"nombre","c":"cantidad numérica como texto","u":"pza|m|m²|kg|lt|caja|bolsa"}],"preguntas":[{"q":"pregunta corta para afinar","opciones":["opción 1","opción 2","opción 3"]}]}. Incluye 2-3 "textos" solo si la persona necesita redactar un reporte; incluye "materiales" solo si aplica (cantidades aproximadas si faltan datos); incluye 1-2 "preguntas" cuando falten datos importantes. Si es una duda técnica, responde en "respuesta" y deja vacías las otras listas. Si mencionas normativa chilena (RIC, DS 8, DS 66, RIDAA) di el número pero recomienda verificarla. No inventes datos; si no sabes, dilo.';
 const ctx=()=>{const p=[];if(s.task&&s.task.t)p.push('Tarea: '+s.task.t);if(s.ubic)p.push('Lugar: '+s.ubic);if((s.notas||'').trim())p.push('Notas actuales: '+s.notas.trim().slice(0,400));if(s.mats.length)p.push('Materiales ya puestos: '+s.mats.map(m=>m.n+' '+m.c+' '+m.u).join(', '));return p.length?'[Contexto del reporte abierto: '+p.join(' | ')+']\n':''};
 const scroll=()=>{L.scrollTop=L.scrollHeight};
+/* -- modo normativa del asistente -- */
+let amode='rep',histN=[],lastQ='';const NIDX={};
+const NN={rep:['📝','Mi reporte'],ele:['⚡','Electricidad'],gas:['🔥','Gas'],agua:['💧','Agua']};
+const NFULL={ele:'los pliegos técnicos RIC N°01 al N°19 y el DS N°8 (SEC)',gas:'el DS N°66, reglamento de instalaciones interiores y medidores de gas (SEC)',agua:'el RIDAA, reglamento de instalaciones domiciliarias de agua potable y alcantarillado'};
+const NEX={ele:['¿Qué sección de conductor uso para un circuito de enchufes de 16 A?','¿A qué altura van los enchufes en un baño?','¿Cuándo es obligatorio el protector diferencial?'],gas:['¿Qué ventilación necesita un recinto con calefón?','¿Dónde no se puede instalar un calefón?','¿Cada cuánto se hace la inspección periódica de gas?'],agua:['¿Qué diámetro mínimo lleva la descarga de un WC?','¿Qué presión mínima debe haber en el artefacto más desfavorable?','¿Quién puede proyectar una instalación domiciliaria?']};
+const fold=x=>String(x).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+const STOP=new Set('de la el en y a los las del que se por para con un una al es o su lo como mas no si debe deben ser sera sobre entre cuando cual puedo hay tiene uso usar ocupar tal cuanto cuanta donde quien cada lleva van va son esta este esto necesita necesito tipo'.split(' '));
+const SYN={cable:['conductor','conductores'],cables:['conductores','conductor'],enchufe:['enchufes','tomacorriente'],enchufes:['enchufe'],automatico:['disyuntor','protecciones','termomagnetico'],diferencial:['diferenciales','diferencial'],tierra:['puesta'],tuberia:['tuberias','canalizacion','ducto'],caneria:['canerias','tuberia','tuberias'],tubo:['tuberia','ducto','ductos'],calefont:['calefon','artefacto','artefactos'],calefon:['artefactos','calefones'],llave:['valvula','llaves'],cocina:['artefactos'],ducha:['bano','banos'],seccion:['secciones','mm2'],amperaje:['corriente','capacidad'],breaker:['disyuntor'],luminaria:['alumbrado','luminarias'],desague:['alcantarillado','descarga','descargas'],wc:['inodoro','artefactos','sanitarios'],altura:['alturas','metros'],diametro:['diametros','mm'],inspeccion:['certificacion','inspecciones'],tablero:['tableros'],medidor:['medidores','empalme']};
+const tok=x=>fold(x).split(/[^a-z0-9]+/).filter(w=>w.length>1&&!STOP.has(w));
+async function nLoad(k){if(NIDX[k])return NIDX[k];const r=await fetch('normas/idx-'+k+'.json');if(!r.ok)throw new Error('idx');const j=await r.json();const N=j.pg.length,df=new Map();
+j.tf=j.pg.map(p=>{const m=new Map(),ws=tok(p[2]);ws.forEach(w=>m.set(w,(m.get(w)||0)+1));m.forEach((_,w)=>df.set(w,(df.get(w)||0)+1));m.len=ws.length;return m});j.df=df;j.avg=j.tf.reduce((a,m)=>a+m.len,0)/N;return NIDX[k]=j}
+function nFind(j,q,n){const terms=new Map();tok(q).forEach(w=>{terms.set(w,1);(SYN[w]||[]).forEach(x=>{if(!terms.has(x))terms.set(x,.5)})});
+[...terms.keys()].forEach(w=>{const wt=terms.get(w)*.7,add=x=>{if(!terms.has(x))terms.set(x,wt)};if(w.endsWith('es')&&w.length>4){add(w.slice(0,-2));add(w.slice(0,-1))}else if(w.endsWith('s')&&w.length>3)add(w.slice(0,-1));else{add(w+'s');add(w+'es')}});
+const N=j.pg.length,sc=[];j.tf.forEach((m,i)=>{let s=0;terms.forEach((wt,w)=>{const f=m.get(w);if(!f)return;const d=j.df.get(w)||1;s+=wt*Math.log(1+(N-d+.5)/(d+.5))*(f*2.2)/(f+1.2*(.25+.75*m.len/j.avg))});if(s>0)sc.push([s,i])});
+sc.sort((a,b)=>b[0]-a[0]);return sc.slice(0,n).map(x=>x[1])}
+window.__nFind=async(k,q,n)=>{const j=await nLoad(k);return nFind(j,q,n||10).map(i=>j.docs[j.pg[i][0]].n+' p'+j.pg[i][1])};
+const SYSN='Eres un asistente de normativa chilena para técnicos instaladores. Respondes ÚNICAMENTE con base en los fragmentos del reglamento que vienen en el mensaje (cada uno numerado como [n]). Español de Chile, claro y práctico, máximo 6 frases; si la respuesta está en una tabla entrega el valor exacto con su unidad. Si los fragmentos no contienen la respuesta, pon "encontrado":false, dilo claramente y sugiere cómo reformular o en qué documento buscar: NUNCA inventes valores ni artículos. Responde SOLO un JSON: {"respuesta":"texto","encontrado":true,"citas":[{"n":número de fragmento usado,"punto":"numeral o artículo, ej. 5.2.3 o Art. 45","cita":"frase textual corta del fragmento (máx 25 palabras)"}],"preguntas":[{"q":"pregunta corta para precisar","opciones":["opción 1","opción 2"]}]}. Usa "preguntas" solo si la consulta es ambigua (máx 1). Máximo 4 citas.';
+function addN(j,src){const d=document.createElement('div');d.className='asA';let h=`<div class="asT">${esc(j.respuesta||'')}</div>`;
+const cs=(j.citas||[]).map(c=>({c,s:src[(+c.n||0)-1]})).filter(x=>x.s);
+if(cs.length)h+='<div class="asH">📖 Fuentes</div>'+cs.map(({c,s})=>`<div class="asO"><div><b>${esc(s.n)}${c.punto?' · '+esc(String(c.punto)):''}</b> <span class="mu">· pág. ${s.p}</span>${c.cita?`<div class="mu" style="font-style:italic;margin-top:3px">“${esc(String(c.cita))}”</div>`:''}</div><div class="row" style="margin-top:6px"><button type="button" class="pri" data-nd="${esc(s.f)}" data-np="${s.p}" data-nt="${esc(s.n+' · '+s.t)}">Ver página</button><button type="button" class="sec" data-nc2="${esc(s.n+(c.punto?' punto '+c.punto:'')+' – '+s.t)}">Citar en notas</button></div></div>`).join('');
+else if(src.length)h+='<div class="asH">📖 Páginas revisadas</div><div class="asC">'+src.slice(0,4).map(s=>`<button type="button" class="sec" data-nd="${esc(s.f)}" data-np="${s.p}" data-nt="${esc(s.n+' · '+s.t)}">${esc(s.n)} · pág. ${s.p}</button>`).join('')+'</div>';
+(j.preguntas||[]).forEach(q=>{if(q&&q.q)h+=`<div class="asH">❓ ${esc(q.q)}</div><div class="asC">${(q.opciones||[]).map(o=>`<button type="button" class="sec" data-aq="${esc(q.q)}" data-ao="${esc(o)}">${esc(o)}</button>`).join('')}</div>`});
+h+='<div class="mu" style="font-size:12px;margin-top:8px">⚠️ Respuesta de IA basada en el texto del reglamento guardado en la app. Verifica siempre en el documento oficial y su versión vigente.</div><button type="button" class="x asSp" data-as="1" aria-label="Leer en voz alta">🔊</button>';
+d.innerHTML=h;d._j={respuesta:j.respuesta||'',textos:[],materiales:[],preguntas:j.preguntas||[]};L.appendChild(d);scroll()}
+L.addEventListener('click',e=>{const b=e.target.closest('[data-nd]');if(b){openPdfDoc('normas/'+b.dataset.nd+'.pdf',b.dataset.nt,+b.dataset.np);return}const c=e.target.closest('[data-nc2]');if(c){const line='Normativa aplicada: '+c.dataset.nc2+'.';s.notas=(s.notas?s.notas.trimEnd()+'\n':'')+line;persist();const N=$('notas');if(N)N.value=s.notas;c.textContent='✓ Citado';toast('Agregado a las notas del reporte')}});
+async function sendN(t){$('asIn').value='';$('asIn').style.height='';addUser(t);busy=true;$('asGo').disabled=true;const w=document.createElement('div');w.className='asA asW';w.textContent='Buscando en el reglamento…';L.appendChild(w);scroll();
+const fail=m=>{w.remove();L.insertAdjacentHTML('beforeend',`<div class="asA"><div class="asT">${m}</div></div>`);scroll();busy=false;$('asGo').disabled=false};
+let j;try{j=await nLoad(amode)}catch(e){return fail('No pude cargar el texto del reglamento. Revisa tu internet e intenta de nuevo.')}
+const ids=nFind(j,/→/.test(t)||t.length<25?lastQ+' '+t:t,10);let tot=0;const src=[],fr=[];for(const i of ids){const[di,p,tx]=j.pg[i],dc=j.docs[di];if(tot+tx.length>42000)break;tot+=tx.length;src.push({n:dc.n,t:dc.t,f:dc.f,p});fr.push('['+src.length+'] '+dc.n+' – '+dc.t+' · página '+p+'\n'+tx)}
+lastQ=t;w.textContent='Leyendo '+src.length+' páginas…';
+const msg='Reglamento: '+NFULL[amode]+'.\n\nFRAGMENTOS:\n'+(fr.join('\n\n---\n\n')||'(no se encontraron páginas relacionadas)')+'\n\nPREGUNTA: '+t;
+try{const o=await gemCall({systemInstruction:{parts:[{text:SYSN}]},contents:[...histN.slice(-6),{role:'user',parts:[{text:msg}]}],generationConfig:{temperature:0.15,responseMimeType:'application/json'}});let r;try{r=JSON.parse(o.replace(/^```json|```$/g,''))}catch(_){r={respuesta:o,citas:[]}}
+histN.push({role:'user',parts:[{text:t}]},{role:'model',parts:[{text:r.respuesta||''}]});w.remove();addN(r,src);busy=false;$('asGo').disabled=false}
+catch(e){fail(e&&e.code==='busy'?'Google está saturado ahora, intenta en un momento.':e&&e.code==='bad_key'?'La clave de Gemini no funciona. Revísala en Ajustes → IA.':e&&e.code==='rate_limited'?'Llegaste al límite gratis de Gemini por ahora. Espera un minuto e intenta de nuevo.':'No se pudo responder ('+esc(e&&e.message||'sin internet')+').')}}
+const setAM=m=>{amode=NN[m]?m:'rep';hist=[];histN=[];lastQ='';L.innerHTML='';$('asMode').querySelectorAll('[data-am2]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.am2===amode));$('asUseN').style.display=amode==='rep'?'':'none';$('asIn').placeholder=amode==='rep'?'Escribe o dicta…':'Pregunta sobre la norma de '+NN[amode][1].toLowerCase()+'…';intro()};
+$('asMode').innerHTML=Object.keys(NN).map(k=>`<button type="button" data-am2="${k}">${NN[k][0]} ${NN[k][1]}</button>`).join('');$('asMode').onclick=e=>{const b=e.target.closest('[data-am2]');if(b&&!busy)setAM(b.dataset.am2)};
+
 function addUser(t){L.insertAdjacentHTML('beforeend',`<div class="asU">${esc(t)}</div>`);scroll()}
 function addAI(j,idx){const d=document.createElement('div');d.className='asA';let h=`<div class="asT">${esc(j.respuesta||'')}</div>`;
 if((j.textos||[]).length)h+='<div class="asH">📝 Textos para el reporte</div>'+j.textos.map((t,i)=>`<div class="asO"><div>${esc(t)}</div><button type="button" class="pri" data-at="${i}">Usar en notas</button></div>`).join('');
@@ -2463,22 +2518,23 @@ else if(b.dataset.ao!==undefined){send(b.dataset.aq+' → '+b.dataset.ao)}
 else if(b.dataset.as){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance([j.respuesta,...(j.textos||[]).slice(0,1)].join('. '));u.lang='es-CL';speechSynthesis.speak(u)}catch(_){toast('Este teléfono no puede leer en voz alta')}}};
 async function send(t){t=(t||'').trim();if(!t||busy)return;if(!aiCfg.key){L.insertAdjacentHTML('beforeend','<div class="asA"><div class="asT">Para usar el asistente necesitas tu clave de Gemini (gratis). Ve a <b>Ajustes → Inteligencia artificial</b> y pégala.</div></div>');scroll();return}
 if(inClaude()){L.insertAdjacentHTML('beforeend','<div class="asA"><div class="asT">Dentro de la app de Claude el asistente está bloqueado. Úsalo desde la APK o desde la página de GitHub.</div></div>');scroll();return}
+if(amode!=='rep')return sendN(t);
 $('asIn').value='';addUser(t);busy=true;$('asGo').disabled=true;const w=document.createElement('div');w.className='asA asW';w.textContent='Pensando…';L.appendChild(w);scroll();
 const msg=(hist.length?'':ctx())+t;hist.push({role:'user',parts:[{text:msg}]});
 try{const o=await gemCall({systemInstruction:{parts:[{text:SYS}]},contents:hist.slice(-12),generationConfig:{temperature:0.4,responseMimeType:'application/json'}});let j;try{j=JSON.parse(o.replace(/^```json|```$/g,''))}catch(_){j={respuesta:o}}
 hist.push({role:'model',parts:[{text:JSON.stringify(j)}]});w.remove();addAI(j)}catch(e){w.remove();hist.pop();L.insertAdjacentHTML('beforeend',`<div class="asA"><div class="asT">${e&&e.code==='busy'?'Google está saturado ahora, intenta en un momento.':e&&e.code==='bad_key'?'La clave de Gemini no funciona. Revísala en Ajustes → IA.':'No se pudo responder ('+esc(e&&e.message||'sin internet')+').'}</div></div>`);scroll()}
 busy=false;$('asGo').disabled=false}
 $('asGo').onclick=()=>send($('asIn').value);$('asIn').onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send($('asIn').value)}};
-$('asNew').onclick=()=>{hist=[];L.innerHTML='';intro()};
+$('asNew').onclick=()=>{hist=[];histN=[];lastQ='';L.innerHTML='';intro()};
 const SR=window.SpeechRecognition||window.webkitSpeechRecognition;const mic=$('asMic');if(!SR)mic.style.display='none';
 mic.onclick=()=>{if(rec){rec.stop();return}try{rec=new SR();rec.lang='es-CL';rec.interimResults=true;rec.continuous=false;const base=$('asIn').value?$('asIn').value.replace(/\s*$/,' '):'';
 rec.onresult=e=>{let t='';for(const r of e.results)t+=r[0].transcript;$('asIn').value=base+t};rec.onend=()=>{rec=null;mic.classList.remove('on');mic.textContent='🎤'};rec.onerror=ev=>{if(ev.error==='not-allowed')toast('Permite el micrófono para dictar')};rec.start();mic.classList.add('on');mic.textContent='⏹'}catch(e){rec=null;toast('No se pudo usar el micrófono')}};
-function intro(){L.insertAdjacentHTML('beforeend','<div class="asA"><div class="asT">Hola 👋 Cuéntame qué trabajo hiciste o qué duda tienes. Por ejemplo: <i>"instalé baldosa en un baño y no sé qué poner"</i>. Te propongo textos para el reporte, materiales y preguntas para afinar.</div><div class="asC">'+['Instalé baldosa en un baño, ¿qué pongo?','Cambié un enchufe dañado','¿Qué cable uso para una ducha eléctrica?'].map(x=>`<button type="button" class="sec asEx">${x}</button>`).join('')+'</div></div>')}
-L.addEventListener('click',e=>{const b=e.target.closest('.asEx');if(b)send(b.textContent)});intro();
-window.openAsis=()=>{W.classList.add('on');setTimeout(()=>$('asIn').focus(),200)};$('asX').onclick=()=>{W.classList.remove('on');try{speechSynthesis.cancel()}catch(_){}};
+function intro(){if(amode!=='rep'){L.insertAdjacentHTML('beforeend','<div class="asA"><div class="asT">'+NN[amode][0]+' <b>Consulta de normativa: '+NN[amode][1]+'</b><br>Pregúntame lo que necesites y busco la respuesta en '+NFULL[amode]+'. Te muestro la página exacta para que la revises.</div><div class="asC">'+NEX[amode].map(x=>`<button type="button" class="sec asEx">${x}</button>`).join('')+'</div></div>');return}L.insertAdjacentHTML('beforeend','<div class="asA"><div class="asT">Hola 👋 Cuéntame qué trabajo hiciste o qué duda tienes. Por ejemplo: <i>"instalé baldosa en un baño y no sé qué poner"</i>. Te propongo textos para el reporte, materiales y preguntas para afinar.</div><div class="asC">'+['Instalé baldosa en un baño, ¿qué pongo?','Cambié un enchufe dañado','¿Qué cable uso para una ducha eléctrica?'].map(x=>`<button type="button" class="sec asEx">${x}</button>`).join('')+'</div></div>')}
+L.addEventListener('click',e=>{const b=e.target.closest('.asEx');if(b)send(b.textContent)});setAM('rep');
+window.openAsis=(m)=>{if(typeof m==='string'&&m!==amode)setAM(m);W.classList.add('on');setTimeout(()=>$('asIn').focus(),200)};$('asX').onclick=()=>{W.classList.remove('on');try{speechSynthesis.cancel()}catch(_){}};
 /* accesos */
-const hv=$('herView');if(hv){hv.insertAdjacentHTML('afterbegin','<button type="button" class="herT" id="herAsis" style="width:100%;flex-direction:row;min-height:64px;gap:12px;margin-top:6px;border-color:var(--ac)"><span aria-hidden="true">🤖</span><div style="text-align:left"><b style="font-size:16px">Asistente IA</b><br><small class="mu">Te ayuda a redactar el reporte y resolver dudas</small></div></button>');$('herAsis').onclick=openAsis}
-const nh=$('notas').previousElementSibling;if(nh)nh.insertAdjacentHTML('beforeend','<button class="sec fix" id="asNot" type="button" style="min-height:36px;padding:4px 12px;font-size:13px;margin-left:6px">🤖 Asistente</button>');const an=$('asNot');if(an)an.onclick=e=>{e.stopPropagation();openAsis();asNotas(true)};
+const hv=$('herView');if(hv){hv.insertAdjacentHTML('afterbegin','<button type="button" class="herT" id="herAsis" style="width:100%;flex-direction:row;min-height:64px;gap:12px;margin-top:6px;border-color:var(--ac)"><span aria-hidden="true">🤖</span><div style="text-align:left"><b style="font-size:16px">Asistente IA</b><br><small class="mu">Redacta el reporte y consulta la norma: electricidad, gas y agua</small></div></button>');$('herAsis').onclick=()=>openAsis();const ns=$('nSrc');if(ns){ns.insertAdjacentHTML('afterend','<button type="button" class="pri" id="nAsk" style="width:100%;margin:8px 0">🤖 Preguntarle a la IA sobre esta norma</button>');$('nAsk').onclick=()=>{const b=document.querySelector('#nTabs button.on'),c=b&&b.dataset.nc;$('norm').classList.remove('on');openAsis(NN[c]?c:'ele')}}}
+const nh=$('notas').previousElementSibling;if(nh)nh.insertAdjacentHTML('beforeend','<button class="sec fix" id="asNot" type="button" style="min-height:36px;padding:4px 12px;font-size:13px;margin-left:6px">🤖 Asistente</button>');const an=$('asNot');if(an)an.onclick=e=>{e.stopPropagation();openAsis('rep');asNotas(true)};
 },60);
 /* ===== Rediseño 2.2 ===== */
 setTimeout(()=>{const ic=p=>`<svg class="i" viewBox="0 0 24 24" aria-hidden="true">${p}</svg>`;
@@ -2504,11 +2560,11 @@ const cfgOn=$('cfg').style.display==='block';if(v==='aj'&&!cfgOn)showCfg(true);i
 window.setView=view;$('botNav').onclick=e=>{const b=e.target.closest('[data-v]');if(b)view(b.dataset.v)};
 /* ajustes agrupados */
 const C=$('cfg'),secs=[...C.querySelectorAll(':scope>section')];const h2t=x=>((x.querySelector('h2')||{}).textContent||'').toLowerCase();
-const G=[['📦','Bodega de materiales','Materiales y cantidades disponibles',x=>/bodega/.test(h2t(x))],['🤖','Inteligencia artificial','Clave Gemini, IA sin internet, lector de fotos',x=>/\bia\b/.test(h2t(x))],['📄','Reportes y PDF','Folio, cobro y presupuesto, formato de hoja',x=>/folio|cobro|formato/.test(h2t(x))],['🎨','Apariencia y herramientas','Fondo, estilo de brújula, herramientas',x=>/brújula|herramientas|fondo de la app|tema y fondo|tutorial/.test(h2t(x))],['🔒','Seguridad y respaldo','Protector contra estafas, respaldo de datos',x=>/protector|respaldo/.test(h2t(x))]];
+const G=[['📦','Bodega de materiales','Materiales y cantidades disponibles',x=>/bodega/.test(h2t(x))],['🤖','Inteligencia artificial','Clave Gemini, IA sin internet, lector de fotos',x=>/\bia\b/.test(h2t(x))],['📄','Reportes y PDF','Folio, cobro y presupuesto, formato de hoja',x=>/folio|cobro|formato/.test(h2t(x))],['🎨','Apariencia y herramientas','Fondo, estilo de brújula, herramientas',x=>/brújula|herramientas|fondo de la app|tema y fondo|botón \+/.test(h2t(x))],['🔒','Seguridad y respaldo','Protector contra estafas, respaldo de datos',x=>/protector|respaldo/.test(h2t(x))]];
 const used=new Set();const wrap=document.createElement('div');wrap.id='cfgGroups';
 const mk=(e,t,sub,items)=>{const g=document.createElement('div');g.className='cfgG';g.innerHTML=`<button type="button" class="cfgGH"><span aria-hidden="true">${e}</span><div><b>${t}</b><small>${sub}</small></div><i>›</i></button><div class="cfgGB"></div>`;const B=g.querySelector('.cfgGB');items.forEach(x=>B.appendChild(x));g.firstChild.onclick=()=>{g.classList.toggle('open');if(g.classList.contains('open')){try{renderBod();renderFmt()}catch(e){}}};return g};
 G.forEach(([e,t,sub,f])=>{const it=secs.filter(x=>!used.has(x)&&f(x));it.forEach(x=>used.add(x));if(it.length)wrap.appendChild(mk(e,t,sub,it))});
-const rest=secs.filter(x=>!used.has(x));if(rest.length)wrap.appendChild(mk('⚙️','Otros','Más opciones',rest));
+const tuS=$('secTour');if(tuS)used.add(tuS);const rest=secs.filter(x=>!used.has(x));if(rest.length)wrap.appendChild(mk('⚙️','Otros','Más opciones',rest));if(tuS)wrap.appendChild(mk('📖','Tutorial','Recorrido guiado por la app',[tuS]));
 const av=$('appVer'),ud=av&&av.nextElementSibling;const acc=document.createElement('section');if(av)acc.appendChild(av);if(ud)acc.appendChild(ud);wrap.appendChild(mk('ℹ️','Acerca de','Versión '+APP_VER+' · actualizar · guía PDF',[acc]));
 C.querySelector(':scope>div.row').after(wrap);
 /* secciones plegables con estado */
@@ -2713,12 +2769,12 @@ async function nGet(u){if(hasCache()){try{const C=await caches.open(NC);const r=
 (()=>{const V=$('pdfV'),Bd=$('pvB');let doc=null,zoom=1,io=null,pages=[],tok=0;
 const setZ=z=>{zoom=Math.max(1,Math.min(3,z));$('pvZ').textContent=Math.round(zoom*100)+'%';pages.forEach(p=>{p.el.style.width=(zoom*100)+'%';if(p.cv){p.cv.remove();p.cv=null}});if(io){pages.forEach(p=>{io.unobserve(p.el);io.observe(p.el)})}};
 async function rend(p,t){if(p.cv||p.busy||!doc)return;p.busy=true;try{const pg=await doc.getPage(p.n);if(t!==tok)return;const w=p.el.clientWidth||Bd.clientWidth;const v=pg.getViewport({scale:1});const sc=Math.min(3,w*(window.devicePixelRatio||1)/v.width);const vp=pg.getViewport({scale:sc});const cv=document.createElement('canvas');cv.width=Math.round(vp.width);cv.height=Math.round(vp.height);await pg.render({canvasContext:cv.getContext('2d'),viewport:vp}).promise;if(t!==tok)return;p.el.appendChild(cv);p.cv=cv}catch(e){}p.busy=false}
-window.openPdfDoc=async(u,title)=>{V.classList.add('on');document.body.style.overflow='hidden';$('pvT').textContent=title;$('pvP').textContent='';Bd.innerHTML='<div class="mu" style="padding:20px;text-align:center">Abriendo…</div>';const t=++tok;if(io)io.disconnect();pages=[];doc=null;
+window.openPdfDoc=async(u,title,goP)=>{V.classList.add('on');document.body.style.overflow='hidden';$('pvT').textContent=title;$('pvP').textContent='';Bd.innerHTML='<div class="mu" style="padding:20px;text-align:center">Abriendo…</div>';const t=++tok;if(io)io.disconnect();pages=[];doc=null;
 try{const buf=await nGet(u);const L=await pdfjsLoad();doc=await L.getDocument({data:new Uint8Array(buf)}).promise;if(t!==tok)return;const p1=(await doc.getPage(1)).getViewport({scale:1});Bd.innerHTML='';
 for(let n=1;n<=doc.numPages;n++){const el=document.createElement('div');el.className='pvPg';el.style.aspectRatio=p1.width+'/'+p1.height;el.style.width=(zoom*100)+'%';el.dataset.n=n;Bd.appendChild(el);pages.push({n,el,cv:null})}
 $('pvP').textContent='1 / '+doc.numPages;
 io=new IntersectionObserver(es=>{es.forEach(e=>{const p=pages[+e.target.dataset.n-1];if(e.isIntersecting)rend(p,t);else if(p.cv){p.cv.remove();p.cv=null}})},{root:Bd,rootMargin:'800px 0px'});pages.forEach(p=>io.observe(p.el));
-const pio=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting&&doc)$('pvP').textContent=e.target.dataset.n+' / '+doc.numPages})},{root:Bd,threshold:.5});pages.forEach(p=>pio.observe(p.el))}
+const pio=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting&&doc)$('pvP').textContent=e.target.dataset.n+' / '+doc.numPages})},{root:Bd,threshold:.5});pages.forEach(p=>pio.observe(p.el));if(goP&&pages[goP-1])setTimeout(()=>{if(t===tok)pages[goP-1].el.scrollIntoView()},80)}
 catch(e){Bd.innerHTML='<div class="pvErr"><b>No se pudo abrir el documento.</b><span>'+(navigator.onLine===false?'Estás sin internet y este reglamento no está descargado. Descárgalo con internet en Normativa → «Descargar para usar sin internet».':'Revisa tu conexión e intenta de nuevo.')+'</span></div>'}};
 $('pvX').onclick=()=>{tok++;if(io)io.disconnect();Bd.innerHTML='';doc=null;V.classList.remove('on');document.body.style.overflow=$('norm').classList.contains('on')?'':''};
 $('pvIn').onclick=()=>setZ(zoom+.5);$('pvOut').onclick=()=>setZ(zoom-.5)})();
