@@ -199,6 +199,18 @@ button svg,label svg{pointer-events:none}
 #plOpt.more{-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 36px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 36px),transparent)}
 #plOpt.less{-webkit-mask-image:linear-gradient(90deg,transparent,#000 36px);mask-image:linear-gradient(90deg,transparent,#000 36px)}
 #plOpt.more.less{-webkit-mask-image:linear-gradient(90deg,transparent,#000 36px,#000 calc(100% - 36px),transparent);mask-image:linear-gradient(90deg,transparent,#000 36px,#000 calc(100% - 36px),transparent)}
+#cert{position:fixed;inset:0;z-index:58;background:var(--bg);display:none;flex-direction:column;color:var(--tx)}#cert.on{display:flex}
+#cert .ceTop{display:flex;gap:8px;align-items:center;padding:calc(8px + env(safe-area-inset-top,0px)) 10px 8px;background:var(--card);border-bottom:1px solid var(--bd)}#cert .ceTop select{flex:1;min-width:0}#cert .ceTop button{flex:none;min-width:48px}
+#cert .ceTabs{display:flex;gap:6px;overflow-x:auto;padding:8px 10px;scrollbar-width:none;background:var(--card);border-bottom:1px solid var(--bd)}#cert .ceTabs::-webkit-scrollbar{display:none}#cert .ceTabs button{flex:none;min-height:40px;padding:6px 12px;white-space:nowrap}
+#cert .ceBody{flex:1;overflow-y:auto;padding:10px 10px calc(24px + env(safe-area-inset-bottom,0px));-webkit-overflow-scrolling:touch}
+#cert section{margin-bottom:10px}#cert .ceL{display:block;font-size:13px;font-weight:600;color:var(--mu);margin-top:8px}#cert .ceL input,#cert .ceL select{margin-top:3px;width:100%}
+#cert .ceG{display:grid;grid-template-columns:1fr 1fr;gap:8px}#cert .ceG3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+#cert .ceR{display:grid;grid-template-columns:1fr 1fr;gap:4px 10px;margin-top:10px;padding:8px 10px;border-radius:10px;background:var(--bg);font-size:13.5px}
+#cert .ceT{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;margin-top:8px;font-size:14px;align-items:center}#cert .ceT>div:nth-child(odd){color:var(--mu)}
+#cert .ceBad{color:var(--er)}#cert .ceOk{color:var(--ok)}
+#cert .ceA{padding:8px 10px;border-radius:10px;margin-top:6px;font-size:14px;border:1px solid var(--bd)}#cert .ceA.er{background:rgba(191,42,31,.1);border-color:rgba(191,42,31,.45)}#cert .ceA.wa{background:rgba(255,176,32,.14);border-color:rgba(255,176,32,.5)}#cert .ceA.in{background:rgba(31,111,235,.08)}#cert .ceA.ok{background:rgba(20,113,58,.1);border-color:rgba(20,113,58,.4)}
+#cert .ceCp{min-height:34px;padding:4px 10px;background:var(--bg);color:var(--tx);border:1px solid var(--bd);font-weight:600;text-align:left;justify-content:flex-start;max-width:100%;white-space:normal}#cert .ceCp span{color:var(--mu)}
+#cert .ceDoc{display:flex;gap:8px;margin-top:8px;font-size:14px}#cert .ceSum{background:var(--card)}
 #plSide{position:fixed;z-index:65;display:none;flex-direction:column;gap:3px;width:96px;padding:5px;overflow-y:auto;overscroll-behavior:contain;background:rgba(27,30,35,.93);border-radius:14px;box-shadow:0 6px 18px rgba(0,0,0,.35);scrollbar-width:none}#plSide::-webkit-scrollbar{display:none}#plSide.min{width:auto}
 #plSide .sdHd{display:flex;gap:3px;justify-content:space-between}#plSide .sdHd button{flex:1;background:#2c3138;border:0;color:#f1f3f5;border-radius:8px;min-height:30px;font:700 16px Barlow,system-ui,sans-serif}
 #plSide .sdG{display:flex;align-items:center;justify-content:space-between;gap:2px;background:none;border:0;color:#ffcc00;text-align:left;font:700 12px/1.15 Barlow,system-ui,sans-serif;padding:7px 3px;border-top:1px solid #3a3f47;margin-top:2px}#plSide .sdG i{font-style:normal;flex:none}
@@ -348,7 +360,7 @@ section.col .sTog::after{transform:rotate(-90deg)}section.col>.sHide{display:non
 .asA{align-self:flex-start;max-width:96%;background:var(--bg);border:1px solid var(--bd);border-radius:14px 14px 14px 4px;padding:10px 12px;position:relative}
 .asW{color:var(--mu);font-style:italic}.asT{line-height:1.45;padding-right:26px}
 .asH{font-weight:700;margin:10px 0 6px;font-size:14px}
-.asO{border:1px solid var(--bd2);border-radius:10px;padding:8px;margin-bottom:6px;font-size:14px;line-height:1.4}.asO button{margin-top:6px;min-height:38px;padding:4px 12px;font-size:14px}
+.asWarn{margin:8px 0;padding:8px 10px;border-radius:10px;background:rgba(255,170,0,.14);border:1px solid rgba(255,170,0,.45);font-size:13.5px;line-height:1.35}.asBad{margin-top:3px;font-size:12px;font-weight:700;color:#ffb74d}.asOk{margin-top:3px;font-size:12px;font-weight:700;color:#5fd38a}.asO{border:1px solid var(--bd2);border-radius:10px;padding:8px;margin-bottom:6px;font-size:14px;line-height:1.4}.asO button{margin-top:6px;min-height:38px;padding:4px 12px;font-size:14px}
 .asM{display:flex;gap:8px;align-items:center;min-height:36px;font-size:14px}.asM input{width:20px;height:20px;accent-color:var(--ac)}
 .asC{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.asC button{min-height:38px;padding:4px 12px;font-size:14px;font-weight:600}
 .asSp{position:absolute;top:4px;right:4px;width:32px;height:32px;font-size:16px}
@@ -452,7 +464,7 @@ body.dHex.dEdit #fabMenu button.cir:not(#fTiempo)::after{top:2px;right:auto;left
 </head>
 <body>
 <div class="row" style="margin:6px 0 12px"><h1 style="margin:0" id="ttl">Reporte de trabajo</h1><span class="fix" style="display:flex;gap:6px"><button class="sec fix" id="modeBtn" aria-label="Cambiar entre reporte y levantamiento"><i data-ic="swap"></i>Tipo</button><button class="sec fix" id="cfgBtn" aria-label="Configuración"><i data-ic="cfg"></i></button></span></div>
-<div id="modeMenu" style="display:none"><button id="mRep">Reporte de trabajo</button><button class="sec" id="mLev">Levantamiento</button></div>
+<div id="modeMenu" style="display:none"><button id="mRep">Reporte de trabajo</button><button class="sec" id="mLev">Levantamiento</button><button class="sec" id="mCert">⚡ Certificación TE1 <span style="font-size:12px">🔒 Pro</span></button></div>
 <div id="main">
 <button id="fab" aria-label="Menú">+</button>
 <div id="fabMenu"><button class="ok" id="fI">▶ Iniciar</button><button class="wa" id="fP">⏸ Pausa</button><button class="er" id="fF">⏹ Salida</button><button class="cir noLev" id="fTiempo">00:00:00</button><button class="cir" id="fTar" aria-label="Tareas"><i data-ic="tasks"></i>Tareas</button><button class="cir" id="fCalc" aria-label="Calculadora"><i data-ic="calc"></i>Calcular</button><button class="cir" id="fTools" aria-label="Herramientas"><i data-ic="tool"></i>Herram.</button><button class="cir" id="fPlano" aria-label="Dibujar plano"><i data-ic="plan"></i>Plano</button><button class="cir" id="fQuiz" aria-label="Cuestionarios"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="m9 13 2 2 4-4M10 2h4M12 2v3"/></svg>Quiz</button><button class="cir" id="fNorm" aria-label="Normativa"><span class="nEm" aria-hidden="true">📑</span>Normas</button><button class="cir" id="fRadio" aria-label="Radio"><span class="nEm" aria-hidden="true">📻</span>Radio</button><button class="cir" id="fWalk" aria-label="Walkie-talkie"><span class="nEm" aria-hidden="true">🎙️</span>Walkie</button><button class="cir onlyLev" id="fTool" aria-label="Materiales del levantamiento" style="display:none!important"><span>🛠</span></button></div>
@@ -1609,6 +1621,11 @@ tieP:{grp:'Tierra',b:'Tierra protec.',n:'Toma corriente de protección (1.3)',L:
 });
 SYMS.caja.grp='Canalización';SYMS.caja.b='Caja real';SYMS.caja.n='Caja de derivación (10 perforaciones)';
 {const ORD=['luz','lamp','apl','emer','vent','ench','ench2','ench3','enchE','int1','int2','int3','conm','puls','tab','tabF','tabE','med','emp','cajaS','caja','tie','tieP'];const rest=Object.keys(SYMS).filter(k=>!ORD.includes(k));ORD.concat(rest).forEach(k=>{if(!SYMS[k])return;const v=SYMS[k];delete SYMS[k];SYMS[k]=v})}
+
+Object.assign(SYMS,{
+ttm:{grp:'Unilineal',b:'Automático',n:'Interruptor termomagnético (unilineal)',L:'TABLEROS',v:[[0,-1.3],[0,1.3]],g:[['l',0,-1.3,0,-.45],['l',0,.45,0,1.3],['l',0,.45,-.55,-.4],['l',-.15,-.6,.15,-.3],['l',.15,-.6,-.15,-.3]]},
+difu:{grp:'Unilineal',b:'Diferencial',n:'Protector diferencial (unilineal)',L:'TABLEROS',v:[[0,-1.3],[0,1.3]],g:[['l',0,-1.3,0,-.45],['l',0,.45,0,1.3],['l',0,.45,-.55,-.4],['l',-.15,-.6,.15,-.3],['l',.15,-.6,-.15,-.3],['e',0,.85,.42,.17],['l',.42,.85,.75,.85],['l',.75,.85,.75,-.05],['l',.75,-.05,-.25,-.05]]}
+});
 const SCAT={el:'⚡ Electricidad',in:'🏠 Interior'};let symCat=null,symLblV='';
 const symCatOf=k=>(SYMS[k]&&SYMS[k].cat)||'el';
 const symBoxC={};function symBox(k){if(symBoxC[k])return symBoxC[k];const S=SYMS[k];let a=1e9,b=1e9,c=-1e9,d=-1e9;const P2=(x,y)=>{a=Math.min(a,x);b=Math.min(b,y);c=Math.max(c,x);d=Math.max(d,y)};
@@ -1646,6 +1663,7 @@ if(what)$('proTx').textContent=what+': función exclusiva de REDSTONE Pro. Inici
 if(!PRO_CLIENT_ID){st.textContent='Falta configurar el inicio de sesión con Google (ID de cliente).';return}
 try{await loadGis();google.accounts.id.initialize({client_id:PRO_CLIENT_ID,callback:proCred,auto_select:false,cancel_on_tap_outside:true,ux_mode:'popup'});google.accounts.id.renderButton(bt,{theme:'filled_black',size:'large',text:'signin_with',shape:'pill',locale:'es'})}catch(e){st.textContent='No se pudo cargar el inicio de sesión de Google. Revisa tu conexión.'}}
 $('proX').onclick=()=>$('proSh').classList.remove('on');$('proSh').onclick=e=>{if(e.target.id==='proSh')$('proSh').classList.remove('on')};
+window.proOk=proOk;window.proAsk=proAsk;
 $('proLogout').onclick=()=>{proSess=null;try{localStorage.removeItem('rep_pro');window.google&&google.accounts&&google.accounts.id&&google.accounts.id.disableAutoSelect()}catch(e){}$('proSh').classList.remove('on');proBadges();if(tool==='sym')setTool('pen');toast('Sesión cerrada')};
 
 /* ---- Capas: Plano (arquitectura) y Eléctrico ---- */
@@ -2901,10 +2919,13 @@ function nFind(j,q,n){const terms=new Map();tok(q).forEach(w=>{terms.set(w,1);(S
 const N=j.pg.length,sc=[];j.tf.forEach((m,i)=>{let s=0;terms.forEach((wt,w)=>{const f=m.get(w);if(!f)return;const d=j.df.get(w)||1;s+=wt*Math.log(1+(N-d+.5)/(d+.5))*(f*2.2)/(f+1.2*(.25+.75*m.len/j.avg))});if(s>0)sc.push([s,i])});
 sc.sort((a,b)=>b[0]-a[0]);return sc.slice(0,n).map(x=>x[1])}
 window.__nFind=async(k,q,n)=>{const j=await nLoad(k);return nFind(j,q,n||10).map(i=>j.docs[j.pg[i][0]].n+' p'+j.pg[i][1])};
-const SYSN='Eres un asistente de normativa chilena para técnicos instaladores. Respondes ÚNICAMENTE con base en los fragmentos del reglamento que vienen en el mensaje (cada uno numerado como [n]). Español de Chile, claro y práctico, máximo 6 frases; si la respuesta está en una tabla entrega el valor exacto con su unidad. Si los fragmentos no contienen la respuesta, pon "encontrado":false, dilo claramente y sugiere cómo reformular o en qué documento buscar: NUNCA inventes valores ni artículos. Responde SOLO un JSON: {"respuesta":"texto","encontrado":true,"citas":[{"n":número de fragmento usado,"punto":"numeral o artículo, ej. 5.2.3 o Art. 45","cita":"frase textual corta del fragmento (máx 25 palabras)"}],"preguntas":[{"q":"pregunta corta para precisar","opciones":["opción 1","opción 2"]}]}. Usa "preguntas" solo si la consulta es ambigua (máx 1). Máximo 4 citas.';
+const SYSN='Eres un asistente de normativa chilena para técnicos instaladores. Respondes ÚNICAMENTE con base en los fragmentos del reglamento que vienen en el mensaje (cada uno numerado como [n]). Español de Chile, claro y práctico, máximo 6 frases; si la respuesta está en una tabla entrega el valor exacto con su unidad. Si los fragmentos no contienen la respuesta, pon "encontrado":false, dilo claramente y sugiere cómo reformular o en qué documento buscar: NUNCA inventes valores ni artículos. Responde SOLO un JSON: {"respuesta":"texto","encontrado":true,"citas":[{"n":número de fragmento usado,"punto":"numeral o artículo, ej. 5.2.3 o Art. 45","cita":"copia EXACTA, carácter por carácter, de una frase o fila del fragmento (máx 25 palabras)"}],"preguntas":[{"q":"pregunta corta para precisar","opciones":["opción 1","opción 2"]}]}. Usa "preguntas" solo si la consulta es ambigua (máx 1). Máximo 4 citas. REGLAS DE TABLAS: copia la fila completa tal como aparece; NUNCA completes, extrapoles ni inventes columnas o filas que no estén; si el caso consultado no aparece en la tabla (por ejemplo más conductores que columnas), dilo explícitamente y usa la regla general que esté en los fragmentos (porcentajes, fórmulas o notas), mostrando el cálculo.';
+
+const vNorm=s=>fold(String(s||'')).replace(/[^a-z0-9,.]+/g,' ').replace(/([a-z])[.,]+(\s|$)/g,'$1$2').replace(/\s+/g,' ').trim();
+function vCita(c,src){const q=vNorm(c.cita);if(!q||q.length<4)return{ok:false,s:src[(+c.n||0)-1]};const own=src[(+c.n||0)-1];if(own&&vNorm(own.x).includes(q))return{ok:true,s:own};const other=src.find(s=>vNorm(s.x).includes(q));if(other)return{ok:true,s:other,moved:true};return{ok:false,s:own}}
 function addN(j,src){const d=document.createElement('div');d.className='asA';let h=`<div class="asT">${esc(j.respuesta||'')}</div>`;
-const cs=(j.citas||[]).map(c=>({c,s:src[(+c.n||0)-1]})).filter(x=>x.s);
-if(cs.length)h+='<div class="asH">📖 Fuentes</div>'+cs.map(({c,s})=>`<div class="asO"><div><b>${esc(s.n)}${c.punto?' · '+esc(String(c.punto)):''}</b> <span class="mu">· pág. ${s.p}</span>${c.cita?`<div class="mu" style="font-style:italic;margin-top:3px">“${esc(String(c.cita))}”</div>`:''}</div><div class="row" style="margin-top:6px"><button type="button" class="pri" data-nd="${esc(s.f)}" data-np="${s.p}" data-nt="${esc(s.n+' · '+s.t)}">Ver página</button><button type="button" class="sec" data-nc2="${esc(s.n+(c.punto?' punto '+c.punto:'')+' – '+s.t)}">Citar en notas</button></div></div>`).join('');
+const cs=(j.citas||[]).map(c=>{const v=c.cita?vCita(c,src):{ok:null,s:src[(+c.n||0)-1]};return{c,s:v.s,ok:v.ok}}).filter(x=>x.s);if(cs.some(x=>x.ok===false))h+=`<div class="asWarn">⚠️ Una o más citas <b>no aparecen tal cual</b> en el texto de la norma. Puede que la IA haya completado o inventado datos: abre la página y compruébalo antes de usar la respuesta.</div>`;
+if(cs.length)h+='<div class="asH">📖 Fuentes</div>'+cs.map(({c,s,ok})=>`<div class="asO"><div><b>${esc(s.n)}${c.punto?' · '+esc(String(c.punto)):''}</b> <span class="mu">· pág. ${s.p}</span>${c.cita?`<div class="mu" style="font-style:italic;margin-top:3px${ok===false?';text-decoration:line-through;opacity:.75':''}">“${esc(String(c.cita))}”</div><div class="${ok===false?'asBad':'asOk'}">${ok===false?'⚠️ Cita no encontrada textual en esta página':'✓ Cita verificada en el texto de la norma'}</div>`:''}</div><div class="row" style="margin-top:6px"><button type="button" class="pri" data-nd="${esc(s.f)}" data-np="${s.p}" data-nt="${esc(s.n+' · '+s.t)}">Ver página</button><button type="button" class="sec" data-nc2="${esc(s.n+(c.punto?' punto '+c.punto:'')+' – '+s.t)}">Citar en notas</button></div></div>`).join('');
 else if(src.length)h+='<div class="asH">📖 Páginas revisadas</div><div class="asC">'+src.slice(0,4).map(s=>`<button type="button" class="sec" data-nd="${esc(s.f)}" data-np="${s.p}" data-nt="${esc(s.n+' · '+s.t)}">${esc(s.n)} · pág. ${s.p}</button>`).join('')+'</div>';
 (j.preguntas||[]).forEach(q=>{if(q&&q.q)h+=`<div class="asH">❓ ${esc(q.q)}</div><div class="asC">${(q.opciones||[]).map(o=>`<button type="button" class="sec" data-aq="${esc(q.q)}" data-ao="${esc(o)}">${esc(o)}</button>`).join('')}</div>`});
 h+='<div class="mu" style="font-size:12px;margin-top:8px">⚠️ Respuesta de IA basada en el texto del reglamento guardado en la app. Verifica siempre en el documento oficial y su versión vigente.</div><button type="button" class="x asSp" data-as="1" aria-label="Leer en voz alta">🔊</button>';
@@ -2913,7 +2934,7 @@ L.addEventListener('click',e=>{const b=e.target.closest('[data-nd]');if(b){openP
 async function sendN(t){$('asIn').value='';$('asIn').style.height='';addUser(t);busy=true;$('asGo').disabled=true;const w=document.createElement('div');w.className='asA asW';w.textContent='Buscando en el reglamento…';L.appendChild(w);scroll();
 const fail=m=>{w.remove();L.insertAdjacentHTML('beforeend',`<div class="asA"><div class="asT">${m}</div></div>`);scroll();busy=false;$('asGo').disabled=false};
 let j;try{j=await nLoad(amode)}catch(e){return fail('No pude cargar el texto del reglamento. Revisa tu internet e intenta de nuevo.')}
-const ids=nFind(j,/→/.test(t)||t.length<25?lastQ+' '+t:t,10);let tot=0;const src=[],fr=[];for(const i of ids){const[di,p,tx]=j.pg[i],dc=j.docs[di];if(tot+tx.length>42000)break;tot+=tx.length;src.push({n:dc.n,t:dc.t,f:dc.f,p});fr.push('['+src.length+'] '+dc.n+' – '+dc.t+' · página '+p+'\n'+tx)}
+const ids=nFind(j,/→/.test(t)||t.length<25?lastQ+' '+t:t,10);let tot=0;const src=[],fr=[];for(const i of ids){const[di,p,tx]=j.pg[i],dc=j.docs[di];if(tot+tx.length>42000)break;tot+=tx.length;src.push({n:dc.n,t:dc.t,f:dc.f,p,x:tx});fr.push('['+src.length+'] '+dc.n+' – '+dc.t+' · página '+p+'\n'+tx)}
 lastQ=t;w.textContent='Leyendo '+src.length+' páginas…';
 const msg='Reglamento: '+NFULL[amode]+'.\n\nFRAGMENTOS:\n'+(fr.join('\n\n---\n\n')||'(no se encontraron páginas relacionadas)')+'\n\nPREGUNTA: '+t;
 try{const o=await gemCall({systemInstruction:{parts:[{text:SYSN}]},contents:[...histN.slice(-6),{role:'user',parts:[{text:msg}]}],generationConfig:{temperature:0.15,responseMimeType:'application/json'}});let r;try{r=JSON.parse(o.replace(/^```json|```$/g,''))}catch(_){r={respuesta:o,citas:[]}}
@@ -3246,6 +3267,228 @@ $('cbPaste').onclick=()=>openPaste('cob');$('mPaste').onclick=()=>openPaste('mat
 applyMode();renderAll();renderHist();setInterval(()=>{if(!document.hidden)renderTime()},1000);
 (async()=>{try{const m=await kvAll();if(!m.size){[KL,"rep_draft","rep_draft_lev","rep_bod","rep_fmt"].forEach(k=>{try{const v=localStorage.getItem(k);if(v!=null){kvc.set(k,v);kvSet(k,v).catch(()=>{})}}catch(e){}});return}
 m.forEach((v,k)=>kvc.set(k,v));s=load(KD)||blank();list=load(KL)||[];bod=load("rep_bod")||[];fmt=Object.assign({emp:'',tit:'Reporte de trabajo',pie:'',col:'#1f6feb',logo:null,bg:null},load('rep_fmt')||{});renderAll();renderHist()}catch(e){}})();
+</script>
+<script>
+/* ================= REDSTONE Pro · Certificación eléctrica (TE1) =================
+   Cálculos según Pliegos RIC (SEC): RIC 03 (caída de tensión 3%/5%, Tabla 3.1 demanda), RIC 04 (Tabla 4.4
+   capacidad de corriente 70 °C, Tabla 4.6/4.7 factores, 5.4 secciones mínimas, Tabla 4.17 ductos),
+   RIC 06 (tierra de servicio 20 Ω / 80 Ω), RIC 10 (5.1.3.5 a 5.1.4.6 y 5.2 viviendas), RIC 18 (cuadro de cargas
+   Fig. 18.4.1, documentos del proyecto), RIC 19 (Tabla 19.1 aislación). */
+(function(){
+const g=id=>document.getElementById(id);
+const E=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const TT=(m,o)=>{try{toast(m,o)}catch(e){}};
+const n0=v=>{const x=parseFloat(String(v==null?'':v).replace(',','.'));return isFinite(x)?x:0};
+const f1=v=>(Math.round(v*10)/10).toLocaleString('es-CL');
+const f2=v=>(Math.round(v*100)/100).toLocaleString('es-CL');
+const cpy=(t,msg)=>{const ok=()=>TT(msg||'Copiado');const fb=()=>{const a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();try{document.execCommand('copy');ok()}catch(e){TT('No se pudo copiar')}a.remove()};try{navigator.clipboard.writeText(t).then(ok,fb)}catch(e){fb()}};
+
+/* ---- Tablas RIC ---- */
+const SECS=[1.5,2.5,4,6,10,16,25,35,50,70,95];
+const AMP={A1:[14,18,24,31,42,56,73,89,108,136,164],B1:[16,21,28,36,50,68,89,110,134,171,207]};// RIC 04 Tabla 4.4, 70 °C (H07V, H07Z1, THWN, NYIFY)
+const FT=[[25,1.06],[30,1],[35,.94],[40,.87],[45,.79],[50,.71]];// RIC 04 Tabla 4.7 (70 °C, métodos A1/B1/E)
+const ftOf=t=>{for(const [m,f] of FT)if(t<=m)return f;return .61};
+const fnOf=n=>n<=3?1:n<=6?.8:n<=24?.7:n<=42?.6:.5;// RIC 04 Tabla 4.6
+const DUCT3={1.5:16,2.5:20,4:20,6:20,10:25,16:32,25:40,35:40,50:50,70:63,95:63};// RIC 04 Tabla 4.17, 3 conductores
+const PROT=[6,10,16,20,25,32,40,50,63,80,100,125];
+const DIFS=[25,40,63,80,100];
+const RHO=0.018;// Ω·mm²/m cobre
+const TIPOS={ilum:{n:'Iluminación',min:1.5,minI:10,curva:'B'},ench:{n:'Enchufes',min:2.5,minI:16,curva:'C'},mixto:{n:'Mixto',min:2.5,minI:16,curva:'C'},cocina:{n:'Enchufes cocina/lavadero',min:2.5,minI:16,curva:'C'},horno:{n:'Horno / cocina eléctrica',min:2.5,minI:16,curva:'C'},fuerza:{n:'Fuerza / otros equipos',min:2.5,minI:10,curva:'C'}};
+const FASES=['R','S','T'];
+
+/* ---- Datos ---- */
+const KEY='rep_cert';
+let DB;try{DB=JSON.parse(localStorage.getItem(KEY)||'null')}catch(e){}
+if(!DB||!Array.isArray(DB.list))DB={cur:0,list:[]};
+const blankP=()=>({id:Date.now(),name:'Proyecto '+(DB.list.length+1),inst:{tipo:'vivienda',obra:'nueva',sup:'',fase:'mono',met:'A1',tamb:30,alimL:10,dir:'',num:'',sector:'',comuna:'',region:'',rol:'',coord:'',prop:'',propRut:'',propTel:'',propMail:'',empN:'',empExist:''},
+ cir:[{id:1,n:'C1',tipo:'ilum',luces:6,wl:100,ench:0,we:250,otros:0,od:'',L:15,ub:'Dormitorios y living',fase:'R'},{id:2,n:'C2',tipo:'ench',luces:0,wl:100,ench:6,we:250,otros:0,od:'',L:18,ub:'Dormitorios y living',fase:'R'},{id:3,n:'C3',tipo:'cocina',luces:0,wl:100,ench:4,we:250,otros:0,od:'',L:12,ub:'Cocina y lavadero',fase:'R'}],
+ med:{tS:'',tMet:'Telurómetro, método de caída de potencial (3 puntos)',ais:{},vEns:500,dif:{},insT:'',insA:''}});
+if(!DB.list.length)DB.list.push(blankP());
+let P=DB.list[DB.cur]||DB.list[0];let tab='obra';
+const save=()=>{P.upd=Date.now();try{localStorage.setItem(KEY,JSON.stringify(DB))}catch(e){TT('No se pudo guardar')}};
+
+/* ---- Cálculos ---- */
+function calcCir(c,I){const T=TIPOS[c.tipo]||TIPOS.ench,V=I.V;
+ const pL=n0(c.luces)*(n0(c.wl)||100),pE=n0(c.ench)*(n0(c.we)||250),pO=n0(c.otros),P_=pL+pE+pO;
+ const Ib=P_/V,Ireq=1.1*P_/V;// RIC 10 5.1.4.1: +10% de capacidad
+ const In=PROT.find(x=>x>=Math.max(Ireq,T.minI))||PROT[PROT.length-1];
+ const L=n0(c.L),ft=ftOf(n0(I.tamb)||30),fn=1,amp=AMP[I.met]||AMP.A1;let S=null,ic=0,dv=0;
+ for(let k=0;k<SECS.length;k++){const s=SECS[k];if(s<T.min)continue;const Ic=amp[k]*fn*ft;const d=2*L*Ib*RHO/s/V*100;if(Ic>=In&&d<=3){S=s;ic=Ic;dv=d;break}}
+ const ok=!!S;if(!S){S=SECS[SECS.length-1];ic=amp[SECS.length-1]*ft;dv=2*L*Ib*RHO/S/V*100}
+ const cent=n0(c.luces)+n0(c.ench)+(pO>0?1:0);const unit=c.tipo==='ilum'?(n0(c.wl)||100):(n0(c.we)||250);
+ const maxC=Math.floor(.9*In*V/unit);// RIC 10 5.1.4.4
+ return{P:P_,pL,pE,pO,Ib,Ireq,In,S,ic,dv,ok,duct:DUCT3[S]||'',cent,maxC,curva:T.curva}}
+function calcAll(){const I=Object.assign({},P.inst);I.V=220;const R=P.cir.map(c=>({c,r:calcCir(c,I)}));
+ const tot=R.reduce((a,x)=>a+x.r.P,0),alum=R.filter(x=>['ilum','ench','mixto','cocina'].includes(x.c.tipo)).reduce((a,x)=>a+x.r.P,0),fz=tot-alum;
+ // RIC 03 Tabla 3.1 (alimentadores de alumbrado)
+ let dem;const kw=alum/1000;if(I.tipo==='vivienda')dem=Math.min(kw,3)+Math.max(0,Math.min(kw,120)-3)*.35+Math.max(0,kw-120)*.25;else if(I.tipo==='local')dem=Math.min(kw,50)+Math.max(0,kw-50)*.8;else dem=kw;dem=dem*1000+fz;
+ const tri=I.fase==='tri',Vl=tri?380:220,Idem=tri?dem/(Math.sqrt(3)*380):dem/220;
+ const Ig=PROT.find(x=>x>=Math.max(Idem,I.tipo==='vivienda'?25:10))||125;
+ const ft=ftOf(n0(I.tamb)||30),amp=AMP[I.met]||AMP.A1,La=n0(I.alimL);let Sa=null,dva=0;
+ for(let k=0;k<SECS.length;k++){const s=SECS[k];if(s<4)continue;const d=(tri?Math.sqrt(3):2)*La*Idem*RHO/s/Vl*100;if(amp[k]*ft>=Ig&&d<=3){Sa=s;dva=d;break}}
+ if(!Sa){Sa=95;dva=(tri?Math.sqrt(3):2)*La*Idem*RHO/95/Vl*100}
+ // Diferenciales: máx. 3 circuitos por diferencial (RIC 10 5.1.3.7), In dif ≥ suma de automáticos aguas abajo (5.1.3.6)
+ const G=[];let cur=[];R.forEach(x=>{const sum=cur.reduce((a,y)=>a+y.r.In,0)+x.r.In;if(cur.length>=3||(cur.length&&sum>63)){G.push(cur);cur=[]}cur.push(x)});if(cur.length)G.push(cur);
+ if(G.length===1&&G[0].length>1){const a=G[0];G.splice(0,1,a.slice(0,Math.ceil(a.length/2)),a.slice(Math.ceil(a.length/2)))}
+ const D=G.map((gr,i)=>{const s=gr.reduce((a,y)=>a+y.r.In,0);return{n:'ID'+(i+1),cir:gr.map(y=>y.c.n),sum:s,In:DIFS.find(v=>v>=Math.min(s,Ig))||100}});
+ const worst=Math.max(0,...R.map(x=>x.r.dv));
+ // alertas
+ const A=[];const nC=R.length,sup=n0(I.sup);
+ if(I.tipo==='vivienda'){const need=sup&&sup<30?2:3;if(nC<need)A.push(['er',`Faltan circuitos: una vivienda ${sup&&sup<30?'menor a':'de'} 30 m² necesita al menos ${need} circuitos.`,'RIC 10 · 5.2 b']);
+  if(!R.some(x=>x.c.tipo==='cocina'))A.push(['er','Falta un circuito exclusivo de enchufes de cocina y/o lavadero de al menos 16 A.','RIC 10 · 5.2 d']);
+  R.filter(x=>x.c.tipo==='cocina'&&x.r.In<16).forEach(x=>A.push(['er',`${x.c.n}: el circuito de cocina/lavadero debe ser de al menos 16 A.`,'RIC 10 · 5.2 d']));}
+ R.forEach(x=>{if(!x.r.P)A.push(['wa',`${x.c.n} no tiene carga ingresada.`,'']);if(!x.r.ok)A.push(['er',`${x.c.n}: con ${x.c.L} m ni 95 mm² cumple el 3% de caída de tensión. Revisa el largo o divide el circuito.`,'RIC 03 · 5.1.3']);
+  if(x.c.tipo==='ilum'&&n0(x.c.ench))A.push(['wa',`${x.c.n} es de iluminación pero tiene enchufes: márcalo como Mixto.`,'RIC 10 · 4.6']);});
+ if(Ig<25&&I.tipo==='vivienda')A.push(['er','La protección del empalme de una vivienda debe ser de al menos 25 A.','RIC 10 · 5.2']);
+ if(worst+dva>5)A.push(['er',`Caída de tensión total ${f2(worst+dva)}% supera el 5% (alimentador ${f2(dva)}% + peor circuito ${f2(worst)}%).`,'RIC 03 · 5.1.3']);
+ const tS=n0(P.med.tS);if(P.med.tS!==''&&tS>0){const lim=(dem<=10000)?80:20;if(tS>80)A.push(['er',`Tierra de servicio ${f1(tS)} Ω supera los 80 Ω.`,'RIC 06 · 6.1/6.2']);else if(tS>20)A.push(['wa',`Tierra de servicio ${f1(tS)} Ω: sobre 20 Ω solo se acepta hasta 80 Ω si la instalación es ≤ 10 kW, con corte omnipolar, diferencial general de 300 mA y diferenciales de 30 mA en todos los circuitos${lim===20?' (esta instalación supera 10 kW)':''}.`,'RIC 06 · 6.2.1'])}
+ R.forEach(x=>{const v=P.med.ais[x.c.id];if(v!==undefined&&v!==''&&n0(v)<.5)A.push(['er',`${x.c.n}: aislación ${f2(n0(v))} MΩ es menor a 0,5 MΩ (ensayo 500 V CC).`,'RIC 19 · Tabla 19.1'])});
+ if(tot>10000)A.push(['in','Potencia sobre 10 kW: la declaración requiere memoria explicativa e informe de imágenes.','RIC 18 · 6.2.1.1 / 6.4.1']);
+ return{I,R,tot,alum,fz,dem,Idem,Ig,Sa,dva,D,worst,A,tri,Vl}}
+
+/* ---- UI ---- */
+function shell(){if(g('cert'))return;const d=document.createElement('div');d.id='cert';d.setAttribute('role','dialog');d.setAttribute('aria-label','Certificación eléctrica');
+ d.innerHTML=`<div class="ceTop"><button class="sec" id="ceX" aria-label="Cerrar">✕</button><select id="ceP" aria-label="Proyecto"></select><button class="sec" id="ceNew">+ Nuevo</button></div>
+<div class="ceTabs" id="ceTabs"></div><div class="ceBody" id="ceB"></div>`;document.body.appendChild(d);
+ g('ceX').onclick=()=>{save();d.classList.remove('on')};
+ g('ceNew').onclick=()=>{DB.list.push(blankP());DB.cur=DB.list.length-1;P=DB.list[DB.cur];P.cir=[{id:1,n:'C1',tipo:'ilum',luces:0,wl:100,ench:0,we:250,otros:0,od:'',L:10,ub:'',fase:'R'}];save();tab='obra';render()};
+ g('ceP').onchange=e=>{DB.cur=+e.target.value;P=DB.list[DB.cur];save();render()};
+ d.addEventListener('input',onIn);d.addEventListener('change',onIn);d.addEventListener('click',onClick)}
+const TABS=[['obra','1 · Obra'],['cir','2 · Circuitos'],['tab','3 · Tablero'],['med','4 · Mediciones'],['te1','5 · TE1']];
+function render(){shell();const K=calcAll();g('ceP').innerHTML=DB.list.map((p,i)=>`<option value="${i}"${i===DB.cur?' selected':''}>${E(p.name)}</option>`).join('');
+ g('ceTabs').innerHTML=TABS.map(([k,v])=>`<button class="${tab===k?'pri':'sec'}" data-tab="${k}">${v}</button>`).join('');
+ const B=g('ceB');const y=B.scrollTop;const a=document.activeElement;let q=null;if(a&&B.contains(a)){const s=a.dataset;q=s.k?`[data-k="${s.k}"]`:s.c!==undefined?`[data-c="${s.c}"][data-f="${s.f}"]`:s.ais!==undefined?`[data-ais="${s.ais}"]`:s.dift!==undefined?`[data-dift="${s.dift}"]`:null}
+B.innerHTML=({obra:vObra,cir:vCir,tab:vTab,med:vMed,te1:vTe1}[tab])(K);B.scrollTop=y;if(q){const n=B.querySelector(q);if(n){try{n.focus({preventScroll:true});if(n.setSelectionRange&&n.type!=='checkbox'){const l=n.value.length;n.setSelectionRange(l,l)}}catch(e){}}}}
+const fld=(lbl,k,v,o)=>`<label class="ceL">${lbl}${o&&o.hint?` <span class="mu">${o.hint}</span>`:''}<input data-k="${k}" value="${E(v)}"${o&&o.num?' inputmode="decimal"':''}${o&&o.ph?` placeholder="${E(o.ph)}"`:''}></label>`;
+const sel=(lbl,k,v,opts)=>`<label class="ceL">${lbl}<select data-k="${k}">${opts.map(([a,b])=>`<option value="${a}"${String(v)===String(a)?' selected':''}>${b}</option>`).join('')}</select></label>`;
+function vObra(){const I=P.inst;return`<section><b>Proyecto</b>${fld('Nombre del proyecto','name',P.name)}
+<div class="ceG">${sel('Tipo de instalación','inst.tipo',I.tipo,[['vivienda','Vivienda'],['local','Local comercial / oficina'],['otro','Otro']])}${sel('Obra','inst.obra',I.obra,[['nueva','Nueva'],['ampliacion','Ampliación'],['modificacion','Modificación']])}</div>
+<div class="ceG">${fld('Superficie (m²)','inst.sup',I.sup,{num:1})}${sel('Empalme','inst.fase',I.fase,[['mono','Monofásico 220 V'],['tri','Trifásico 380 V']])}</div>
+<div class="ceG">${sel('Canalización','inst.met',I.met,[['A1','Embutida en muro (A1)'],['B1','Sobrepuesta / adosada (B1)']])}${fld('Temp. ambiente (°C)','inst.tamb',I.tamb,{num:1})}</div>
+${fld('Largo del alimentador, medidor → tablero (m)','inst.alimL',I.alimL,{num:1})}</section>
+<section><b>Propietario</b>${fld('Nombre','inst.prop',I.prop)}<div class="ceG">${fld('RUT','inst.propRut',I.propRut,{ph:'12.345.678-9'})}${fld('Teléfono','inst.propTel',I.propTel)}</div>${fld('Correo','inst.propMail',I.propMail)}</section>
+<section><b>Dirección de la instalación</b><div class="ceG">${fld('Calle','inst.dir',I.dir)}${fld('Número','inst.num',I.num)}</div><div class="ceG">${fld('Sector / villa','inst.sector',I.sector)}${fld('Comuna','inst.comuna',I.comuna)}</div><div class="ceG">${fld('Región','inst.region',I.region)}${fld('Rol de la propiedad','inst.rol',I.rol)}</div>
+<label class="ceL">Coordenadas (WGS84)<div class="row"><input data-k="inst.coord" value="${E(I.coord)}" placeholder="-31.7795, -70.9639"><button class="sec" data-act="gps" type="button">📍 GPS</button></div></label>
+<div class="ceG">${fld('N° de cliente / medidor','inst.empN',I.empN)}${fld('Empalme existente (A)','inst.empExist',I.empExist,{num:1,ph:'25'})}</div></section>`}
+function vCir(K){return K.R.map(({c,r},i)=>`<section class="ceC"><div class="row" style="justify-content:space-between"><input data-c="${i}" data-f="n" value="${E(c.n)}" style="width:70px;font-weight:700;text-align:center">
+<select data-c="${i}" data-f="tipo" style="flex:1">${Object.entries(TIPOS).map(([k,v])=>`<option value="${k}"${c.tipo===k?' selected':''}>${v.n}</option>`).join('')}</select><button class="sec" data-act="del" data-i="${i}" aria-label="Eliminar circuito" style="min-width:44px">🗑</button></div>
+<div class="ceG3"><label class="ceL">Luces<input data-c="${i}" data-f="luces" value="${E(c.luces)}" inputmode="numeric"></label><label class="ceL">W por luz<input data-c="${i}" data-f="wl" value="${E(c.wl)}" inputmode="numeric"></label><label class="ceL">Enchufes<input data-c="${i}" data-f="ench" value="${E(c.ench)}" inputmode="numeric"></label></div>
+<div class="ceG3"><label class="ceL">W por enchufe<input data-c="${i}" data-f="we" value="${E(c.we)}" inputmode="numeric"></label><label class="ceL">Otros (W)<input data-c="${i}" data-f="otros" value="${E(c.otros)}" inputmode="numeric"></label><label class="ceL">Largo (m)<input data-c="${i}" data-f="L" value="${E(c.L)}" inputmode="decimal"></label></div>
+<div class="ceG"><label class="ceL">Ubicación<input data-c="${i}" data-f="ub" value="${E(c.ub)}"></label>${K.tri?`<label class="ceL">Fase<select data-c="${i}" data-f="fase">${FASES.map(f=>`<option${c.fase===f?' selected':''}>${f}</option>`).join('')}</select></label>`:`<label class="ceL">Otros: detalle<input data-c="${i}" data-f="od" value="${E(c.od)}" placeholder="Ej: hervidor 2000 W"></label>`}</div>
+<div class="ceR"><span><b>${f1(r.P)} W</b> · ${f1(r.Ib)} A</span><span>Automático <b>${r.In} A curva ${r.curva}</b></span><span>Conductor <b>${f1(r.S)} mm²</b> · ducto ${r.duct} mm</span><span>Caída <b class="${r.dv>3?'ceBad':''}">${f2(r.dv)}%</b> · máx. ${r.maxC} centros</span></div></section>`).join('')+
+`<button class="pri" data-act="add" style="width:100%">+ Agregar circuito</button>
+<section class="ceSum"><b>Total instalado: ${f1(K.tot/1000)} kW</b><div class="mu">Luces sin dato de potencia: 100 W por centro (RIC 10 · 5.1.4.5). Enchufes: 250 W cada uno; doble o triple cuenta como uno (5.1.4.6). La protección considera la carga + 10% (5.1.4.1). Sección por capacidad de corriente (RIC 04 · Tabla 4.4, ${P.inst.met}) y caída de tensión ≤ 3% (RIC 03 · 5.1.3).</div></section>`}
+function alertsH(K){return K.A.length?K.A.map(([t,m,r])=>`<div class="ceA ${t}"><div>${t==='er'?'⛔':t==='wa'?'⚠️':'ℹ️'} ${E(m)}</div>${r?`<div class="mu">${E(r)}</div>`:''}</div>`).join(''):'<div class="ceA ok">✅ Sin observaciones con los datos ingresados.</div>'}
+function vTab(K){const kw=K.dem/1000,empKw=(K.tri?Math.sqrt(3)*380:220)*K.Ig/1000;return`<section><b>Protecciones del tablero</b>
+<div class="ceT"><div>Protección general</div><div><b>${K.tri?'3':'2'}×${K.Ig} A</b> curva C, corte omnipolar</div>
+${K.D.map(d=>`<div>${d.n} · ${d.cir.join(', ')}</div><div><b>${K.tri?'4':'2'}×${d.In} A · 30 mA</b> <span class="mu">(suma ${d.sum} A)</span></div>`).join('')}
+${K.R.map(({c,r})=>`<div>${E(c.n)} · ${E(TIPOS[c.tipo].n)}</div><div><b>1×${r.In} A curva ${r.curva}</b> · ${f1(r.S)} mm²</div>`).join('')}</div>
+<div class="mu" style="margin-top:6px">Diferencial de 30 mA en todos los circuitos (RIC 10 · 5.1.3.5); su corriente nominal debe ser mayor o igual a la protección general o a la suma de los automáticos que alimenta (5.1.3.6); máximo 3 circuitos por diferencial y ninguno sobre el 100% de la instalación (5.1.3.7).</div></section>
+<section><b>Demanda y alimentador</b><div class="ceT"><div>Potencia instalada</div><div><b>${f2(K.tot/1000)} kW</b></div><div>Demanda máxima</div><div><b>${f2(kw)} kW</b> · ${f1(K.Idem)} A</div>
+<div>Alimentador</div><div><b>${f1(K.Sa)} mm²</b> · ${n0(P.inst.alimL)} m · caída ${f2(K.dva)}%</div><div>Caída total (peor punto)</div><div><b class="${K.worst+K.dva>5?'ceBad':''}">${f2(K.worst+K.dva)}%</b> de 5%</div></div>
+<div class="mu" style="margin-top:6px">Demanda de alumbrado ${P.inst.tipo==='vivienda'?'casa habitación: primeros 3 kW al 100% y el resto al 35%':P.inst.tipo==='local'?'local comercial: primeros 50 kW al 100% y el resto al 80%':'al 100%'} (RIC 03 · Tabla 3.1); fuerza y hornos al 100%. Alimentador mínimo 4 mm² (RIC 04 · 5.4).</div></section>
+<section><b>Empalme sugerido</b><div class="ceT"><div>Capacidad</div><div><b>${K.tri?'Trifásico':'Monofásico'} ${K.Ig} A</b> ≈ ${f1(empKw)} kW</div>${P.inst.empExist?`<div>Empalme existente</div><div><b>${E(P.inst.empExist)} A</b> ${n0(P.inst.empExist)<K.Ig?'<span class="ceBad">· insuficiente</span>':'· suficiente'}</div>`:''}</div>
+<div class="mu" style="margin-top:6px">Vivienda: mínimo 25 A (RIC 10 · 5.2). Confirma el tipo de empalme y la potencia con la distribuidora.</div></section>
+<section><b>Diagrama unilineal</b><div class="mu">Se arma con estos datos y se abre en el editor de planos para que lo ajustes (mover, cambiar textos, agregar cosas) y lo guardes en tu galería.</div><button class="pri" data-act="uni" style="width:100%;margin-top:8px">📐 Generar y editar diagrama unilineal</button></section>
+<section><b>Revisión RIC</b>${alertsH(K)}</section>`}
+function vMed(K){const M=P.med;return`<section><b>Puesta a tierra</b><div class="ceG">${fld('Tierra de servicio (Ω)','med.tS',M.tS,{num:1})}${fld('Método','med.tMet',M.tMet)}</div>
+<div class="mu">Máximo 20 Ω; hasta 80 Ω solo con ≤ 10 kW, corte omnipolar, diferencial general 300 mA y 30 mA en todos los circuitos (RIC 06 · 6.1 y 6.2.1).</div></section>
+<section><b>Resistencia de aislación</b> <span class="mu">· ensayo ${M.vEns||500} V CC, 1 minuto, aparatos desconectados</span>
+<div class="ceT">${K.R.map(({c})=>{const v=M.ais[c.id];const bad=v!==undefined&&v!==''&&n0(v)<.5;return`<div>${E(c.n)} · ${E(c.ub||TIPOS[c.tipo].n)}</div><div class="row"><input data-ais="${c.id}" value="${E(v===undefined?'':v)}" inputmode="decimal" placeholder="MΩ" style="width:90px"><b class="${bad?'ceBad':'ceOk'}">${v===undefined||v===''?'':bad?'✗':'✓'}</b></div>`}).join('')}</div>
+<div class="mu">Mínimo 0,5 MΩ (RIC 19 · Tabla 19.1). Con dispositivos electrónicos, fase y neutro unidos.</div></section>
+<section><b>Prueba de diferenciales</b><div class="ceT">${K.D.map(d=>{const v=M.dif[d.n]||{};return`<div>${d.n} · ${d.cir.join(', ')}</div><div class="row"><label class="row" style="gap:6px"><input type="checkbox" data-dif="${d.n}" ${v.ok?'checked':''} style="width:24px;min-height:24px">Opera</label><input data-dift="${d.n}" value="${E(v.t||'')}" placeholder="ms" inputmode="numeric" style="width:70px"></div>`}).join('')}</div></section>
+<section><b>Instrumentos</b> <span class="mu">(marca, modelo y certificado de calibración vigente · RIC 18 · 6.2.6.2)</span>${fld('Telurómetro','med.insT',M.insT,{ph:'Marca, modelo, N° certificado, vencimiento'})}${fld('Megóhmetro (aislación)','med.insA',M.insA,{ph:'Marca, modelo, N° certificado, vencimiento'})}</section>`}
+function te1Data(K){const I=P.inst,instName=(()=>{try{return JSON.parse(localStorage.getItem('rep_secInst')||'{}')}catch(e){return{}}})();
+ return[['Instalador',[['Nombre',instName.ssI||''],['RUT',instName.ssIR||''],['Licencia SEC',instName.ssL||'']]],
+ ['Propietario',[['Nombre',I.prop],['RUT',I.propRut],['Teléfono',I.propTel],['Correo',I.propMail]]],
+ ['Instalación',[['Dirección',[I.dir,I.num].filter(Boolean).join(' ')],['Sector',I.sector],['Comuna',I.comuna],['Región',I.region],['Rol',I.rol],['Coordenadas WGS84',I.coord],['Tipo',{vivienda:'Vivienda',local:'Local comercial / oficina',otro:'Otro'}[I.tipo]],['Obra',{nueva:'Nueva',ampliacion:'Ampliación',modificacion:'Modificación'}[I.obra]],['Superficie',I.sup?I.sup+' m²':'']]],
+ ['Datos técnicos',[['Potencia instalada',f2(K.tot/1000)+' kW'],['Demanda máxima',f2(K.dem/1000)+' kW'],['Empalme',(K.tri?'Trifásico 380 V ':'Monofásico 220 V ')+K.Ig+' A'],['N° cliente / medidor',I.empN],['Protección general',(K.tri?'3':'2')+'×'+K.Ig+' A'],['Alimentador',f1(K.Sa)+' mm²'],['N° de circuitos',String(K.R.length)],['Diferenciales',K.D.map(d=>d.n+' '+d.In+' A 30 mA').join(' · ')]]],
+ ['Mediciones',[['Tierra de servicio',P.med.tS?P.med.tS+' Ω':''],['Método',P.med.tMet],['Aislación mínima',(()=>{const v=K.R.map(x=>P.med.ais[x.c.id]).filter(v=>v!==undefined&&v!=='').map(n0);return v.length?f2(Math.min(...v))+' MΩ':''})()],['Instrumentos',[P.med.insT,P.med.insA].filter(Boolean).join(' / ')]]]]}
+function vTe1(K){const D=te1Data(K);const memo=K.tot>10000;const docs=[['Plano(s) del proyecto con cuadro de cargas y diagrama unilineal','RIC 18 · 6.1.1.2 / 6.3',true],['Informe de verificación inicial con ensayos y mediciones','RIC 18 · 6.2.6 / RIC 19 · 8.1',true],['Certificados de calibración vigentes de los instrumentos','RIC 18 · 6.2.6.2',true],['Memoria explicativa (descripción de la obra y cálculos)','RIC 18 · 6.2.1 · '+(memo?'obligatoria: supera 10 kW':'no obligatoria si es ≤ 10 kW'),memo],['Informe de imágenes (numeración, tablero abierto y cerrado, rotulación)','RIC 18 · 6.4 · '+(memo?'obligatorio':'solo si se exige memoria'),memo]];
+ const errs=K.A.filter(a=>a[0]==='er').length;
+ return`<section><b>Paso a paso de la declaración</b><div class="mu">La declaración se envía en la plataforma en línea de la SEC con tu Clave Única. Copia cada dato tocándolo. Revisa siempre lo que pide la plataforma vigente.</div>${errs?`<div class="ceA er" style="margin-top:8px">⛔ Hay ${errs} observación(es) en "3 · Tablero" para corregir antes de declarar.</div>`:''}</section>
+${D.map(([t,rows],i)=>`<section><b>${i+1}. ${t}</b><div class="ceT">${rows.map(([k,v])=>`<div>${E(k)}</div><div>${v?`<button class="ceCp" data-cp="${E(v)}">${E(v)} <span>⧉</span></button>`:'<span class="ceBad">Falta</span>'}</div>`).join('')}</div></section>`).join('')}
+<section><b>${D.length+1}. Documentos a subir</b>${docs.map(([d,r,req])=>`<div class="ceDoc"><span>${req?'☐':'◻︎'}</span><div><div>${E(d)}</div><div class="mu">${E(r)}</div></div></div>`).join('')}</section>
+<section><b>Exportar</b><div class="ceG"><button class="pri" data-act="pdf">📄 PDF cuadro de cargas y memoria</button><button class="sec" data-act="copyall">⧉ Copiar resumen</button></div><div class="mu" style="margin-top:6px">El PDF lleva el cuadro de cargas con el formato de la Figura 18.4.1 del RIC 18, los cálculos, las mediciones y tu logo.</div></section>`}
+
+
+/* ---- Diagrama unilineal editable (se abre en el editor de planos) ---- */
+function buildUni(K){const C='#1b2a4a',it=[],L=(x1,y1,x2,y2,w)=>it.push({t:'line',c:C,w:w||2,x1,y1,x2,y2,ly:'el'}),T=(x,y,txt,sz)=>it.push({t:'text',c:C,size:sz||10,x,y,txt,ly:'el'}),S=(k,x,y)=>it.push({t:'sym',k,x,y,s:10,r:0,w:2,c:C,lb:''});
+ const I=P.inst,dx=66,XM=60,cx={};let x=XM+70;K.D.forEach(d=>{d.cir.forEach(n=>{cx[n]=x;x+=dx});x+=18});const xEnd=Math.max(x-dx-18,XM+40);const poles=K.tri?'3':'2',ms=(v)=>String(v).replace('.',',');
+ T(XM-30,22,'DIAGRAMA UNILINEAL'+(P.name?' · '+P.name:''),13);
+ S('emp',XM,62);T(XM+16,60,'EMPALME '+(K.tri?'TRIFÁSICO 380 V':'MONOFÁSICO 220 V')+' · '+K.Ig+' A',10);if(I.empN)T(XM+16,72,'N° cliente/medidor: '+I.empN,9);
+ L(XM,71,XM,102);S('med',XM,110);T(XM+16,114,'MEDIDOR',10);
+ L(XM,118,XM,162);T(XM+10,138,'Alimentador '+poles+'×'+ms(K.Sa)+' mm² + T '+ms(K.Sa)+' mm²',9);T(XM+10,149,'L = '+ms(n0(I.alimL))+' m · ΔV = '+f2(K.dva)+'%',9);
+ S('ttm',XM,175);T(XM+12,172,'PG '+poles+'×'+K.Ig+' A curva C',10);T(XM+12,183,'corte omnipolar',9);L(XM,188,XM,215);
+ L(XM-30,215,xEnd,215,4);T(XM-30,209,'TDA',10);
+ L(XM-30,215,XM-30,239);S('tie',XM-30,250);T(XM-46,272,'T.S.'+(P.med.tS?' '+ms(P.med.tS)+' Ω':''),9);
+ K.D.forEach(d=>{const xs=d.cir.map(n=>cx[n]),gx=xs.reduce((a,b)=>a+b,0)/xs.length;L(gx,215,gx,247);S('difu',gx,260);T(gx+12,257,d.n,10);T(gx+12,268,poles+'×'+d.In+' A 30 mA',9);L(gx,273,gx,300);if(xs.length>1)L(Math.min(...xs),300,Math.max(...xs),300,3)});
+ K.R.forEach(({c,r})=>{const X=cx[c.n];L(X,300,X,327);S('ttm',X,340);L(X,353,X,382);const tx=X-18;let yy=398;[[c.n,12],['1×'+r.In+' A '+r.curva,9],[ms(r.S)+' mm²',9],['Ø'+r.duct+' mm',9],[f1(r.P)+' W',9],[(TIPOS[c.tipo]||{}).n?(TIPOS[c.tipo].n.split(' ')[0]):'',9]].forEach(([s,z])=>{if(s){T(tx,yy,s,z);yy+=z+3}})});
+ return it}
+/* ---- Eventos ---- */
+function setK(k,v){const p=k.split('.');let o=P;for(let i=0;i<p.length-1;i++)o=o[p[i]];o[p[p.length-1]]=v}
+let rt=null;const soon=()=>{};const later=()=>{clearTimeout(rt);rt=setTimeout(render,0)};
+function onIn(e){const t=e.target;if(t.id==='ceP')return;
+ if(t.dataset.k){setK(t.dataset.k,t.value);save();if(t.dataset.k==='name')g('ceP').options[DB.cur].text=t.value;if(e.type==='change')later();return}
+ if(t.dataset.c!==undefined){const c=P.cir[+t.dataset.c];c[t.dataset.f]=t.value;save();if(e.type==='change')later();return}
+ if(t.dataset.ais!==undefined){P.med.ais[t.dataset.ais]=t.value;save();if(e.type==='change')later();return}
+ if(t.dataset.dif!==undefined){(P.med.dif[t.dataset.dif]=P.med.dif[t.dataset.dif]||{}).ok=t.checked;save();return}
+ if(t.dataset.dift!==undefined){(P.med.dif[t.dataset.dift]=P.med.dif[t.dataset.dift]||{}).t=t.value;save();return}}
+function onClick(e){const b=e.target.closest('button');if(!b)return;const d=b.dataset;
+ if(d.tab){save();tab=d.tab;g('ceB').scrollTop=0;render();return}
+ if(d.cp!==undefined){cpy(d.cp,'Copiado: '+d.cp.slice(0,40));return}
+ if(d.act==='add'){const id=Math.max(0,...P.cir.map(c=>c.id))+1;P.cir.push({id,n:'C'+(P.cir.length+1),tipo:'ench',luces:0,wl:100,ench:0,we:250,otros:0,od:'',L:10,ub:'',fase:'R'});save();render();setTimeout(()=>{g('ceB').scrollTop=g('ceB').scrollHeight},30);return}
+ if(d.act==='del'){const i=+d.i,gone=P.cir.splice(i,1)[0];save();render();TT(gone.n+' eliminado',{label:'Deshacer',ms:6000,fn:()=>{P.cir.splice(i,0,gone);save();render()}});return}
+ if(d.act==='gps'){if(!navigator.geolocation){TT('Este teléfono no entrega ubicación');return}TT('Buscando ubicación…');navigator.geolocation.getCurrentPosition(p=>{P.inst.coord=p.coords.latitude.toFixed(5)+', '+p.coords.longitude.toFixed(5);save();render();TT('Ubicación lista')},()=>TT('No se pudo obtener la ubicación'),{enableHighAccuracy:true,timeout:15000});return}
+ if(d.act==='copyall'){const K=calcAll();const txt=te1Data(K).map(([t,rows])=>t.toUpperCase()+'\n'+rows.map(([k,v])=>k+': '+(v||'—')).join('\n')).join('\n\n')+'\n\nCUADRO DE CARGAS\n'+K.R.map(({c,r})=>`${c.n} ${TIPOS[c.tipo].n}: ${c.luces||0} luces, ${c.ench||0} enchufes, ${f1(r.P)} W, ${r.In} A curva ${r.curva}, ${f1(r.S)} mm², ducto ${r.duct} mm, caída ${f2(r.dv)}%`).join('\n');cpy(txt,'Resumen copiado');return}
+ if(d.act==='pdf'){pdf();return}
+ if(d.act==='uni'){const K=calcAll();if(!K.R.length){TT('Agrega circuitos primero');return}save();if(typeof window.openPlano!=='function'){TT('No se pudo abrir el editor de planos');return}window.openPlano(-1,{data:{items:buildUni(K),bg:'dots',esc:0.5}});TT('Diagrama listo: edítalo y toca Guardar para dejarlo en tu galería');return}}
+
+/* ---- PDF: cuadro de cargas (RIC 18 Fig. 18.4.1) + memoria de cálculo ---- */
+async function pdf(){const J=window.jspdf&&window.jspdf.jsPDF;if(!J){TT('No se cargó el generador de PDF: abre la app con internet y prueba de nuevo');return}
+ TT('Generando PDF…');const K=calcAll(),I=P.inst,d=new J({unit:'mm',format:'a4',orientation:'landscape'}),W=297,H=210,M=12;let y=M;
+ const san=s=>typeof s==='string'?s.replace(/MΩ/g,' Mohm').replace(/Ω/g,' ohm').replace(/ρ/g,'rho').replace(/ΔV/g,'dV').replace(/→/g,'->').replace(/≥/g,'>=').replace(/≤/g,'<=').replace(/  +/g,' '):Array.isArray(s)?s.map(san):s;const T0=d.text.bind(d);d.text=(s,...a)=>T0(san(s),...a);const S0=d.splitTextToSize.bind(d);d.splitTextToSize=(s,...a)=>S0(san(s),...a);
+ let lg=null;try{const fm=JSON.parse(localStorage.getItem('rep_fmt')||'{}');lg=fm.logo||null}catch(e){}
+ const head=()=>{y=M;if(lg){try{d.addImage(lg,'PNG',M,y,22,14,undefined,'FAST')}catch(e){}}d.setFont('helvetica','bold');d.setFontSize(15);d.text('REDSTONE',lg?M+26:M,y+6);d.setFont('helvetica','normal');d.setFontSize(8);d.setTextColor(110);d.text('Iluminando tu futuro con eficiencia',lg?M+26:M,y+11);d.setTextColor(0);
+  d.setFont('helvetica','bold');d.setFontSize(12);d.text('CUADRO DE CARGAS Y MEMORIA DE CÁLCULO',W-M,y+6,{align:'right'});d.setFont('helvetica','normal');d.setFontSize(8.5);d.text((P.name||'')+' · '+new Date().toLocaleDateString('es-CL'),W-M,y+11,{align:'right'});y+=18;d.setDrawColor(0);d.setLineWidth(.4);d.line(M,y,W-M,y);y+=6};
+ head();
+ d.setFontSize(8.5);const info=[['Propietario',I.prop+(I.propRut?' · RUT '+I.propRut:'')],['Dirección',[I.dir,I.num,I.sector,I.comuna,I.region].filter(Boolean).join(', ')],['Rol',I.rol],['Instalación',{vivienda:'Vivienda',local:'Local comercial / oficina',otro:'Otro'}[I.tipo]+' · obra '+({nueva:'nueva',ampliacion:'ampliación',modificacion:'modificación'}[I.obra])+(I.sup?' · '+I.sup+' m²':'')],['Empalme',(K.tri?'Trifásico 380 V':'Monofásico 220 V')+' · '+K.Ig+' A'+(I.empN?' · N° '+I.empN:'')]];
+ info.forEach(([k,v],i)=>{const x=M+(i%2)*((W-2*M)/2),yy=y+Math.floor(i/2)*5;d.setFont('helvetica','bold');d.text(k+':',x,yy);d.setFont('helvetica','normal');d.text(String(v||'—'),x+24,yy)});y+=Math.ceil(info.length/2)*5+3;
+ // tabla cuadro de cargas
+ const cols=[['TDA',12],['CTO N°',13],['PORT.',13],['ENCH.',13],['OTROS',14],['TOTAL\nCENTROS',16],['POTENCIA\nW',18],['FASE',11],['DIF.',22],['DISY.',20],['COND.\nmm²',14],['DUCTO\nØ mm',15],['UBICACIÓN',0]];const tw=W-2*M;const fixed=cols.reduce((a,c)=>a+c[1],0);cols[cols.length-1][1]=tw-fixed;
+ d.setFont('helvetica','bold');d.setFontSize(10);d.text('CUADRO DE CARGAS DE ALUMBRADO',W/2,y+4,{align:'center'});y+=7;
+ const rowH=6.2,hdrH=9;let x=M;d.setFontSize(7);d.setFillColor(235,235,235);d.rect(M,y,tw,hdrH,'F');cols.forEach(([t,w])=>{d.rect(x,y,w,hdrH);const ls=t.split('\n');ls.forEach((l,k)=>d.text(l,x+w/2,y+(ls.length===1?5.6:3.8+k*3.4),{align:'center'}));x+=w});y+=hdrH;
+ const difOf=n=>{const g=K.D.find(dd=>dd.cir.includes(n));return g?g.n+' '+(K.tri?'4':'2')+'×'+g.In+'A 30mA':''};
+ d.setFont('helvetica','normal');d.setFontSize(7.5);let tP=0,tL=0,tE=0,tC=0;
+ K.R.forEach(({c,r},i)=>{if(y>H-30){d.addPage();head()}x=M;const oc=n0(c.otros)>0?1:0;const vals=[i===0?'TDA':'',c.n,String(n0(c.luces)||''),String(n0(c.ench)||''),oc?f1(n0(c.otros))+'W':'',String(r.cent),f1(r.P),K.tri?c.fase:'R',difOf(c.n),'1×'+r.In+'A '+r.curva,f1(r.S),String(r.duct),c.ub||TIPOS[c.tipo].n];tP+=r.P;tL+=n0(c.luces);tE+=n0(c.ench);tC+=r.cent;
+  cols.forEach(([t,w],k)=>{d.rect(x,y,w,rowH);const s=d.splitTextToSize(vals[k],w-2)[0]||'';d.text(s,k===cols.length-1?x+1.5:x+w/2,y+4.2,{align:k===cols.length-1?'left':'center'});x+=w});y+=rowH});
+ x=M;d.setFont('helvetica','bold');const tv=['TOTAL','',String(tL),String(tE),'',String(tC),f1(tP),'','','','','',''];cols.forEach(([t,w],k)=>{d.rect(x,y,w,rowH);if(tv[k])d.text(tv[k],x+w/2,y+4.2,{align:'center'});x+=w});y+=rowH+6;
+ // memoria de cálculo
+ const sec=t=>{if(y>H-24){d.addPage();head()}d.setFont('helvetica','bold');d.setFontSize(9.5);d.text(t,M,y);y+=5;d.setFont('helvetica','normal');d.setFontSize(8)};
+ const ln=t=>{d.splitTextToSize(t,W-2*M).forEach(s=>{if(y>H-12){d.addPage();head()}d.text(s,M,y);y+=4})};
+ sec('1. Cálculo de circuitos (RIC 10 · 5.1.4, RIC 04 · Tabla 4.4, RIC 03 · 5.1.3)');
+ ln(`Tensión 220 V, cobre ρ = 0,018 Ω·mm²/m, canalización método ${I.met} (${I.met==='A1'?'embutida en muro':'adosada'}), temperatura ambiente ${n0(I.tamb)||30} °C (ft = ${f2(ftOf(n0(I.tamb)||30))}). Capacidad del circuito = potencia × 1,10. Caída de tensión ΔV = 2·L·I·ρ/S.`);
+ K.R.forEach(({c,r})=>ln(`${c.n} (${TIPOS[c.tipo].n}): P = ${f1(r.P)} W → I = ${f2(r.Ib)} A; I×1,1 = ${f2(r.Ireq)} A → automático ${r.In} A curva ${r.curva}. Conductor ${f1(r.S)} mm² (Ic = ${f1(r.ic)} A ≥ ${r.In} A). L = ${n0(c.L)} m → ΔV = ${f2(r.dv)}% ≤ 3%. Máx. ${r.maxC} centros (90% de la capacidad).`));
+ y+=2;sec('2. Demanda, alimentador y empalme (RIC 03 · Tabla 3.1 y 5.1.3, RIC 04 · 5.4, RIC 10 · 5.2)');
+ ln(`Potencia instalada ${f2(K.tot/1000)} kW (alumbrado ${f2(K.alum/1000)} kW, fuerza ${f2(K.fz/1000)} kW). Demanda máxima ${f2(K.dem/1000)} kW → ${f2(K.Idem)} A. Protección general ${(K.tri?'3':'2')}×${K.Ig} A. Alimentador ${f1(K.Sa)} mm², L = ${n0(I.alimL)} m, ΔV = ${f2(K.dva)}%. Caída total en el punto más desfavorable ${f2(K.worst+K.dva)}% ≤ 5%.`);
+ ln('Diferenciales 30 mA: '+K.D.map(g=>`${g.n} (${g.cir.join(', ')}) ${(K.tri?'4':'2')}×${g.In} A`).join('; ')+'. Máximo 3 circuitos por diferencial (RIC 10 · 5.1.3.7).');
+ y+=2;sec('3. Mediciones (RIC 06, RIC 19 · Tabla 19.1)');
+ const M2=P.med;ln(`Puesta a tierra de servicio: ${M2.tS?M2.tS+' Ω':'pendiente'} · ${M2.tMet||''}.`);
+ ln('Aislación ('+(M2.vEns||500)+' V CC, 1 min): '+K.R.map(({c})=>`${c.n} ${M2.ais[c.id]!==undefined&&M2.ais[c.id]!==''?f2(n0(M2.ais[c.id]))+' MΩ':'pendiente'}`).join(' · ')+' (mínimo 0,5 MΩ).');
+ ln('Prueba de diferenciales: '+K.D.map(g=>{const v=M2.dif[g.n]||{};return`${g.n} ${v.ok?'opera':'pendiente'}${v.t?' '+v.t+' ms':''}`}).join(' · ')+'.');
+ if(M2.insT||M2.insA)ln('Instrumentos: '+[M2.insT,M2.insA].filter(Boolean).join(' / ')+'.');
+ const obs=K.A.filter(a=>a[0]!=='in');if(obs.length){y+=2;sec('4. Observaciones');obs.forEach(a=>ln('• '+a[1]+(a[2]?' ('+a[2]+')':'')))}
+ let ins={};try{ins=JSON.parse(localStorage.getItem('rep_secInst')||'{}')}catch(e){}
+ if(y>H-28){d.addPage();head()}y=Math.max(y+8,H-26);d.setLineWidth(.3);d.line(W-M-80,y,W-M,y);d.setFontSize(8);d.text((ins.ssI||'Instalador eléctrico')+(ins.ssL?' · Licencia SEC '+ins.ssL:''),W-M-40,y+4,{align:'center'});if(ins.ssIR)d.text('RUT '+ins.ssIR,W-M-40,y+8,{align:'center'});
+ const n=d.getNumberOfPages();for(let i=1;i<=n;i++){d.setPage(i);d.setFontSize(7);d.setTextColor(120);d.text('Página '+i+' de '+n+' · Cálculos referenciales según Pliegos Técnicos RIC (SEC). Verificar con la normativa vigente.',W/2,H-5,{align:'center'});d.setTextColor(0)}
+ const nm=('cuadro-cargas-'+(P.name||'proyecto')).replace(/[^\wáéíóúñ -]/gi,'').trim().replace(/\s+/g,'-')+'.pdf';const ab=d.output('arraybuffer');
+ try{await dlSave({filename:nm,data:ab});TT('PDF listo',{label:'Compartir',ms:7000,fn:()=>{try{shareFiles([new File([ab],nm,{type:'application/pdf'})],'Cuadro de cargas')}catch(e){}}})}catch(e){TT('No se pudo guardar el PDF')}}
+
+window.openCert=()=>{if(window.proOk&&!window.proOk()){window.proAsk&&window.proAsk('La certificación eléctrica (cálculos y guía TE1)');return}shell();render();g('cert').classList.add('on')};
+window.__certCalc=()=>calcAll();
+})();
+
+document.getElementById('mCert').onclick=()=>{document.getElementById('modeMenu').style.display='none';window.openCert()};
 </script>
 </body>
 </html>
