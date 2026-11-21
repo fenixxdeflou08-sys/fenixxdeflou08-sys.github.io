@@ -210,7 +210,7 @@ button svg,label svg{pointer-events:none}
 #cert .ceBad{color:var(--er)}#cert .ceOk{color:var(--ok)}
 #cert .ceA{padding:8px 10px;border-radius:10px;margin-top:6px;font-size:14px;border:1px solid var(--bd)}#cert .ceA.er{background:rgba(191,42,31,.1);border-color:rgba(191,42,31,.45)}#cert .ceA.wa{background:rgba(255,176,32,.14);border-color:rgba(255,176,32,.5)}#cert .ceA.in{background:rgba(31,111,235,.08)}#cert .ceA.ok{background:rgba(20,113,58,.1);border-color:rgba(20,113,58,.4)}
 #cert .ceCp{min-height:34px;padding:4px 10px;background:var(--bg);color:var(--tx);border:1px solid var(--bd);font-weight:600;text-align:left;justify-content:flex-start;max-width:100%;white-space:normal}#cert .ceCp span{color:var(--mu)}
-#cert .ceDoc{display:flex;gap:8px;margin-top:8px;font-size:14px}#cert .ceSum{background:var(--card)}
+#cert .ceDif{margin-top:8px;padding:8px;border-radius:10px;border:1px solid var(--bd)}#cert .ceDoc{display:flex;gap:8px;margin-top:8px;font-size:14px}#cert .ceSum{background:var(--card)}
 #plSide{position:fixed;z-index:65;display:none;flex-direction:column;gap:3px;width:96px;padding:5px;overflow-y:auto;overscroll-behavior:contain;background:rgba(27,30,35,.93);border-radius:14px;box-shadow:0 6px 18px rgba(0,0,0,.35);scrollbar-width:none}#plSide::-webkit-scrollbar{display:none}#plSide.min{width:auto}
 #plSide .sdHd{display:flex;gap:3px;justify-content:space-between}#plSide .sdHd button{flex:1;background:#2c3138;border:0;color:#f1f3f5;border-radius:8px;min-height:30px;font:700 16px Barlow,system-ui,sans-serif}
 #plSide .sdG{display:flex;align-items:center;justify-content:space-between;gap:2px;background:none;border:0;color:#ffcc00;text-align:left;font:700 12px/1.15 Barlow,system-ui,sans-serif;padding:7px 3px;border-top:1px solid #3a3f47;margin-top:2px}#plSide .sdG i{font-style:normal;flex:none}
@@ -1626,6 +1626,7 @@ SYMS.caja.grp='Canalización';SYMS.caja.b='Caja real';SYMS.caja.n='Caja de deriv
 
 Object.assign(SYMS,{
 ttm:{grp:'Unilineal',b:'Automático',n:'Interruptor termomagnético (unilineal)',L:'TABLEROS',v:[[0,-1.3],[0,1.3]],g:[['l',0,-1.3,0,-.45],['l',0,.45,0,1.3],['l',0,.45,-.55,-.4],['l',-.15,-.6,.15,-.3],['l',.15,-.6,-.15,-.3]]},
+fus:{grp:'Unilineal',b:'Portafusible',n:'Portafusible (unilineal)',L:'TABLEROS',v:[[0,-1.3],[0,1.3]],g:[['l',0,-1.3,0,1.3],['r',-.32,-.75,.64,1.5]]},
 difu:{grp:'Unilineal',b:'Diferencial',n:'Protector diferencial (unilineal)',L:'TABLEROS',v:[[0,-1.3],[0,1.3]],g:[['l',0,-1.3,0,-.45],['l',0,.45,0,1.3],['l',0,.45,-.55,-.4],['l',-.15,-.6,.15,-.3],['l',.15,-.6,-.15,-.3],['e',0,.85,.42,.17],['l',.42,.85,.75,.85],['l',.75,.85,.75,-.05],['l',.75,-.05,-.25,-.05]]}
 });
 const SCAT={el:'⚡ Electricidad',in:'🏠 Interior'};let symCat=null,symLblV='';
@@ -3341,29 +3342,30 @@ let P=DB.list[DB.cur]||DB.list[0];let tab='obra';
 const save=()=>{P.upd=Date.now();try{localStorage.setItem(KEY,JSON.stringify(DB))}catch(e){TT('No se pudo guardar')}};
 
 /* ---- Cálculos ---- */
-function calcCir(c,I){const T=TIPOS[c.tipo]||TIPOS.ench,V=I.V;
+function calcCir(c,I,ov){const T=TIPOS[c.tipo]||TIPOS.ench,V=I.V;
  const pL=n0(c.luces)*(n0(c.wl)||100),pE=n0(c.ench)*(n0(c.we)||250),pO=n0(c.otros),P_=pL+pE+pO;
  const Ib=P_/V,Ireq=1.1*P_/V;// RIC 10 5.1.4.1: +10% de capacidad
- const In=PROT.find(x=>x>=Math.max(Ireq,T.minI))||PROT[PROT.length-1];
+ const InAuto=PROT.find(x=>x>=Math.max(Ireq,T.minI))||PROT[PROT.length-1],In=ov&&n0(ov.In)?n0(ov.In):InAuto;
  const L=n0(c.L),ft=ftOf(n0(I.tamb)||30),fn=1,amp=AMP[I.met]||AMP.A1;let S=null,ic=0,dv=0;
  for(let k=0;k<SECS.length;k++){const s=SECS[k];if(s<T.min)continue;const Ic=amp[k]*fn*ft;const d=2*L*Ib*RHO/s/V*100;if(Ic>=In&&d<=3){S=s;ic=Ic;dv=d;break}}
  const ok=!!S;if(!S){S=SECS[SECS.length-1];ic=amp[SECS.length-1]*ft;dv=2*L*Ib*RHO/S/V*100}
  const cent=n0(c.luces)+n0(c.ench)+(pO>0?1:0);const unit=c.tipo==='ilum'?(n0(c.wl)||100):(n0(c.we)||250);
  const maxC=Math.floor(.9*In*V/unit);// RIC 10 5.1.4.4
- return{P:P_,pL,pE,pO,Ib,Ireq,In,S,ic,dv,ok,duct:DUCT3[S]||'',cent,maxC,curva:T.curva}}
-function calcAll(){const I=Object.assign({},P.inst);I.V=220;const R=P.cir.map(c=>({c,r:calcCir(c,I)}));
+ return{P:P_,pL,pE,pO,Ib,Ireq,In,InAuto,S,ic,dv,ok,duct:DUCT3[S]||'',cent,maxC,curva:ov&&ov.curva?ov.curva:T.curva,man:!!(ov&&(n0(ov.In)||ov.curva))}}
+function calcAll(){const I=Object.assign({},P.inst);I.V=220;const TB=P.tab||{},MAN=TB.modo==='manual';const R=P.cir.map(c=>({c,r:calcCir(c,I,MAN?(TB.cir||{})[c.id]:null)}));
  const tot=R.reduce((a,x)=>a+x.r.P,0),alum=R.filter(x=>['ilum','ench','mixto','cocina'].includes(x.c.tipo)).reduce((a,x)=>a+x.r.P,0),fz=tot-alum;
  // RIC 03 Tabla 3.1 (alimentadores de alumbrado)
  let dem;const kw=alum/1000;if(I.tipo==='vivienda')dem=Math.min(kw,3)+Math.max(0,Math.min(kw,120)-3)*.35+Math.max(0,kw-120)*.25;else if(I.tipo==='local')dem=Math.min(kw,50)+Math.max(0,kw-50)*.8;else dem=kw;dem=dem*1000+fz;
  const tri=I.fase==='tri',Vl=tri?380:220,Idem=tri?dem/(Math.sqrt(3)*380):dem/220;
- const Ig=PROT.find(x=>x>=Math.max(Idem,I.tipo==='vivienda'?25:10))||125;
+ const IgAuto=PROT.find(x=>x>=Math.max(Idem,I.tipo==='vivienda'?25:10))||125,Ig=MAN&&TB.pg&&n0(TB.pg.In)?n0(TB.pg.In):IgAuto,pgCurva=MAN&&TB.pg&&TB.pg.curva||'C';
  const ft=ftOf(n0(I.tamb)||30),amp=AMP[I.met]||AMP.A1,La=n0(I.alimL);let Sa=null,dva=0;
  for(let k=0;k<SECS.length;k++){const s=SECS[k];if(s<4)continue;const d=(tri?Math.sqrt(3):2)*La*Idem*RHO/s/Vl*100;if(amp[k]*ft>=Ig&&d<=3){Sa=s;dva=d;break}}
  if(!Sa){Sa=95;dva=(tri?Math.sqrt(3):2)*La*Idem*RHO/95/Vl*100}
  // Diferenciales: máx. 3 circuitos por diferencial (RIC 10 5.1.3.7), In dif ≥ suma de automáticos aguas abajo (5.1.3.6)
  const G=[];let cur=[];R.forEach(x=>{const sum=cur.reduce((a,y)=>a+y.r.In,0)+x.r.In;if(cur.length>=3||(cur.length&&sum>63)){G.push(cur);cur=[]}cur.push(x)});if(cur.length)G.push(cur);
  if(G.length===1&&G[0].length>1){const a=G[0];G.splice(0,1,a.slice(0,Math.ceil(a.length/2)),a.slice(Math.ceil(a.length/2)))}
- const D=G.map((gr,i)=>{const s=gr.reduce((a,y)=>a+y.r.In,0);return{n:'ID'+(i+1),cir:gr.map(y=>y.c.n),sum:s,In:DIFS.find(v=>v>=Math.min(s,Ig))||100}});
+ let D=G.map((gr,i)=>{const s=gr.reduce((a,y)=>a+y.r.In,0);return{n:'ID'+(i+1),cir:gr.map(y=>y.c.n),sum:s,In:DIFS.find(v=>v>=Math.min(s,Ig))||100}});
+ if(MAN&&Array.isArray(TB.difs)){D=TB.difs.map((dd,i)=>{const cs=R.filter(x=>(dd.cir||[]).includes(x.c.id));return{n:dd.n||('ID'+(i+1)),cir:cs.map(x=>x.c.n),sum:cs.reduce((a,x)=>a+x.r.In,0),In:n0(dd.In)||25,mA:n0(dd.mA)||30}})}
  const worst=Math.max(0,...R.map(x=>x.r.dv));
  // alertas
  const A=[];const nC=R.length,sup=n0(I.sup);
@@ -3376,8 +3378,13 @@ function calcAll(){const I=Object.assign({},P.inst);I.V=220;const R=P.cir.map(c=
  if(worst+dva>5)A.push(['er',`Caída de tensión total ${f2(worst+dva)}% supera el 5% (alimentador ${f2(dva)}% + peor circuito ${f2(worst)}%).`,'RIC 03 · 5.1.3']);
  const tS=n0(P.med.tS);if(P.med.tS!==''&&tS>0){const lim=(dem<=10000)?80:20;if(tS>80)A.push(['er',`Tierra de servicio ${f1(tS)} Ω supera los 80 Ω.`,'RIC 06 · 6.1/6.2']);else if(tS>20)A.push(['wa',`Tierra de servicio ${f1(tS)} Ω: sobre 20 Ω solo se acepta hasta 80 Ω si la instalación es ≤ 10 kW, con corte omnipolar, diferencial general de 300 mA y diferenciales de 30 mA en todos los circuitos${lim===20?' (esta instalación supera 10 kW)':''}.`,'RIC 06 · 6.2.1'])}
  R.forEach(x=>{const v=P.med.ais[x.c.id];if(v!==undefined&&v!==''&&n0(v)<.5)A.push(['er',`${x.c.n}: aislación ${f2(n0(v))} MΩ es menor a 0,5 MΩ (ensayo 500 V CC).`,'RIC 19 · Tabla 19.1'])});
+ if(MAN){R.forEach(x=>{if(x.r.In<x.r.Ireq-1e-9)A.push(['er',`${x.c.n}: el automático de ${x.r.In} A es menor que la carga + 10% (${f1(x.r.Ireq)} A).`,'RIC 10 · 5.1.4.1']);if(x.c.tipo==='cocina'&&x.r.In<16)A.push(['er',`${x.c.n}: cocina/lavadero debe ser de al menos 16 A.`,'RIC 10 · 5.2 d']);if(x.r.man&&x.r.S>(calcCir(x.c,I,null).S))A.push(['in',`${x.c.n}: con ${x.r.In} A el conductor sube a ${f1(x.r.S)} mm² para quedar protegido.`,'RIC 10 · 5.1.5.1'])});
+  const inD=new Set(D.flatMap(dd=>dd.cir));R.forEach(x=>{if(!inD.has(x.c.n))A.push(['er',`${x.c.n} no está en ningún diferencial.`,'RIC 10 · 5.1.3.5'])});
+  D.forEach(dd=>{if(dd.cir.length>3)A.push(['er',`${dd.n} alimenta ${dd.cir.length} circuitos: máximo 3 por diferencial.`,'RIC 10 · 5.1.3.7']);if(dd.mA>30)A.push(['er',`${dd.n} es de ${dd.mA} mA: los circuitos de alumbrado necesitan 30 mA o menos.`,'RIC 10 · 5.1.3.5']);if(dd.In<Ig&&dd.In<dd.sum)A.push(['er',`${dd.n} de ${dd.In} A queda sin protección: debe ser ≥ ${Ig} A (protección general) o ≥ ${dd.sum} A (suma de sus automáticos).`,'RIC 10 · 5.1.3.6'])});
+  if(D.filter(dd=>dd.cir.length).length===1&&R.length>1&&D.find(dd=>dd.cir.length).cir.length===R.length){const dd=D.find(z=>z.cir.length);A.push(['er',`${dd.n} protege toda la instalación (${dd.cir.join(', ')}). Un diferencial que agrupa más de un circuito no puede operar sobre el 100% de la instalación: divide en al menos 2 diferenciales.`,'RIC 10 · 5.1.3.7'])}
+  R.forEach(x=>{if(x.c.tipo==='ilum'&&x.r.curva!=='B')A.push(['in',`${x.c.n}: el RIC sugiere curva B para iluminación (es referencial; la curva ${x.r.curva} se acepta si se justifica la selectividad).`,'RIC 10 · 5.1.4.2'])})}
  if(tot>10000)A.push(['in','Potencia sobre 10 kW: la declaración requiere memoria explicativa e informe de imágenes.','RIC 18 · 6.2.1.1 / 6.4.1']);
- return{I,R,tot,alum,fz,dem,Idem,Ig,Sa,dva,D,worst,A,tri,Vl}}
+ return{I,R,tot,alum,fz,dem,Idem,Ig,IgAuto,pgCurva,Sa,dva,D,worst,A,tri,Vl,MAN,TB}}
 
 /* ---- UI ---- */
 function shell(){if(g('cert'))return;const d=document.createElement('div');d.id='cert';d.setAttribute('role','dialog');d.setAttribute('aria-label','Certificación eléctrica');
@@ -3412,9 +3419,17 @@ function vCir(K){return K.R.map(({c,r},i)=>`<section class="ceC"><div class="row
 `<button class="pri" data-act="add" style="width:100%">+ Agregar circuito</button>
 <section class="ceSum"><b>Total instalado: ${f1(K.tot/1000)} kW</b><div class="mu">Luces sin dato de potencia: 100 W por centro (RIC 10 · 5.1.4.5). Enchufes: 250 W cada uno; doble o triple cuenta como uno (5.1.4.6). La protección considera la carga + 10% (5.1.4.1). Sección por capacidad de corriente (RIC 04 · Tabla 4.4, ${P.inst.met}) y caída de tensión ≤ 3% (RIC 03 · 5.1.3).</div></section>`}
 function alertsH(K){return K.A.length?K.A.map(([t,m,r])=>`<div class="ceA ${t}"><div>${t==='er'?'⛔':t==='wa'?'⚠️':'ℹ️'} ${E(m)}</div>${r?`<div class="mu">${E(r)}</div>`:''}</div>`).join(''):'<div class="ceA ok">✅ Sin observaciones con los datos ingresados.</div>'}
-function vTab(K){const kw=K.dem/1000,empKw=(K.tri?Math.sqrt(3)*380:220)*K.Ig/1000;return`<section><b>Protecciones del tablero</b>
-<div class="ceT"><div>Protección general</div><div><b>${K.tri?'3':'2'}×${K.Ig} A</b> curva C, corte omnipolar</div>
-${K.D.map(d=>`<div>${d.n} · ${d.cir.join(', ')}</div><div><b>${K.tri?'4':'2'}×${d.In} A · 30 mA</b> <span class="mu">(suma ${d.sum} A)</span></div>`).join('')}
+function vMan(K){const TB=P.tab,po=K.tri?'3':'2',opt=(arr,v)=>arr.map(a=>`<option${String(a)===String(v)?' selected':''}>${a}</option>`).join('');
+ return`<section><b>Mi tablero</b><div class="mu">Pon lo que realmente vas a instalar. La app revisa que cumpla el RIC.</div>
+<div class="ceT"><div>Protección general</div><div class="row">${po}× <select data-tb="pg.In" style="width:84px">${opt(PROT,TB.pg.In)}</select> A <select data-tb="pg.curva" style="width:70px">${opt(['B','C','D'],TB.pg.curva)}</select></div>
+<div>Portafusible + luz piloto</div><div class="row"><input type="checkbox" data-tbc="pil" ${TB.pil?'checked':''} style="width:24px;min-height:24px;flex:none"><select data-tb="pf" style="width:84px">${opt([1,2,4,6,10],TB.pf||2)}</select> A</div></div></section>
+<section><b>Automáticos</b><div class="ceT">${K.R.map(({c,r})=>{const o=(TB.cir||{})[c.id]||{};return`<div>${E(c.n)} · ${E(c.ub||TIPOS[c.tipo].n)}<div class="mu" style="font-size:12px">calculado: ${r.InAuto} A</div></div><div class="row">1× <select data-tbcir="${c.id}" data-fld="In" style="width:84px">${opt(PROT,o.In||r.InAuto)}</select> A <select data-tbcir="${c.id}" data-fld="curva" style="width:70px">${opt(['B','C','D'],o.curva||r.curva)}</select></div>`}).join('')}</div></section>
+<section><b>Diferenciales</b>${(TB.difs||[]).map((dd,i)=>`<div class="ceDif"><div class="row" style="justify-content:space-between;flex-wrap:wrap"><b>${E(dd.n||'ID'+(i+1))}</b><div class="row">${po}× <select data-tbd="${i}" data-fld="In" style="width:80px">${opt(DIFS,dd.In)}</select> A <select data-tbd="${i}" data-fld="mA" style="width:84px">${opt([30,300],dd.mA||30)}</select> mA<button class="sec" data-act="ddel" data-i="${i}" style="min-width:40px;min-height:40px">🗑</button></div></div>
+<div class="row" style="flex-wrap:wrap;gap:10px;margin-top:6px">${P.cir.map(c=>`<label class="row" style="gap:5px"><input type="checkbox" data-tbdc="${i}" data-cid="${c.id}" ${(dd.cir||[]).includes(c.id)?'checked':''} style="width:22px;min-height:22px;flex:none">${E(c.n)}</label>`).join('')}</div></div>`).join('')}
+<button class="sec" data-act="dadd" style="width:100%;margin-top:8px">+ Agregar diferencial</button></section>`}
+function vTab(K){const kw=K.dem/1000,empKw=(K.tri?Math.sqrt(3)*380:220)*K.Ig/1000;return`<section><div class="row"><button class="${K.MAN?'sec':'pri'}" data-act="tbauto" style="flex:1">Calculado</button><button class="${K.MAN?'pri':'sec'}" data-act="tbman" style="flex:1">✎ Mi tablero</button></div></section>${K.MAN?vMan(K)+'<section><b>Revisión de mi tablero</b>'+alertsH(K)+'</section>':''}<section><b>Protecciones del tablero</b>
+<div class="ceT"><div>Protección general</div><div><b>${K.tri?'3':'2'}×${K.Ig} A</b> curva ${K.pgCurva}, corte omnipolar</div>${K.MAN&&K.TB.pil?`<div>Luz piloto</div><div><b>Portafusible ${K.TB.pf||2} A</b> + luz piloto</div>`:''}
+${K.D.map(d=>`<div>${d.n} · ${d.cir.join(', ')||'—'}</div><div><b>${K.tri?'4':'2'}×${d.In} A · ${d.mA||30} mA</b> <span class="mu">(suma ${d.sum} A)</span></div>`).join('')}
 ${K.R.map(({c,r})=>`<div>${E(c.n)} · ${E(TIPOS[c.tipo].n)}</div><div><b>1×${r.In} A curva ${r.curva}</b> · ${f1(r.S)} mm²</div>`).join('')}</div>
 <div class="mu" style="margin-top:6px">Diferencial de 30 mA en todos los circuitos (RIC 10 · 5.1.3.5); su corriente nominal debe ser mayor o igual a la protección general o a la suma de los automáticos que alimenta (5.1.3.6); máximo 3 circuitos por diferencial y ninguno sobre el 100% de la instalación (5.1.3.7).</div></section>
 <section><b>Demanda y alimentador</b><div class="ceT"><div>Potencia instalada</div><div><b>${f2(K.tot/1000)} kW</b></div><div>Demanda máxima</div><div><b>${f2(kw)} kW</b> · ${f1(K.Idem)} A</div>
@@ -3423,7 +3438,7 @@ ${K.R.map(({c,r})=>`<div>${E(c.n)} · ${E(TIPOS[c.tipo].n)}</div><div><b>1×${r.
 <section><b>Empalme sugerido</b><div class="ceT"><div>Capacidad</div><div><b>${K.tri?'Trifásico':'Monofásico'} ${K.Ig} A</b> ≈ ${f1(empKw)} kW</div>${P.inst.empExist?`<div>Empalme existente</div><div><b>${E(P.inst.empExist)} A</b> ${n0(P.inst.empExist)<K.Ig?'<span class="ceBad">· insuficiente</span>':'· suficiente'}</div>`:''}</div>
 <div class="mu" style="margin-top:6px">Vivienda: mínimo 25 A (RIC 10 · 5.2). Confirma el tipo de empalme y la potencia con la distribuidora.</div></section>
 <section><b>Diagrama unilineal</b><div class="mu">Se arma con estos datos y se abre en el editor de planos para que lo ajustes (mover, cambiar textos, agregar cosas) y lo guardes en tu galería.</div><button class="pri" data-act="uni" style="width:100%;margin-top:8px">📐 Generar y editar diagrama unilineal</button></section>
-<section><b>Revisión RIC</b>${alertsH(K)}</section>`}
+${K.MAN?'':`<section><b>Revisión RIC</b>${alertsH(K)}</section>`}`}
 function vMed(K){const M=P.med;return`<section><b>Puesta a tierra</b><div class="ceG">${fld('Tierra de servicio (Ω)','med.tS',M.tS,{num:1})}${fld('Método','med.tMet',M.tMet)}</div>
 <div class="mu">Máximo 20 Ω; hasta 80 Ω solo con ≤ 10 kW, corte omnipolar, diferencial general 300 mA y 30 mA en todos los circuitos (RIC 06 · 6.1 y 6.2.1).</div></section>
 <section><b>Resistencia de aislación</b> <span class="mu">· ensayo ${M.vEns||500} V CC, 1 minuto, aparatos desconectados</span>
@@ -3447,15 +3462,16 @@ ${D.map(([t,rows],i)=>`<section><b>${i+1}. ${t}</b><div class="ceT">${rows.map((
 
 /* ---- Diagrama unilineal editable (se abre en el editor de planos) ---- */
 function buildUni(K){const C='#1b2a4a',it=[],L=(x1,y1,x2,y2,w)=>it.push({t:'line',c:C,w:w||2,x1,y1,x2,y2,ly:'el',uni:1}),T=(x,y,txt,sz)=>it.push({t:'text',c:C,size:sz||10,x,y,txt,ly:'el',uni:1}),S=(k,x,y)=>it.push({t:'sym',k,x,y,s:10,r:0,w:2,c:C,lb:'',uni:1});
- const I=P.inst,dx=66,XM=60,cx={};let x=XM+70;K.D.forEach(d=>{d.cir.forEach(n=>{cx[n]=x;x+=dx});x+=18});const xEnd=Math.max(x-dx-18,XM+40);const poles=K.tri?'3':'2',ms=(v)=>String(v).replace('.',',');
+ const I=P.inst,dx=66,XM=60,cx={};let x=XM+70;K.D.forEach(d=>{d.cir.forEach(n=>{if(cx[n]==null){cx[n]=x;x+=dx}});if(d.cir.length)x+=18});K.R.forEach(({c})=>{if(cx[c.n]==null){cx[c.n]=x;x+=dx}});const xEnd=Math.max(x-dx-18,XM+40);const poles=K.tri?'3':'2',ms=(v)=>String(v).replace('.',',');
  T(XM-30,22,'DIAGRAMA UNILINEAL'+(P.name?' · '+P.name:''),13);
  S('emp',XM,62);T(XM+16,60,'EMPALME '+(K.tri?'TRIFÁSICO 380 V':'MONOFÁSICO 220 V')+' · '+K.Ig+' A',10);if(I.empN)T(XM+16,72,'N° cliente/medidor: '+I.empN,9);
  L(XM,71,XM,102);S('med',XM,110);T(XM+16,114,'MEDIDOR',10);
  L(XM,118,XM,162);T(XM+10,138,'Alimentador '+poles+'×'+ms(K.Sa)+' mm² + T '+ms(K.Sa)+' mm²',9);T(XM+10,149,'L = '+ms(n0(I.alimL))+' m · ΔV = '+f2(K.dva)+'%',9);
- S('ttm',XM,175);T(XM+12,172,'PG '+poles+'×'+K.Ig+' A curva C',10);T(XM+12,183,'corte omnipolar',9);L(XM,188,XM,215);
+ S('ttm',XM,175);T(XM+12,172,'PG '+poles+'×'+K.Ig+' A curva '+K.pgCurva,10);T(XM+12,183,'corte omnipolar',9);L(XM,188,XM,215);
  L(XM-30,215,xEnd,215,4);T(XM-30,209,'TDA',10);
  L(XM-30,215,XM-30,239);S('tie',XM-30,250);T(XM-46,272,'T.S.'+(P.med.tS?' '+ms(P.med.tS)+' Ω':''),9);
- K.D.forEach(d=>{const xs=d.cir.map(n=>cx[n]),gx=xs.reduce((a,b)=>a+b,0)/xs.length;L(gx,215,gx,247);S('difu',gx,260);T(gx+12,257,d.n,10);T(gx+12,268,poles+'×'+d.In+' A 30 mA',9);L(gx,273,gx,300);if(xs.length>1)L(Math.min(...xs),300,Math.max(...xs),300,3)});
+ if(K.MAN&&K.TB.pil){const px=xEnd+46;L(xEnd,215,px,215,4);L(px,215,px,240);S('fus',px,253);T(px+10,256,'PF '+(K.TB.pf||2)+' A',9);L(px,266,px,288);S('luz',px,298);T(px+14,302,'Luz piloto',9)}
+ K.D.filter(d=>d.cir.length).forEach(d=>{const xs=d.cir.map(n=>cx[n]),gx=xs.reduce((a,b)=>a+b,0)/xs.length;L(gx,215,gx,247);S('difu',gx,260);T(gx+12,257,d.n,10);T(gx+12,268,poles+'×'+d.In+' A '+(d.mA||30)+' mA',9);L(gx,273,gx,300);if(xs.length>1)L(Math.min(...xs),300,Math.max(...xs),300,3)});
  K.R.forEach(({c,r})=>{const X=cx[c.n];L(X,300,X,327);S('ttm',X,340);L(X,353,X,382);const tx=X-18;let yy=398;[[c.n,12],['1×'+r.In+' A '+r.curva,9],[ms(r.S)+' mm²',9],['Ø'+r.duct+' mm',9],[f1(r.P)+' W',9],[(TIPOS[c.tipo]||{}).n?(TIPOS[c.tipo].n.split(' ')[0]):'',9]].forEach(([s,z])=>{if(s){T(tx,yy,s,z);yy+=z+3}})});
  return it}
 /* ---- Eventos ---- */
@@ -3464,6 +3480,11 @@ let rt=null;const soon=()=>{};const later=()=>{clearTimeout(rt);rt=setTimeout(re
 function onIn(e){const t=e.target;if(t.id==='ceP')return;
  if(t.dataset.k){setK(t.dataset.k,t.value);save();if(t.dataset.k==='name')g('ceP').options[DB.cur].text=t.value;if(e.type==='change')later();return}
  if(t.dataset.c!==undefined){const c=P.cir[+t.dataset.c];c[t.dataset.f]=t.value;save();if(e.type==='change')later();return}
+ if(t.dataset.tb!==undefined){const [a,b]=t.dataset.tb.split('.');if(b)P.tab[a][b]=t.value;else P.tab[a]=t.value;save();later();return}
+ if(t.dataset.tbc!==undefined){P.tab[t.dataset.tbc]=t.checked;save();later();return}
+ if(t.dataset.tbcir!==undefined){const m=P.tab.cir=P.tab.cir||{};(m[t.dataset.tbcir]=m[t.dataset.tbcir]||{})[t.dataset.fld]=t.value;save();later();return}
+ if(t.dataset.tbd!==undefined){P.tab.difs[+t.dataset.tbd][t.dataset.fld]=n0(t.value);save();later();return}
+ if(t.dataset.tbdc!==undefined){const dd=P.tab.difs[+t.dataset.tbdc],id=+t.dataset.cid;dd.cir=dd.cir||[];if(t.checked){P.tab.difs.forEach(o=>{o.cir=(o.cir||[]).filter(x=>x!==id)});dd.cir.push(id)}else dd.cir=dd.cir.filter(x=>x!==id);save();later();return}
  if(t.dataset.ais!==undefined){P.med.ais[t.dataset.ais]=t.value;save();if(e.type==='change')later();return}
  if(t.dataset.dif!==undefined){(P.med.dif[t.dataset.dif]=P.med.dif[t.dataset.dif]||{}).ok=t.checked;save();return}
  if(t.dataset.dift!==undefined){(P.med.dif[t.dataset.dift]=P.med.dif[t.dataset.dift]||{}).t=t.value;save();return}}
@@ -3474,6 +3495,10 @@ function onClick(e){const b=e.target.closest('button');if(!b)return;const d=b.da
  if(d.act==='del'){const i=+d.i,gone=P.cir.splice(i,1)[0];save();render();TT(gone.n+' eliminado',{label:'Deshacer',ms:6000,fn:()=>{P.cir.splice(i,0,gone);save();render()}});return}
  if(d.act==='gps'){if(!navigator.geolocation){TT('Este teléfono no entrega ubicación');return}TT('Buscando ubicación…');navigator.geolocation.getCurrentPosition(p=>{P.inst.coord=p.coords.latitude.toFixed(5)+', '+p.coords.longitude.toFixed(5);save();render();TT('Ubicación lista')},()=>TT('No se pudo obtener la ubicación'),{enableHighAccuracy:true,timeout:15000});return}
  if(d.act==='copyall'){const K=calcAll();const txt=te1Data(K).map(([t,rows])=>t.toUpperCase()+'\n'+rows.map(([k,v])=>k+': '+(v||'—')).join('\n')).join('\n\n')+'\n\nCUADRO DE CARGAS\n'+K.R.map(({c,r})=>`${c.n} ${TIPOS[c.tipo].n}: ${c.luces||0} luces, ${c.ench||0} enchufes, ${f1(r.P)} W, ${r.In} A curva ${r.curva}, ${f1(r.S)} mm², ducto ${r.duct} mm, caída ${f2(r.dv)}%`).join('\n');cpy(txt,'Resumen copiado');return}
+ if(d.act==='tbman'){if(!P.tab||!P.tab.pg){const K=calcAll();P.tab={modo:'manual',pg:{In:K.Ig,curva:'C'},pil:false,pf:2,cir:{},difs:K.D.map(dd=>({n:dd.n,In:dd.In,mA:30,cir:P.cir.filter(c=>dd.cir.includes(c.n)).map(c=>c.id)}))};K.R.forEach(({c,r})=>{P.tab.cir[c.id]={In:r.In,curva:r.curva}})}else P.tab.modo='manual';save();render();return}
+ if(d.act==='tbauto'){if(P.tab)P.tab.modo='auto';save();render();return}
+ if(d.act==='dadd'){P.tab.difs.push({n:'ID'+(P.tab.difs.length+1),In:25,mA:30,cir:[]});save();render();return}
+ if(d.act==='ddel'){P.tab.difs.splice(+d.i,1);P.tab.difs.forEach((o,i)=>o.n='ID'+(i+1));save();render();return}
  if(d.act==='pdf'){pdf();return}
  if(d.act==='uni'){const K=calcAll();if(!K.R.length){TT('Agrega circuitos primero');return}save();if(typeof window.openPlano!=='function'){TT('No se pudo abrir el editor de planos');return}window.openPlano(-1,{data:{items:buildUni(K),bg:'dots',esc:0.5}});TT('Diagrama listo: edítalo y toca Guardar para dejarlo en tu galería');return}}
 
@@ -3491,7 +3516,7 @@ async function pdf(){const J=window.jspdf&&window.jspdf.jsPDF;if(!J){TT('No se c
  const cols=[['TDA',12],['CTO N°',13],['PORT.',13],['ENCH.',13],['OTROS',14],['TOTAL\nCENTROS',16],['POTENCIA\nW',18],['FASE',11],['DIF.',22],['DISY.',20],['COND.\nmm²',14],['DUCTO\nØ mm',15],['UBICACIÓN',0]];const tw=W-2*M;const fixed=cols.reduce((a,c)=>a+c[1],0);cols[cols.length-1][1]=tw-fixed;
  d.setFont('helvetica','bold');d.setFontSize(10);d.text('CUADRO DE CARGAS DE ALUMBRADO',W/2,y+4,{align:'center'});y+=7;
  const rowH=6.2,hdrH=9;let x=M;d.setFontSize(7);d.setFillColor(235,235,235);d.rect(M,y,tw,hdrH,'F');cols.forEach(([t,w])=>{d.rect(x,y,w,hdrH);const ls=t.split('\n');ls.forEach((l,k)=>d.text(l,x+w/2,y+(ls.length===1?5.6:3.8+k*3.4),{align:'center'}));x+=w});y+=hdrH;
- const difOf=n=>{const g=K.D.find(dd=>dd.cir.includes(n));return g?g.n+' '+(K.tri?'4':'2')+'×'+g.In+'A 30mA':''};
+ const difOf=n=>{const g=K.D.find(dd=>dd.cir.includes(n));return g?g.n+' '+(K.tri?'4':'2')+'×'+g.In+'A '+(g.mA||30)+'mA':''};
  d.setFont('helvetica','normal');d.setFontSize(7.5);let tP=0,tL=0,tE=0,tC=0;
  K.R.forEach(({c,r},i)=>{if(y>H-30){d.addPage();head()}x=M;const oc=n0(c.otros)>0?1:0;const vals=[i===0?'TDA':'',c.n,String(n0(c.luces)||''),String(n0(c.ench)||''),oc?f1(n0(c.otros))+'W':'',String(r.cent),f1(r.P),K.tri?c.fase:'R',difOf(c.n),'1×'+r.In+'A '+r.curva,f1(r.S),String(r.duct),c.ub||TIPOS[c.tipo].n];tP+=r.P;tL+=n0(c.luces);tE+=n0(c.ench);tC+=r.cent;
   cols.forEach(([t,w],k)=>{d.rect(x,y,w,rowH);const s=d.splitTextToSize(vals[k],w-2)[0]||'';d.text(s,k===cols.length-1?x+1.5:x+w/2,y+4.2,{align:k===cols.length-1?'left':'center'});x+=w});y+=rowH});
@@ -3503,8 +3528,8 @@ async function pdf(){const J=window.jspdf&&window.jspdf.jsPDF;if(!J){TT('No se c
  ln(`Tensión 220 V, cobre ρ = 0,018 Ω·mm²/m, canalización método ${I.met} (${I.met==='A1'?'embutida en muro':'adosada'}), temperatura ambiente ${n0(I.tamb)||30} °C (ft = ${f2(ftOf(n0(I.tamb)||30))}). Capacidad del circuito = potencia × 1,10. Caída de tensión ΔV = 2·L·I·ρ/S.`);
  K.R.forEach(({c,r})=>ln(`${c.n} (${TIPOS[c.tipo].n}): P = ${f1(r.P)} W → I = ${f2(r.Ib)} A; I×1,1 = ${f2(r.Ireq)} A → automático ${r.In} A curva ${r.curva}. Conductor ${f1(r.S)} mm² (Ic = ${f1(r.ic)} A ≥ ${r.In} A). L = ${n0(c.L)} m → ΔV = ${f2(r.dv)}% ≤ 3%. Máx. ${r.maxC} centros (90% de la capacidad).`));
  y+=2;sec('2. Demanda, alimentador y empalme (RIC 03 · Tabla 3.1 y 5.1.3, RIC 04 · 5.4, RIC 10 · 5.2)');
- ln(`Potencia instalada ${f2(K.tot/1000)} kW (alumbrado ${f2(K.alum/1000)} kW, fuerza ${f2(K.fz/1000)} kW). Demanda máxima ${f2(K.dem/1000)} kW → ${f2(K.Idem)} A. Protección general ${(K.tri?'3':'2')}×${K.Ig} A. Alimentador ${f1(K.Sa)} mm², L = ${n0(I.alimL)} m, ΔV = ${f2(K.dva)}%. Caída total en el punto más desfavorable ${f2(K.worst+K.dva)}% ≤ 5%.`);
- ln('Diferenciales 30 mA: '+K.D.map(g=>`${g.n} (${g.cir.join(', ')}) ${(K.tri?'4':'2')}×${g.In} A`).join('; ')+'. Máximo 3 circuitos por diferencial (RIC 10 · 5.1.3.7).');
+ ln(`Potencia instalada ${f2(K.tot/1000)} kW (alumbrado ${f2(K.alum/1000)} kW, fuerza ${f2(K.fz/1000)} kW). Demanda máxima ${f2(K.dem/1000)} kW → ${f2(K.Idem)} A. Protección general ${(K.tri?'3':'2')}×${K.Ig} A curva ${K.pgCurva}${K.MAN&&K.TB.pil?' · portafusible '+(K.TB.pf||2)+' A con luz piloto':''}. Alimentador ${f1(K.Sa)} mm², L = ${n0(I.alimL)} m, ΔV = ${f2(K.dva)}%. Caída total en el punto más desfavorable ${f2(K.worst+K.dva)}% ≤ 5%.`);
+ ln('Diferenciales: '+K.D.map(g=>`${g.n} (${g.cir.join(', ')}) ${(K.tri?'4':'2')}×${g.In} A ${g.mA||30} mA`).join('; ')+'. Máximo 3 circuitos por diferencial (RIC 10 · 5.1.3.7).');
  y+=2;sec('3. Mediciones (RIC 06, RIC 19 · Tabla 19.1)');
  const M2=P.med;ln(`Puesta a tierra de servicio: ${M2.tS?M2.tS+' Ω':'pendiente'} · ${M2.tMet||''}.`);
  ln('Aislación ('+(M2.vEns||500)+' V CC, 1 min): '+K.R.map(({c})=>`${c.n} ${M2.ais[c.id]!==undefined&&M2.ais[c.id]!==''?f2(n0(M2.ais[c.id]))+' MΩ':'pendiente'}`).join(' · ')+' (mínimo 0,5 MΩ).');
@@ -3522,7 +3547,7 @@ window.__certCalc=()=>calcAll();
 const withP=(i,fn)=>{const o=P;P=DB.list[i]||P;try{return fn()}finally{P=o}};
 window.__certList=()=>DB.list.map((p,i)=>({i,name:p.name,n:(p.cir||[]).length,cur:i===DB.cur}));
 window.__certUni=i=>withP(i,()=>buildUni(calcAll()));
-window.__certCuadro=i=>withP(i,()=>{const K=calcAll();const difOf=n=>{const g=K.D.find(d=>d.cir.includes(n));return g?g.n+' '+(K.tri?'4':'2')+'x'+g.In+'A 30mA':''};
+window.__certCuadro=i=>withP(i,()=>{const K=calcAll();const difOf=n=>{const g=K.D.find(d=>d.cir.includes(n));return g?g.n+' '+(K.tri?'4':'2')+'x'+g.In+'A '+(g.mA||30)+'mA':''};
  const rows=K.R.map(({c,r})=>[c.n,String(n0(c.luces)||''),String(n0(c.ench)||''),n0(c.otros)?f1(n0(c.otros))+'W':'',String(r.cent),f1(r.P),K.tri?c.fase:'R',difOf(c.n),'1x'+r.In+'A '+r.curva,f1(r.S),String(r.duct),c.ub||TIPOS[c.tipo].n]);
  const tot=['TOTAL',String(K.R.reduce((a,x)=>a+n0(x.c.luces),0)),String(K.R.reduce((a,x)=>a+n0(x.c.ench),0)),'',String(K.R.reduce((a,x)=>a+x.r.cent,0)),f1(K.tot),'','','','','',''];
  return{rows,tot,name:P.name}});
