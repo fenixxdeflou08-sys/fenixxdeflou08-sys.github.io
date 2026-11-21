@@ -758,6 +758,8 @@ body.dHex.dEdit #fabMenu button.cir:not(#fTiempo)::after{top:2px;right:auto;left
 <div class="g2"><div><label>Instalador</label><input id="ssI"></div><div><label>RUT instalador</label><input id="ssIR"></div></div>
 <div class="g2"><div><label>Dibujó (iniciales)</label><input id="ssDb" placeholder="F.C."></div><div><label>Monofásico / trifásico</label><select id="ssFa"><option value="">—</option><option>Monofásico</option><option>Trifásico</option></select></div></div>
 <div class="g2"><div><label>Licencia SEC (clase)</label><input id="ssL" placeholder="Clase C"></div><div><label>Lámina</label><div class="row"><input id="ssN1" inputmode="numeric" value="1" style="text-align:center">de<input id="ssN2" inputmode="numeric" value="1" style="text-align:center"></div></div></div>
+<div id="ssUniBox" style="display:none;margin-top:12px;padding:10px;border-radius:12px;border:1px solid var(--bd)"><b>📐 Desde la certificación</b><label>Proyecto de certificación</label><select id="ssCP"></select><button class="sec" id="ssUni" type="button" style="width:100%;margin-top:8px">＋ Insertar diagrama unilineal en el plano</button><label class="row" style="gap:8px;margin-top:10px;color:var(--tx)"><input type="checkbox" id="ssCC" style="width:24px;min-height:24px;flex:none"> Cuadro de cargas abajo a la izquierda</label><label class="row" style="gap:8px;margin-top:8px;color:var(--tx)"><input type="checkbox" id="ssUL" style="width:24px;min-height:24px;flex:none"> Diagrama unilineal a la derecha (si no lo insertaste en el plano)</label></div>
+<label class="row" style="gap:8px;margin-top:10px;color:var(--tx)"><input type="checkbox" id="ssSp" style="width:24px;min-height:24px;flex:none"> Separar planta de alumbrado y planta de enchufes</label>
 <div class="mu" id="ssSt" style="font-weight:600;margin-top:6px"></div>
 <div class="row" style="margin-top:10px"><button class="pri" id="ssPdf" type="button">Lámina PDF</button><button class="sec" id="ssDxf" type="button">AutoCAD DXF</button></div></div></div>
 <div id="measSh" class="sheet" role="dialog" aria-label="Medida de la pared"><div class="sheetIn"><div class="cpHead"><b>📏 Medida de la pared</b><button class="x" id="msX" aria-label="Cerrar">×</button></div><div class="mu" id="msE"></div><div class="row"><input id="msV" inputmode="decimal" placeholder="Metros, ej: 3,45" style="font-size:22px;font-weight:700;text-align:center"><span class="fix" style="font-weight:700">m</span></div><button class="sec" id="msAR" type="button">📱 Medir con la cámara</button><div class="mu" id="msSt" style="font-weight:600"></div><div class="row"><button class="pri" id="msOk" type="button">Guardar medida</button><button class="sec fix" id="msDel" type="button">Quitar</button></div><div class="mu" style="font-size:13px">Con la cámara la medida es aproximada (±1–2 cm en pocos metros). Para cortes exactos usa huincha.</div></div></div>
@@ -2072,46 +2074,77 @@ try{await dlSave({filename:nm+'.dxf',data:await bl.arrayBuffer()});toast('DXF de
 
 /* ---- Lámina SEC según RIC N°18 (formato serie A, márgenes Tabla 18.1.1, escala normalizada, simbología y rótulo) ---- */
 const SSK=['ssC','ssD','ssP','ssPR','ssDir','ssSe','ssCo','ssRol','ssUb','ssCa','ssI','ssIR','ssL','ssDb','ssFa','ssF','ssE'],SSI=['ssI','ssIR','ssL','ssDb','ssF'];
-const ssLoad=()=>{let g={},pl=P.sec||{};try{g=JSON.parse(localStorage.getItem('rep_secInst')||'{}')}catch(e){}SSK.forEach(k=>{const v=pl[k]!=null?pl[k]:g[k];if(v!=null)$(k).value=v});if(!$('ssI').value)$('ssI').value='Fabián Correa';if(!$('ssL').value)$('ssL').value='Clase C';if(!$('ssDb').value)$('ssDb').value=$('ssI').value.split(/\s+/).filter(Boolean).map(w=>w[0].toUpperCase()+'.').join('');try{if(!pl.ssDir&&s&&s.ubic&&!$('ssDir').value)$('ssDir').value=s.ubic}catch(e){}$('ssN1').value=pl.n1||1;$('ssN2').value=pl.n2||1};
-const ssSave=()=>{const o={};SSK.forEach(k=>o[k]=$(k).value.trim());o.n1=$('ssN1').value;o.n2=$('ssN2').value;P.sec=o;dirty=true;const g={};SSI.forEach(k=>g[k]=o[k]);try{localStorage.setItem('rep_secInst',JSON.stringify(g))}catch(e){}return o};
+const ssLoad=()=>{let g={},pl=P.sec||{};try{g=JSON.parse(localStorage.getItem('rep_secInst')||'{}')}catch(e){}SSK.forEach(k=>{const v=pl[k]!=null?pl[k]:g[k];if(v!=null)$(k).value=v});if(!$('ssI').value)$('ssI').value='Fabián Correa';if(!$('ssL').value)$('ssL').value='Clase C';if(!$('ssDb').value)$('ssDb').value=$('ssI').value.split(/\s+/).filter(Boolean).map(w=>w[0].toUpperCase()+'.').join('');try{if(!pl.ssDir&&s&&s.ubic&&!$('ssDir').value)$('ssDir').value=s.ubic}catch(e){}$('ssN1').value=pl.n1||1;$('ssN2').value=pl.n2||1;
+{const L=typeof window.__certList==='function'?window.__certList().filter(x=>x.n):[];$('ssUniBox').style.display=L.length?'block':'none';$('ssCP').innerHTML=L.map(x=>`<option value="${x.i}">${String(x.name).replace(/[<&]/g,'')} · ${x.n} circuitos</option>`).join('');const want=pl.ssCP!=null?String(pl.ssCP):String((L.find(x=>x.cur)||L[0]||{}).i);if(L.some(x=>String(x.i)===want))$('ssCP').value=want;$('ssCC').checked=!!pl.ssCC;$('ssUL').checked=!!pl.ssUL}$('ssSp').checked=pl.ssSp!==false};
+const ssSave=()=>{const o={};SSK.forEach(k=>o[k]=$(k).value.trim());o.n1=$('ssN1').value;o.n2=$('ssN2').value;o.ssCP=$('ssCP').value;o.ssCC=$('ssCC').checked;o.ssUL=$('ssUL').checked;o.ssSp=$('ssSp').checked;P.sec=o;dirty=true;const g={};SSI.forEach(k=>g[k]=o[k]);try{localStorage.setItem('rep_secInst',JSON.stringify(g))}catch(e){}return o};
 $('plSec').onclick=()=>{if(annot)return;if(!proGate('La lámina SEC y la exportación a AutoCAD'))return;if(!P.items.length){toast('El plano está vacío');return}ssLoad();$('ssSt').textContent=(!P.escSet&&!P.items.some(o=>o.t==='dim'))?'⚠ El plano no tiene medidas reales: usa 📏 Medir en una pared para que la escala sea correcta.':'';$('secSh').classList.add('on')};
 $('ssX').onclick=()=>$('secSh').classList.remove('on');$('secSh').onclick=e=>{if(e.target.id==='secSh')$('secSh').classList.remove('on')};
 $('ssGps').onclick=()=>{if(!navigator.geolocation){$('ssSt').textContent='Este teléfono no entrega ubicación';return}$('ssSt').textContent='Buscando ubicación…';navigator.geolocation.getCurrentPosition(p=>{$('ssUb').value=p.coords.latitude.toFixed(5)+', '+p.coords.longitude.toFixed(5);$('ssSt').textContent='Ubicación lista'},()=>{$('ssSt').textContent='No se pudo obtener la ubicación'},{enableHighAccuracy:true,timeout:15000})};
+$('ssUni').onclick=()=>{ssSave();const i=+$('ssCP').value;let items;try{items=window.__certUni(i)}catch(e){items=null}if(!items||!items.length){$('ssSt').textContent='Ese proyecto no tiene circuitos.';return}
+let a=1e9,b=1e9,c=-1e9,d=-1e9;items.forEach(it=>{const q=bboxW(it);a=Math.min(a,q[0]);b=Math.min(b,q[1]);c=Math.max(c,q[2]);d=Math.max(d,q[3])});let dx=0,dy=0;
+if(P.items.length){let A=1e9,B=1e9,C=-1e9;P.items.forEach(it=>{const q=bboxW(it);A=Math.min(A,q[0]);B=Math.min(B,q[1]);C=Math.max(C,q[2])});dx=C+G*3-a;dy=B-b}
+snap();const n0_=P.items.length,gid=Date.now();items.forEach(it=>{shift(it,dx,dy);it.uni=gid;P.items.push(it)});$('secSh').classList.remove('on');msel=[];for(let k=n0_;k<P.items.length;k++)msel.push(k);sel=-1;setTool('move');msel=[];for(let k=n0_;k<P.items.length;k++)msel.push(k);fitView();opts();req();toast('Diagrama unilineal agregado: arrástralo con el botón verde para ubicarlo')};
 $('ssDxf').onclick=()=>{ssSave();$('secSh').classList.remove('on');doDxf()};
 $('ssPdf').onclick=async()=>{const o=ssSave();const J=window.jspdf&&window.jspdf.jsPDF;if(!J){$('ssSt').textContent='No se cargó el generador de PDF. Abre la app con internet una vez y prueba de nuevo.';return}$('ssSt').textContent='Armando lámina…';
 try{const F={a4:[297,210,30,10],a3:[420,297,30,10],a2:[594,420,30,10]}[o.ssF||'a4'],[W,H,ML,MO]=F;const d=new J({unit:'mm',format:o.ssF||'a4',orientation:'landscape'});
-const x0=ML,y0=MO,x1=W-MO,y1=H-MO,big=W>300,SH=big?58:44,ys=y1-SH,RW=big?100:72,rx=x1-RW;d.setDrawColor(0);d.setLineWidth(.5);d.rect(x0,y0,x1-x0,y1-y0);d.line(x0,ys,x1,ys);d.setLineWidth(.3);d.line(rx,y0,rx,ys);
-let a=1e9,b=1e9,c=-1e9,e=-1e9;P.items.forEach(it=>{const q=bboxW(it);a=Math.min(a,q[0]);b=Math.min(b,q[1]);c=Math.max(c,q[2]);e=Math.max(e,q[3])});
-const aw=rx-x0-12,ah=ys-y0-20,wm=(c-a)/G*P.esc,hm=(e-b)/G*P.esc;let sc=o.ssE&&o.ssE!=='auto'?+o.ssE:0;
-if(!sc){const need=Math.max(wm*1000/aw,hm*1000/ah);sc=[20,50,100,200,500].find(v=>v>=need)||Math.ceil(need/500)*500}
-const mmW=wm*1000/sc,mmH=hm*1000/sc;if(mmW>aw+.5||mmH>ah+.5)toast('A 1:'+sc+' el dibujo no cabe completo: elige otra escala o un formato más grande');
-const ppm=8,cv=document.createElement('canvas');cv.width=Math.max(1,Math.round(mmW*ppm));cv.height=Math.max(1,Math.round(mmH*ppm));const cx=cv.getContext('2d');cx.fillStyle='#fff';cx.fillRect(0,0,cv.width,cv.height);const kk=cv.width/(c-a||1);cx.scale(kk,kk);cx.translate(-a,-b);
-paintWalls(cx,P.items,{col:'#4b5563',w:1.2,fill:'#d9dde2'});paintOpenings(cx,P.items,{bg:'#fff',col:'#4b5563',w:1.2});P.items.forEach(it=>{const q=Object.assign({},it);if(/^#(f|e)/i.test(q.c||''))q.c='#111111';if(q.t!=='sym'&&!q.wire&&q.t!=='text'&&q.t!=='dim'){q.c='#6b7280';q.w=(q.w||2)*.6}else if(q.t==='sym'&&symCatOf(q.k)==='in'){q.c='#6b7280';q.w=1}else if(q.t==='sym'||q.wire){q.w=Math.max(q.w||2,2.5)}paintItem(cx,q)});
-const ix=x0+6+(aw-mmW)/2,iy=y0+6+(ah-mmH)/2;d.addImage(cv.toDataURL('image/png'),'PNG',ix,iy,mmW,mmH);
-d.setFont('helvetica','bold');d.setFontSize(10);d.text('PLANTA'+(o.ssC?' - '+o.ssC.toUpperCase():''),x0+(rx-x0)/2,ys-8,{align:'center'});d.setFont('helvetica','normal');d.setFontSize(8);d.text('ESC. 1:'+sc+'  ·  medidas en metros',x0+(rx-x0)/2,ys-4,{align:'center'});
-// columna derecha: simbología + notas
+const x0=ML,y0=MO,x1=W-MO,y1=H-MO,big=W>300,SH=W>500?78:big?62:46,ys=y1-SH;d.setDrawColor(0);d.setLineWidth(.5);d.rect(x0,y0,x1-x0,y1-y0);d.line(x0,ys,x1,ys);
+// ---- clasificar elementos: unilineal, planta de alumbrado, planta de enchufes ----
+const LUM=['luz','lamp','apl','emer','vent','int1','int2','int3','conm','puls'],ENC=['ench','ench2','ench3','enchE'];
+let uniItems=P.items.filter(q=>q.uni),base=P.items.filter(q=>!q.uni);if(!base.length){base=uniItems;uniItems=[]}
+const symsAt=(x,y)=>base.filter(s=>s.t==='sym'&&symPts(s).some(([px,py])=>Math.hypot(px-x,py-y)<14));
+const catOf=q=>{if(q.t==='sym'){if(LUM.includes(q.k))return'A';if(ENC.includes(q.k))return'F';return'*'}if(q.wire){const ss=symsAt(q.x1,q.y1).concat(symsAt(q.x2,q.y2));if(ss.some(s=>ENC.includes(s.k)))return'F';if(ss.some(s=>LUM.includes(s.k)))return'A';return'*'}return'*'};
+const hasA=base.some(q=>q.t==='sym'&&LUM.includes(q.k)),hasF=base.some(q=>q.t==='sym'&&ENC.includes(q.k));const split=o.ssSp!==false&&hasA&&hasF;
+const sets=split?[{t:'PLANTA DE ALUMBRADO',it:base.filter(q=>catOf(q)!=='F')},{t:'PLANTA DE ENCHUFES',it:base.filter(q=>catOf(q)!=='A')}]:[{t:'PLANTA'+(o.ssC?' - '+o.ssC.toUpperCase():''),it:base}];
+// unilineal: el que insertaste en el plano o, si no hay, el de la certificación elegida
+let UNI=uniItems.length?uniItems:null;if(!UNI&&o.ssUL&&typeof window.__certUni==='function'){try{UNI=window.__certUni(+o.ssCP)}catch(_){UNI=null}}
+let CQ=null;if(o.ssCC&&typeof window.__certCuadro==='function'){try{CQ=window.__certCuadro(+o.ssCP)}catch(_){CQ=null}if(CQ&&!CQ.rows.length)CQ=null}
+const styleQ=q0=>{const q=Object.assign({},q0);if(/^#(f|e)/i.test(q.c||''))q.c='#111111';if(q.uni){q.w=Math.max(q.w||2,2);return q}if(q.t!=='sym'&&!q.wire&&q.t!=='text'&&q.t!=='dim'){q.c='#6b7280';q.w=(q.w||2)*.6}else if(q.t==='sym'&&symCatOf(q.k)==='in'){q.c='#6b7280';q.w=1}else if(q.t==='sym'||q.wire){q.w=Math.max(q.w||2,2.5)}return q};
+const bbOf=its=>{let a=1e9,b=1e9,c=-1e9,e=-1e9;its.forEach(it=>{const q=bboxW(it);a=Math.min(a,q[0]);b=Math.min(b,q[1]);c=Math.max(c,q[2]);e=Math.max(e,q[3])});return[a,b,c,e]};
+const rend=(its,mmW,mmH,bb,bx,by)=>{const[a,b,c]=bb;const ppm=8,cv=document.createElement('canvas');cv.width=Math.max(1,Math.round(mmW*ppm));cv.height=Math.max(1,Math.round(mmH*ppm));const cx=cv.getContext('2d');cx.fillStyle='#fff';cx.fillRect(0,0,cv.width,cv.height);const kk=cv.width/((c-a)||1);cx.scale(kk,kk);cx.translate(-a,-b);
+ const ws=its.filter(q=>!q.uni);paintWalls(cx,ws,{col:'#4b5563',w:1.2,fill:'#d9dde2'});paintOpenings(cx,ws,{bg:'#fff',col:'#4b5563',w:1.2});its.forEach(it=>paintItem(cx,styleQ(it)));d.addImage(cv.toDataURL('image/png'),'PNG',bx,by,mmW,mmH)};
+// ---- zonas ----
+const fullW=x1-x0,RW=UNI?Math.max(big?110:78,fullW*.3):(big?92:70),rx=x1-RW;d.setLineWidth(.3);d.line(rx,y0,rx,ys);
+const xsB=CQ?x0+fullW*(big?.47:.46):x0+fullW*.3;d.line(xsB,ys,xsB,y1);
+// ---- plantas (misma escala) ----
+const nP=sets.length,pw=(rx-x0)/nP,ph=ys-y0,pad=5,titleH=13;let sc=o.ssE&&o.ssE!=='auto'?+o.ssE:0;
+sets.forEach(s=>{s.bb=bbOf(s.it.length?s.it:base);s.wm=(s.bb[2]-s.bb[0])/G*P.esc;s.hm=(s.bb[3]-s.bb[1])/G*P.esc});
+if(!sc){const need=Math.max(...sets.map(s=>Math.max(s.wm*1000/(pw-2*pad),s.hm*1000/(ph-titleH-2*pad))));sc=[20,50,100,200,500].find(v=>v>=need)||Math.ceil(need/500)*500}
+let tooBig=false;sets.forEach((s,i)=>{const bx0=x0+i*pw;if(i)d.line(bx0,y0,bx0,ys);const mmW=s.wm*1000/sc,mmH=s.hm*1000/sc;if(mmW>pw-2*pad+.5||mmH>ph-titleH-2*pad+.5)tooBig=true;
+ if(s.it.length)rend(s.it,mmW,mmH,s.bb,bx0+(pw-mmW)/2,y0+pad+(ph-titleH-2*pad-mmH)/2);
+ d.setFont('helvetica','bold');d.setFontSize(big?10:8.5);d.text(s.t,bx0+pw/2,ys-7.5,{align:'center'});d.setFont('helvetica','normal');d.setFontSize(big?8:7);d.text('ESC. 1:'+sc+'  ·  medidas en metros',bx0+pw/2,ys-3.5,{align:'center'})});
+if(tooBig)toast('A 1:'+sc+' el dibujo no cabe completo: elige otra escala o un formato más grande');
+if(split&&(o.ssF||'a4')==='a4')toast('Consejo: con dos plantas y unilineal, la lámina se lee mejor en A3');
+// ---- columna derecha: simbología, notas y unilineal ----
 let yy=y0;const box=(h,title)=>{d.setLineWidth(.3);d.line(rx,yy+h,x1,yy+h);d.setFont('helvetica','bold');d.setFontSize(7);d.text(title,rx+2,yy+4);const top=yy;yy+=h;return top};
-const used=[...new Set(P.items.filter(q=>q.t==='sym').map(q=>q.k))].filter(q=>SYMS[q]&&symCatOf(q)==='el'),hSim=Math.min(ys-y0-22,Math.max(20,8+used.length*6.5+(P.items.some(q=>q.wire)?6.5:0)));
-const ts=box(hSim,'SIMBOLOGÍA');let ly=ts+9;const sym1=(k,lbl)=>{if(ly>ts+hSim-2)return;const sc2=document.createElement('canvas');sc2.width=64;sc2.height=48;const q=sc2.getContext('2d');q.strokeStyle=q.fillStyle='#111';if(k==='cable'){q.lineWidth=3;q.beginPath();q.moveTo(6,24);q.lineTo(58,24);q.stroke();q.lineWidth=2.5;q.beginPath();[-7,0,7].forEach(o=>{q.moveTo(32+o-4,33);q.lineTo(32+o+4,15)});q.stroke()}else paintSym(q,{k,x:32,y:24,fit:30,w:2.5,c:'#111'});d.addImage(sc2.toDataURL('image/png'),'PNG',rx+2,ly-3.5,8,6);d.setFont('helvetica','normal');d.setFontSize(6.3);d.text(d.splitTextToSize(lbl,RW-14)[0],rx+12,ly+.5);ly+=6.5};
-used.forEach(k=>sym1(k,SYMS[k].n));if(P.items.some(q=>q.wire))sym1('cable','Canalización (rayas = n° de conductores)');
-const free=ys-yy;if(free>8){box(free,'NOTAS');d.setFont('helvetica','normal');d.setFontSize(6.3);d.text(d.splitTextToSize('Los materiales utilizados y que requieren certificación para su uso cumplen este requisito. Proyecto según Pliegos Técnicos RIC (SEC). Unidades SI. Dibujo, escritura y acotamientos según NCh 13.'+(o.ssFa?' Instalación '+o.ssFa.toLowerCase()+'.':''),RW-4),rx+2,yy-free+8)}
-// viñeta inferior: UBICACIÓN | INSCRIPCIÓN SEC | PROYECTO
-const wU=big?80:58,wI=big?62:44,xU=x0,xI=x0+wU,xP=xI+wI,lab=(s,x,y,sz)=>{d.setFont('helvetica','bold');d.setFontSize(sz||6);d.text(s,x,y)},val=(s,x,y,w,sz)=>{d.setFont('helvetica','normal');d.setFontSize(sz||7.5);d.text(d.splitTextToSize(s||'',w)[0]||'',x,y)};
+const used=[...new Set(base.filter(q=>q.t==='sym').map(q=>q.k))].filter(q=>SYMS[q]&&symCatOf(q)==='el'),hasW=base.some(q=>q.wire),nSym=used.length+(hasW?1:0),cols=UNI&&nSym>5?2:1,rowsS=Math.ceil(nSym/cols);
+const uniH=UNI?Math.max(55,(ys-y0)*.55):0,notesH=CQ||UNI?0:28,hSim=Math.max(14,Math.min(ys-y0-uniH-notesH-6,8+rowsS*6.2));
+const ts=box(hSim,'SIMBOLOGÍA');let si=0;const cw=(RW-2)/cols;const sym1=(k,lbl)=>{const r=Math.floor(si/cols),cI=si%cols;si++;const ly=ts+9+r*6.2;if(ly>ts+hSim-1.5)return;const xx=rx+2+cI*cw;const sc2=document.createElement('canvas');sc2.width=64;sc2.height=48;const q=sc2.getContext('2d');q.strokeStyle=q.fillStyle='#111';if(k==='cable'){q.lineWidth=3;q.beginPath();q.moveTo(6,24);q.lineTo(58,24);q.stroke();q.lineWidth=2.5;q.beginPath();[-7,0,7].forEach(o=>{q.moveTo(32+o-4,33);q.lineTo(32+o+4,15)});q.stroke()}else paintSym(q,{k,x:32,y:24,fit:30,w:2.5,c:'#111'});d.addImage(sc2.toDataURL('image/png'),'PNG',xx,ly-3.5,8,6);d.setFont('helvetica','normal');d.setFontSize(cols>1?5.4:6.2);d.text(d.splitTextToSize(lbl,cw-11)[0],xx+10,ly+.5)};
+used.forEach(k=>sym1(k,SYMS[k].n));if(hasW)sym1('cable','Canalización (rayas = n° de conductores)');
+const NOTE='Los materiales utilizados y que requieren certificación para su uso cumplen este requisito. Proyecto según Pliegos Técnicos RIC (SEC). Unidades SI. Dibujo, escritura y acotamientos según NCh 13.'+(o.ssFa?' Instalación '+o.ssFa.toLowerCase()+'.':'');
+if(UNI){const top=yy;const uh=ys-top;d.setFont('helvetica','bold');d.setFontSize(big?9:7.5);d.text('DIAGRAMA UNILINEAL',rx+RW/2,top+5,{align:'center'});d.setFont('helvetica','normal');d.setFontSize(6);d.text('sin escala',rx+RW/2,top+8.5,{align:'center'});
+ const U2=UNI.filter(q=>!(q.t==='text'&&/^DIAGRAMA UNILINEAL/.test(q.txt||'')));const ub=bbOf(U2);{const X=document.createElement('canvas').getContext('2d');U2.forEach(q=>{if(q.t==='text'){X.font='600 '+q.size+'px Barlow,system-ui,sans-serif';ub[2]=Math.max(ub[2],q.x+X.measureText(q.txt||'').width+4)}})}const uw=ub[2]-ub[0],uhh=ub[3]-ub[1],aw2=RW-6,ah2=uh-14,k2=Math.min(aw2/uw,ah2/uhh);rend(U2,uw*k2,uhh*k2,ub,rx+(RW-uw*k2)/2,top+11+(ah2-uhh*k2)/2)}
+else{const free=ys-yy;if(free>8){box(free,'NOTAS');d.setFont('helvetica','normal');d.setFontSize(6.3);d.text(d.splitTextToSize(NOTE,RW-4),rx+2,yy-free+8)}}
+// ---- abajo a la izquierda: cuadro de cargas (o notas) ----
+const bw=xsB-x0;if(CQ){const tw=bw-4,cx0=x0+2;let ty=ys+2;const W2=[8,8,8,9,10,11,7,22,15,8,9,0];const sF=tw/(W2.reduce((s,v)=>s+v,0)+28);for(let i=0;i<11;i++)W2[i]*=Math.min(1.25,Math.max(.75,sF));W2[11]=tw-W2.slice(0,11).reduce((s,v)=>s+v,0);
+ const H2=['CTO','PORT.','ENCH.','OTROS','CENTROS','POT. W','FASE','DIF.','DISY.','mm²','DUCTO','UBICACIÓN'],nR=CQ.rows.length+2,rH=Math.min(big?5:4.2,(SH-9)/nR),fs=Math.min(big?7:5.8,rH*1.55);
+ d.setFont('helvetica','bold');d.setFontSize(big?8.5:7);d.text('CUADRO DE CARGAS DE ALUMBRADO',cx0+tw/2,ty+3.5,{align:'center'});ty+=5.5;d.setLineWidth(.2);
+ const rowF=(vals,bold,fill)=>{let xx=cx0;if(fill){d.setFillColor(235,235,235);d.rect(cx0,ty,tw,rH,'F')}d.setFont('helvetica',bold?'bold':'normal');d.setFontSize(fs);vals.forEach((v,k)=>{d.rect(xx,ty,W2[k],rH);const s=d.splitTextToSize(String(v||''),W2[k]-1)[0]||'';d.text(s,k===11?xx+1:xx+W2[k]/2,ty+rH*.7,{align:k===11?'left':'center'});xx+=W2[k]});ty+=rH};
+ rowF(H2,true,true);CQ.rows.forEach(r=>rowF(r,false,false));rowF(CQ.tot,true,false)}
+else{d.setFont('helvetica','bold');d.setFontSize(7);d.text('NOTAS',x0+2,ys+5);d.setFont('helvetica','normal');d.setFontSize(6.3);d.text(d.splitTextToSize(NOTE,bw-4),x0+2,ys+10)}
+// ---- viñeta (abajo a la derecha): UBICACIÓN | INSCRIPCIÓN SEC | PROYECTO ----
+const wv=x1-xsB,wU=wv*.24,wI=wv*.18,xU=xsB,xI=xU+wU,xP=xI+wI,lab=(s,x,y,sz)=>{d.setFont('helvetica','bold');d.setFontSize(sz||6);d.text(s,x,y)},val=(s,x,y,w,sz)=>{d.setFont('helvetica','normal');d.setFontSize(sz||7.5);d.text(d.splitTextToSize(s||'',w)[0]||'',x,y)};
 d.setLineWidth(.3);d.line(xI,ys,xI,y1);d.line(xP,ys,xP,y1);const th=7;d.line(xU,ys+th,xP,ys+th);
-d.setFont('helvetica','bold');d.setFontSize(8);d.text('UBICACIÓN',xU+wU/2,ys+5,{align:'center'});d.text('INSCRIPCIÓN SEC',xI+wI/2,ys+5,{align:'center'});
-// ubicación: norte + datos
-const nx=xU+6,ny=ys+th+5;d.setLineWidth(.3);d.line(nx,ny+9,nx,ny+2);d.triangle(nx-1.6,ny+4.5,nx+1.6,ny+4.5,nx,ny+1,'F');lab('N',nx-1.2,ny);
-let uy=ys+th+5;const ux=xU+13,uw=wU-15;d.setFont('helvetica','normal');d.setFontSize(6);[o.ssRol?'Rol: '+o.ssRol:'',o.ssUb?'Coord. WGS84:':'',o.ssUb||''].filter(Boolean).forEach(s=>{d.text(s,ux,uy);uy+=3.2});
-if(o.ssCa){d.setFontSize(6);d.splitTextToSize(o.ssCa,wU-4).slice(0,3).forEach(s=>{d.text(s,xU+2,uy+2);uy+=3})}
-// inscripción SEC (no se llena)
-d.setFont('helvetica','normal');d.setFontSize(7);d.text('N° .......................',xI+3,ys+th+12);d.text('Fecha ..................',xI+3,ys+th+22);
-// bloque proyecto
-const wP=x1-xP,tH=big?13:10;d.line(xP,ys+tH,x1,ys+tH);d.setFont('helvetica','bold');d.setFontSize(big?9:8);d.text(d.splitTextToSize('PROYECTO ELÉCTRICO DE '+(o.ssD||'').toUpperCase(),wP-4)[0],xP+wP/2,ys+tH/2+1.5,{align:'center'});
-const xs=xP+wP*.55,rH=(y1-ys-tH);d.line(xs,ys+tH,xs,y1);
-const lH=rH*.58;d.line(xP,ys+tH+lH,xs,ys+tH+lH);const ll=[['CALLE:',o.ssDir],['SECTOR:',o.ssSe],['COMUNA:',o.ssCo]];ll.forEach(([k,v],i)=>{const yv=ys+tH+lH*(i+.75)/3;lab(k,xP+2,yv);val(v,xP+16,yv,xs-xP-18,7)});
-lab('ACEPTACIÓN PROPIETARIO',xP+2,ys+tH+lH+3.5);val((o.ssP||'')+(o.ssPR?'  RUT '+o.ssPR:''),xP+2,y1-2,xs-xP-4,6.5);
+d.setFont('helvetica','bold');d.setFontSize(big?8:7);d.text('UBICACIÓN',xU+wU/2,ys+5,{align:'center'});d.text('INSCRIPCIÓN SEC',xI+wI/2,ys+5,{align:'center'});
+const nx=xU+6,ny=ys+th+5;d.line(nx,ny+9,nx,ny+2);d.triangle(nx-1.6,ny+4.5,nx+1.6,ny+4.5,nx,ny+1,'F');lab('N',nx-1.2,ny);
+let uy=ys+th+5;const ux=xU+13;d.setFont('helvetica','normal');d.setFontSize(5.8);[o.ssRol?'Rol: '+o.ssRol:'',o.ssUb?'WGS84:':'',o.ssUb||''].filter(Boolean).forEach(s=>{d.text(d.splitTextToSize(s,wU-15)[0],ux,uy);uy+=3})
+if(o.ssCa){d.setFontSize(5.8);d.splitTextToSize(o.ssCa,wU-4).slice(0,3).forEach(s=>{d.text(s,xU+2,Math.max(uy,ny+12)+2);uy=Math.max(uy,ny+12)+3})}
+d.setFont('helvetica','normal');d.setFontSize(7);d.text('N° ..................',xI+2,ys+th+12);d.text('Fecha ...............',xI+2,ys+th+22);
+const wP=x1-xP,tH=big?13:10;d.line(xP,ys+tH,x1,ys+tH);d.setFont('helvetica','bold');d.setFontSize(big?9:7.5);d.text(d.splitTextToSize('PROYECTO ELÉCTRICO DE '+(o.ssD||'').toUpperCase(),wP-4)[0],xP+wP/2,ys+tH/2+1.5,{align:'center'});
+const xs=xP+wP*.5,rH=(y1-ys-tH);d.line(xs,ys+tH,xs,y1);
+const lH=rH*.58;d.line(xP,ys+tH+lH,xs,ys+tH+lH);[['CALLE:',o.ssDir],['SECTOR:',o.ssSe],['COMUNA:',o.ssCo]].forEach(([k,v],i)=>{const yv=ys+tH+lH*(i+.75)/3;lab(k,xP+2,yv);val(v,xP+15,yv,xs-xP-17,6.8)});
+lab('ACEPTACIÓN PROPIETARIO',xP+2,ys+tH+lH+3.5);val((o.ssP||'')+(o.ssPR?'  RUT '+o.ssPR:''),xP+2,y1-2,xs-xP-4,6.2);
 const rr_=[['LÁMINA',(o.n1||1)+' DE '+(o.n2||1)],['ESCALA','1:'+sc],['FECHA',new Date().toLocaleDateString('es-CL')],['DIBUJÓ',o.ssDb],['INSTALADOR',(o.ssI||'')+(o.ssL?' · Lic. '+o.ssL:'')+(o.ssIR?' · RUT '+o.ssIR:'')]],rh2=rH/rr_.length;
-rr_.forEach(([k,v],i)=>{const y=ys+tH+i*rh2;if(i)d.line(xs,y,x1,y);lab(k,xs+2,y+rh2*.62,5.5);const lw=d.getTextWidth(k)+4;val(v,xs+2+Math.max(lw,big?15:12),y+rh2*.66,x1-xs-4-Math.max(lw,big?15:12),k==='INSTALADOR'?6:7.5)});
+rr_.forEach(([k,v],i)=>{const y=ys+tH+i*rh2;if(i)d.line(xs,y,x1,y);lab(k,xs+2,y+rh2*.62,5.3);const lw=d.getTextWidth(k)+3;val(v,xs+2+Math.max(lw,12),y+rh2*.66,x1-xs-4-Math.max(lw,12),k==='INSTALADOR'?5.6:7)});
 d.setFont('helvetica','bold');d.setFontSize(5.5);d.setTextColor(140);d.text('REDSTONE',x1-1.5,y1-1,{align:'right'});d.setTextColor(0);
 const it=libId&&window.plLib&&plLib.get().find(q=>q.id===libId),nm=('lamina-'+(it?it.name:new Date().toLocaleDateString('sv'))).replace(/[^\wáéíóúñ -]/gi,'').trim().replace(/\s+/g,'-');
 const ab=d.output('arraybuffer');$('secSh').classList.remove('on');$('ssSt').textContent='';await dlSave({filename:nm+'.pdf',data:ab});toast('Lámina '+(o.ssF||'a4').toUpperCase()+' a escala 1:'+sc+' descargada',{label:'Compartir',ms:7000,fn:()=>{try{shareFiles([new File([ab],nm+'.pdf',{type:'application/pdf'})],'Lámina SEC')}catch(e){}}})}
@@ -3413,7 +3446,7 @@ ${D.map(([t,rows],i)=>`<section><b>${i+1}. ${t}</b><div class="ceT">${rows.map((
 
 
 /* ---- Diagrama unilineal editable (se abre en el editor de planos) ---- */
-function buildUni(K){const C='#1b2a4a',it=[],L=(x1,y1,x2,y2,w)=>it.push({t:'line',c:C,w:w||2,x1,y1,x2,y2,ly:'el'}),T=(x,y,txt,sz)=>it.push({t:'text',c:C,size:sz||10,x,y,txt,ly:'el'}),S=(k,x,y)=>it.push({t:'sym',k,x,y,s:10,r:0,w:2,c:C,lb:''});
+function buildUni(K){const C='#1b2a4a',it=[],L=(x1,y1,x2,y2,w)=>it.push({t:'line',c:C,w:w||2,x1,y1,x2,y2,ly:'el',uni:1}),T=(x,y,txt,sz)=>it.push({t:'text',c:C,size:sz||10,x,y,txt,ly:'el',uni:1}),S=(k,x,y)=>it.push({t:'sym',k,x,y,s:10,r:0,w:2,c:C,lb:'',uni:1});
  const I=P.inst,dx=66,XM=60,cx={};let x=XM+70;K.D.forEach(d=>{d.cir.forEach(n=>{cx[n]=x;x+=dx});x+=18});const xEnd=Math.max(x-dx-18,XM+40);const poles=K.tri?'3':'2',ms=(v)=>String(v).replace('.',',');
  T(XM-30,22,'DIAGRAMA UNILINEAL'+(P.name?' · '+P.name:''),13);
  S('emp',XM,62);T(XM+16,60,'EMPALME '+(K.tri?'TRIFÁSICO 380 V':'MONOFÁSICO 220 V')+' · '+K.Ig+' A',10);if(I.empN)T(XM+16,72,'N° cliente/medidor: '+I.empN,9);
@@ -3486,6 +3519,13 @@ async function pdf(){const J=window.jspdf&&window.jspdf.jsPDF;if(!J){TT('No se c
 
 window.openCert=()=>{if(window.proOk&&!window.proOk()){window.proAsk&&window.proAsk('La certificación eléctrica (cálculos y guía TE1)');return}shell();render();g('cert').classList.add('on')};
 window.__certCalc=()=>calcAll();
+const withP=(i,fn)=>{const o=P;P=DB.list[i]||P;try{return fn()}finally{P=o}};
+window.__certList=()=>DB.list.map((p,i)=>({i,name:p.name,n:(p.cir||[]).length,cur:i===DB.cur}));
+window.__certUni=i=>withP(i,()=>buildUni(calcAll()));
+window.__certCuadro=i=>withP(i,()=>{const K=calcAll();const difOf=n=>{const g=K.D.find(d=>d.cir.includes(n));return g?g.n+' '+(K.tri?'4':'2')+'x'+g.In+'A 30mA':''};
+ const rows=K.R.map(({c,r})=>[c.n,String(n0(c.luces)||''),String(n0(c.ench)||''),n0(c.otros)?f1(n0(c.otros))+'W':'',String(r.cent),f1(r.P),K.tri?c.fase:'R',difOf(c.n),'1x'+r.In+'A '+r.curva,f1(r.S),String(r.duct),c.ub||TIPOS[c.tipo].n]);
+ const tot=['TOTAL',String(K.R.reduce((a,x)=>a+n0(x.c.luces),0)),String(K.R.reduce((a,x)=>a+n0(x.c.ench),0)),'',String(K.R.reduce((a,x)=>a+x.r.cent,0)),f1(K.tot),'','','','','',''];
+ return{rows,tot,name:P.name}});
 })();
 
 document.getElementById('mCert').onclick=()=>{document.getElementById('modeMenu').style.display='none';window.openCert()};
