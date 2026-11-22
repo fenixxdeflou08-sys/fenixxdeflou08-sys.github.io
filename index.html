@@ -221,7 +221,7 @@ button svg,label svg{pointer-events:none}
 #secSh{z-index:72}#secSh .sheetIn{max-height:90vh;overflow:auto}#secSh label{display:block;font-size:13px;font-weight:600;color:var(--mu);margin:8px 0 2px}#secSh .g2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 #plTop #plSec{min-width:40px;padding:6px 6px}@media(max-width:440px){#plZ{display:none}}
 #plano.annot #plTools{grid-template-columns:repeat(6,1fr)}
-#measSh{z-index:72}#hmAsk,#hmSave{z-index:56}.enFull{position:fixed!important;inset:0!important;z-index:96!important;border-radius:0!important;aspect-ratio:auto!important}#plTools button>span{display:block}
+#measSh,#autoSh{z-index:72}#hmAsk,#hmSave{z-index:56}.enFull{position:fixed!important;inset:0!important;z-index:96!important;border-radius:0!important;aspect-ratio:auto!important}#plTools button>span{display:block}
 #plano.annot #plCv{background:#111316}
 
 #cp{z-index:75}
@@ -1782,10 +1782,10 @@ if(tool==='pen'||tool==='hl')h=colorsH+'<span class="plsep"></span>'+widH+(tool=
 else if(tool==='shape')h=[['line','Línea'],['arrow','Flecha'],['rect','Rect.'],['ell','Círculo'],['tri','Triáng.']].map(([k,l])=>`<button class="plt${k===shape?' on':''}" data-sh="${k}">${l}</button>`).join('')+'<span class="plsep"></span>'+pal(3)+widH+'<span class="plsep"></span>'+`<button class="plt${magnet?' on':''}" data-tg="mag">Imán</button><button class="plt${fillOn?' on':''}" data-tg="fill">Relleno</button>`+(['line','rect','tri'].includes(shape)?'<span class="plsep"></span>'+`<button class="plt${wallOn?' on':''}" data-tg="wall">🧱 Pared</button>`+(wallOn?WALLS.map(v=>`<button class="plt${Math.abs(v-wallT)<1e-6?' on':''}" data-wt="${v}">${cmF(v)}</button>`).join('')+`<button class="plt" data-wt="x">Otro</button>`:''):'');
 else if(tool==='dim')h=`<button class="plt${magnet?' on':''}" data-tg="mag">Imán</button><label class="pll">Escala: 1 cuadro =<input id="plEsc" type="number" inputmode="decimal" step="0.05" min="0.01" value="${P.esc}"> m</label><input id="plDimT" placeholder="Texto propio (opcional)" style="flex:1;min-width:120px">`;
 else if(tool==='meas')h=`<span class="pll">Toca una pared para poner su medida${P.escSet?'':' (la primera define la escala)'}</span>`+(P.items.some(o=>o.ml&&Object.keys(o.ml).length)?`<span class="pll"><b>${(()=>{let t=0;P.items.forEach(o=>{if(o.ml)Object.values(o.ml).forEach(v=>t+=v)});return 'Total medido: '+mFmt(t)})()}</b></span>`:'');
-else if(tool==='sym'){if(!symCat)h=Object.entries(SCAT).map(([k,v])=>`<button class="plt" data-sc="${k}" style="font-weight:700">${v} ▸</button>`).join('')+`<span class="pll">Elige una carpeta</span>`;
+else if(tool==='sym'){if(!symCat)h=Object.entries(SCAT).map(([k,v])=>`<button class="plt" data-sc="${k}" style="font-weight:700">${v} ▸</button>`).join('')+`<span class="pll">Elige una carpeta</span><span class="plsep"></span><button class="plt" id="plAuto" style="font-weight:700">✨ Eléctrico automático</button>`;
 else{h=`<button class="plt on" data-sc="" style="font-weight:700">◂ ${SCAT[symCat]}</button><button class="plt${symSide?' on':''}" data-sside="1" title="Mostrar los símbolos en un panel al costado">▥ Panel</button>`+(sel>=0&&P.items[sel]&&P.items[sel].t==='sym'?`<button class="plt" id="plFlip">↔ Reflejar</button>`:'');
 const cabOpts=(symK==='cable'?'<span class="plsep"></span>'+`<button class="plt${!wireCurve?' on':''}" data-wc="0">Recto</button><button class="plt${wireCurve?' on':''}" data-wc="1">Curvo</button>`+'<span class="plsep"></span><span class="pll">Conductores</span>'+[0,1,2,3,4].map(n=>`<button class="plt${wireN===n?' on':''}" data-wn="${n}">${n?n+' '+'/'.repeat(n):'—'}</button>`).join(''):'');
-if(symSide){h+=cabOpts}else{if(symCat==='el')h+=`<span class="plsep"></span><button class="plt${symK==='cable'?' on':''}" data-sk="cable" title="Une símbolos: arrastra de un punto a otro">〰 Cable</button>`+cabOpts;
+if(symCat==='el')h+=`<button class="plt" id="plAuto" style="font-weight:700">✨ Automático</button>`;if(symSide){h+=cabOpts}else{if(symCat==='el')h+=`<span class="plsep"></span><button class="plt${symK==='cable'?' on':''}" data-sk="cable" title="Une símbolos: arrastra de un punto a otro">〰 Cable</button>`+cabOpts;
 symGroups().forEach(([g,ks])=>{const op=symOpenG===g;h+=`<span class="plsep"></span><button class="plt sgb${op?' on':''}" data-sg="${g}" style="font-weight:700">${g} ${op?'▾':'▸'}</button>`;if(op)ks.forEach(k=>{const v=SYMS[k];h+=`<button class="plt${k===symK?' on':''}" data-sk="${k}" title="${v.n}"><img src="${symThumb(k,'#e8eaed')}" alt="" style="height:18px;vertical-align:-4px;margin-right:4px">${v.b}</button>`})})}
 h+='<span class="plsep"></span>'+(symCat==='el'?`<input id="plSymL" placeholder="Rótulo (ej: C1)" maxlength="12" style="width:120px" value="${symLblV.replace(/["<>&]/g,'')}">`:'')+pal(3)}}
 else if(tool==='text')h=`<input id="plTxt" placeholder="Escribe y toca en el plano" style="flex:1;min-width:150px">`+pal(4);
@@ -1800,7 +1800,7 @@ if($('plEsc'))$('plEsc').onchange=e=>{const v=parseFloat(String(e.target.value).
 if($('plClr'))$('plClr').onclick=()=>{if(!P.items.length)return;snap();P.items=[];sel=-1;req();toast('Plano borrado',{label:'Deshacer',ms:6000,fn:undo})};
 if($('plDel'))$('plDel').onclick=()=>{snap();P.items.splice(sel,1);sel=-1;opts();req()};
 if($('plDup'))$('plDup').onclick=()=>{snap();const c=JSON.parse(JSON.stringify(P.items[sel]));shift(c,G,G);P.items.push(c);sel=P.items.length-1;req()};
-if($('plFit'))$('plFit').onclick=fitView;if($('plSymL'))$('plSymL').oninput=e=>{symLblV=e.target.value};if($('plFlip'))$('plFlip').onclick=()=>{const it=P.items[sel];if(!it)return;snap();it.fx=!it.fx;req()};if($('plRot'))$('plRot').onclick=()=>{const it=P.items[sel];if(!it)return;snap();it.r=((it.r||0)+90)%360;req()}}
+if($('plFit'))$('plFit').onclick=fitView;if($('plAuto'))$('plAuto').onclick=autoSheet;if($('plSymL'))$('plSymL').oninput=e=>{symLblV=e.target.value};if($('plFlip'))$('plFlip').onclick=()=>{const it=P.items[sel];if(!it)return;snap();it.fx=!it.fx;req()};if($('plRot'))$('plRot').onclick=()=>{const it=P.items[sel];if(!it)return;snap();it.r=((it.r||0)+90)%360;req()}}
 $('plOpt').onclick=e=>{const b=e.target.closest('button');if(!b)return;const d=b.dataset;if(d.sm){selMode=d.sm;try{localStorage.setItem('rep_selM',selMode)}catch(_){}opts();return}if(d.sp2){selPart=!selPart;try{localStorage.setItem('rep_selP',selPart?'1':'0')}catch(_){}opts();return}if(d.paste){doPaste();return}if(d.ly){LY_ACT=d.ly;msel=[];if(sel>=0&&P.items[sel]&&!inLy(P.items[sel]))sel=-1;opts();req();return}if(d.wc!==undefined){wireCurve=d.wc==='1';try{localStorage.setItem('rep_wCv',wireCurve?'1':'0')}catch(_){}opts();return}
 if(d.wn!==undefined){wireN=+d.wn;try{localStorage.setItem('rep_wN',String(wireN))}catch(_){}opts();return}
 if(d.swc!==undefined&&sel>=0&&P.items[sel]){const it=P.items[sel];snap();it.cv=d.swc==='1'?.22*Math.hypot(it.x2-it.x1,it.y2-it.y1):0;opts();req();return}
@@ -1937,6 +1937,100 @@ const hs=fr.getHitTestResults(hitSrc);if(hs.length){const p=hs[0].getPose(refS);
 };
 sess.requestAnimationFrame(frame)})}
 
+
+/* ---- Eléctrico automático: recintos, símbolos, interruptor↔luz y canalización ---- */
+const ROOMT=[['cocina',/cocin|kitchen/i],['bano',/ba[nñ]o|\bwc\b|toilet/i],['dorm',/dorm|pieza|habit|alcoba|cuarto/i],['living',/living|estar|comedor|sala/i],['lav',/lavad|logia|servicio/i],['pas',/pasillo|hall|circul|acceso|entrada|recibidor/i],['ext',/terraza|patio|balc|jard|quincho/i]];
+const ROOMN={cocina:'Cocina',bano:'Baño',dorm:'Dormitorio',living:'Living-comedor',lav:'Lavadero',pas:'Pasillo',ext:'Exterior',gen:'Recinto'};
+const ARULE={cocina:{e:3,k:'ench2'},bano:{e:1,k:'ench'},dorm:{e:3,k:'ench2'},living:{e:4,k:'ench2'},lav:{e:2,k:'ench2'},pas:{e:1,k:'ench'},ext:{e:1,k:'ench'},gen:{e:2,k:'ench2'}};
+function autoRooms(){
+ const m=G/(P.esc||0.5),segs=[],doors=[];
+ P.items.forEach((it,i)=>{
+  if(it.au)return;
+  if(it.t==='sym'){if(isOpen(it)){const S=SYMS[it.k],op=S.op||[-.4,.4],{T}=symXf(it),a=T(op[0],0),b=T(op[1],0);segs.push([a,b,Math.max(2,.04*m)]);if(/puerta/.test(it.k)||/Puerta/.test(S.n||''))doors.push({a,b,c:T((op[0]+op[1])/2,0)})}return}
+  if(it.wire||it.t==='text'||it.t==='dim'||it.t==='arrow'||lyOf(it)==='el')return;
+  if(isWall(it)){const w=wallW(it);wallSegs(it).forEach(([p,q])=>segs.push([p,q,w]));return}
+  if(!['line','rect','tri','poly','pen','ell'].includes(it.t))return;
+  const o=outline(it),w=Math.max(2,it.w||2);for(let k=1;k<o.length;k++)segs.push([o[k-1],o[k],w]);
+ });
+ if(!segs.length)return{rooms:[],m,doors};
+ let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;segs.forEach(([p,q])=>{x0=Math.min(x0,p[0],q[0]);y0=Math.min(y0,p[1],q[1]);x1=Math.max(x1,p[0],q[0]);y1=Math.max(y1,p[1],q[1])});
+ const pad=.6*m;x0-=pad;y0-=pad;x1+=pad;y1+=pad;
+ let c=.05*m;while(((x1-x0)/c)*((y1-y0)/c)>450000)c*=1.25;
+ const W=Math.ceil((x1-x0)/c),H=Math.ceil((y1-y0)/c),N=W*H,g=new Uint8Array(N),tol=.05*m;
+ const stamp=(px,py,r)=>{const cx=(px-x0)/c,cy=(py-y0)/c,rr=r/c,a=Math.max(0,Math.floor(cx-rr)),b=Math.min(W-1,Math.ceil(cx+rr)),d=Math.max(0,Math.floor(cy-rr)),e=Math.min(H-1,Math.ceil(cy+rr));for(let y=d;y<=e;y++)for(let x=a;x<=b;x++){const dx=x+.5-cx,dy=y+.5-cy;if(dx*dx+dy*dy<=rr*rr+.25)g[y*W+x]=1}};
+ segs.forEach(([p,q,w])=>{const L=Math.hypot(q[0]-p[0],q[1]-p[1]),n=Math.max(1,Math.ceil(L/(c*.5))),r=w/2+tol;for(let k=0;k<=n;k++)stamp(p[0]+(q[0]-p[0])*k/n,p[1]+(q[1]-p[1])*k/n,r)});
+ // exterior
+ const st=[];for(let x=0;x<W;x++){st.push(x,(H-1)*W+x)}for(let y=0;y<H;y++){st.push(y*W,y*W+W-1)}
+ const fill=(seed,val)=>{const out=[];const s=seed.filter(i=>g[i]===0);s.forEach(i=>g[i]=val);while(s.length){const i=s.pop();out.push(i);const x=i%W;const nb=[x>0?i-1:-1,x<W-1?i+1:-1,i-W,i+W];for(const j of nb){if(j>=0&&j<N&&g[j]===0){g[j]=val;s.push(j)}}}return out};
+ fill(st,2);
+ // distance (chamfer 3-4) to blocked cells
+ const D=new Float32Array(N);for(let i=0;i<N;i++)D[i]=g[i]===1?0:1e9;
+ for(let y=0;y<H;y++)for(let x=0;x<W;x++){const i=y*W+x;if(!D[i])continue;let v=D[i];if(x>0)v=Math.min(v,D[i-1]+3);if(y>0){v=Math.min(v,D[i-W]+3);if(x>0)v=Math.min(v,D[i-W-1]+4);if(x<W-1)v=Math.min(v,D[i-W+1]+4)}D[i]=v}
+ for(let y=H-1;y>=0;y--)for(let x=W-1;x>=0;x--){const i=y*W+x;if(!D[i])continue;let v=D[i];if(x<W-1)v=Math.min(v,D[i+1]+3);if(y<H-1){v=Math.min(v,D[i+W]+3);if(x<W-1)v=Math.min(v,D[i+W+1]+4);if(x>0)v=Math.min(v,D[i+W-1]+4)}D[i]=v}
+ const lab=new Int32Array(N).fill(-1),rooms=[];
+ for(let i=0;i<N;i++){if(g[i]!==0)continue;const cells=fill([i],3);const area=cells.length*(c/m)*(c/m);if(area<1){cells.forEach(j=>g[j]=4);continue}const id=rooms.length;cells.forEach(j=>lab[j]=id);rooms.push({id,cells,area})}
+ const W2=(i)=>[x0+(i%W+.5)*c,y0+(Math.floor(i/W)+.5)*c],cellAt=(px,py)=>{const x=Math.floor((px-x0)/c),y=Math.floor((py-y0)/c);return x<0||y<0||x>=W||y>=H?-1:y*W+x},roomAt=(px,py)=>{const i=cellAt(px,py);return i<0?-1:lab[i]};
+ P.items.forEach(it=>{if(it.t!=='text'||!it.txt)return;const r=roomAt(it.x,it.y+(it.size||18)*.4);if(r>=0&&!rooms[r].name)rooms[r].name=it.txt.trim()});
+ rooms.forEach(R=>{R.type='gen';if(R.name){const f=ROOMT.find(([,re])=>re.test(R.name));if(f)R.type=f[0]}
+  let bi=R.cells[0];R.cells.forEach(i=>{if(D[i]>D[bi])bi=i});R.best=bi;let a=1e9,b=1e9,cc=-1e9,d=-1e9;R.cells.forEach(i=>{const x=i%W,y=(i-x)/W;a=Math.min(a,x);b=Math.min(b,y);cc=Math.max(cc,x);d=Math.max(d,y)});R.bb=[a,b,cc,d]});
+ return{rooms,m,c,W,H,D,lab,W2,cellAt,roomAt,doors,x0,y0,g}}
+function autoElec(o){
+ o=o||{};const A=autoRooms();if(!A.rooms.length)return{err:'No encontré recintos cerrados. Dibuja los muros (Formas con "Pared", o líneas) y que cada pieza quede cerrada; las puertas cuentan como cerradas.'};
+ snap();P.items=P.items.filter(it=>!it.au);
+ const{rooms,m,c,W,D,lab,W2,roomAt,cellAt,doors}=A,S=10,out=[],sw=[],lights=[],plugs=[],rep=[];
+ const ang=(wx,wy)=>{let a=Math.atan2(-wx,wy)*180/Math.PI;return Math.round(((a%360)+360)%360)};
+ const has=(R,re)=>P.items.some(it=>it.t==='sym'&&!it.au&&re.test(it.k)&&roomAt(it.x,it.y)===R.id);
+ const tabs=P.items.filter(it=>it.t==='sym'&&SYMS[it.k]&&SYMS[it.k].L==='TABLEROS'&&/Tablero/i.test(SYMS[it.k].b||'')&&SYMS[it.k].grp!=='Unilineal');
+ const wallDir=i=>{const x=i%W;let best=null;[[1,0],[-1,0],[0,1],[0,-1]].forEach(([dx,dy])=>{for(let k=1;k<=5;k++){const xx=x+dx*k,j=i+dx*k+dy*k*W;if(xx<0||xx>=W||j<0||j>=lab.length)break;if(lab[j]!==lab[i]){if(!best||k<best.k)best={k,dx,dy,n:0};if(k<=3)best.cnt=(best.cnt||0);break}}});
+  let n=0;[[1,0],[-1,0],[0,1],[0,-1]].forEach(([dx,dy])=>{for(let k=1;k<=3;k++){const j=i+dx*k+dy*k*W;if(j<0||j>=lab.length||lab[j]!==lab[i]){n++;break}}});return best&&n<=1?best:null};
+ rooms.forEach(R=>{
+  const nm=R.name||ROOMN[R.type]+(R.type==='gen'?' '+(R.id+1):'');const r={n:nm,area:R.area,luz:0,int:0,ench:0};rep.push(r);
+  if(!o.sym)return;
+  const myL=[],ctr=W2(R.best);
+  if(!has(R,/^luz|^apl|^fluo|^spot|^led/)){
+   const[bx0,by0,bx1,by1]=R.bb,wide=(bx1-bx0)>=(by1-by0),long=Math.max(bx1-bx0,by1-by0)*c/m,short=Math.min(bx1-bx0,by1-by0)*c/m;
+   if(R.area>16&&long/short>1.5){const mid=wide?(bx0+bx1)/2:(by0+by1)/2;[0,1].forEach(h=>{let bi=-1;R.cells.forEach(i=>{const x=i%W,y=(i-x)/W,v=wide?x:y;if((h?v>=mid:v<mid)&&(bi<0||D[i]>D[bi]))bi=i});if(bi>=0)myL.push(W2(bi))})}
+   else myL.push(ctr);
+   myL.forEach(([x,y])=>{const it={t:'sym',k:'luz',x,y,s:S,r:0,w:2,c:col,lb:'',au:1};out.push(it);lights.push(it)});r.luz=myL.length}
+  // interruptor junto a la puerta
+  let swIt=null;if(!has(R,/^int|^conm/)&&myL.length){
+   let cand=null;for(const d of doors){const ux0=d.b[0]-d.a[0],uy0=d.b[1]-d.a[1],L=Math.hypot(ux0,uy0)||1,ux=ux0/L,uy=uy0/L,nx=-uy,ny=ux,hw=L/2;
+    for(const s of[1,-1]){const pr=[d.c[0]+nx*s*.35*m,d.c[1]+ny*s*.35*m];if(roomAt(...pr)!==R.id)continue;
+     for(const t of[1,-1]){let p=null;for(let off=.12;off<=.45&&!p;off+=.03){const q=[d.c[0]+ux*t*(hw+.18*m)+nx*s*off*m,d.c[1]+uy*t*(hw+.18*m)+ny*s*off*m],ci=cellAt(...q);if(ci>=0&&lab[ci]===R.id&&D[ci]>=3)p=q}
+      if(p){cand={p,w:[-nx*s,-ny*s],d};break}}if(cand)break}if(cand)break}
+   if(!cand){let bi=-1,bd=1e18;R.cells.forEach(i=>{if(D[i]<3||D[i]>7)return;const wd=wallDir(i);if(!wd)return;const[x,y]=W2(i),dd=(x-ctr[0])**2+(y-ctr[1])**2;if(dd<bd){bd=dd;bi=i}});if(bi>=0){const wd=wallDir(bi);cand={p:W2(bi),w:[wd.dx,wd.dy]}}}
+   if(cand){const k=myL.length>1?'int2':'int1',sh=.65*S;const it={t:'sym',k,x:cand.p[0]-cand.w[0]*sh,y:cand.p[1]-cand.w[1]*sh,s:S,r:ang(...cand.w),w:2,c:col,lb:'',au:1};out.push(it);swIt=it;sw.push({it,R,L:myL});r.int=1}}
+  // enchufes repartidos en los muros
+  if(!has(R,/^ench/)){const ru=ARULE[R.type]||ARULE.gen;let n=ru.e;if(R.type==='gen')n=Math.max(1,Math.min(4,Math.round(R.area/6)));if(R.type==='living')n=Math.max(3,Math.min(6,Math.round(R.area/5)));
+   const run=(i,dx,dy)=>{let k=0,j=i,x=i%W;while(k<400){const xx=x+dx*(k+1),jj=i+(dx+dy*W)*(k+1);if(xx<0||xx>=W||jj<0||jj>=lab.length||lab[jj]!==lab[i])break;k++}return k*c};
+   const pool=[];R.cells.forEach(i=>{if(D[i]<3||D[i]>6)return;const wd=wallDir(i);if(!wd)return;const p=W2(i);if(doors.some(d=>Math.hypot(p[0]-d.c[0],p[1]-d.c[1])<.9*m))return;if(swIt&&Math.hypot(p[0]-swIt.x,p[1]-swIt.y)<.7*m)return;if(Math.min(run(i,wd.dy,wd.dx),run(i,-wd.dy,-wd.dx))<.6*m)return;pool.push({p,wd,i})});
+   const ch=[];const ref=[];if(swIt)ref.push([swIt.x,swIt.y]);myL.forEach(q=>ref.push(q));
+   for(let k=0;k<n&&pool.length;k++){let best=null,bv=-1;for(let j=0;j<pool.length;j+=Math.max(1,Math.floor(pool.length/600))){const q=pool[j].p;let v=1e18;ch.forEach(e=>{v=Math.min(v,(q[0]-e.p[0])**2+(q[1]-e.p[1])**2)});if(!ch.length)ref.slice(0,1).forEach(e=>{v=Math.min(v,((q[0]-e[0])**2+(q[1]-e[1])**2)*.5)});if(!ch.length&&!ref.length)v=(q[0]-ctr[0])**2+(q[1]-ctr[1])**2;if(v>bv){bv=v;best=pool[j]}}
+    if(!best)break;ch.push(best)}
+   ch.forEach(({p,wd,i})=>{const gap=D[i]/3*c-(.4*S+1),it={t:'sym',k:ru.k,x:p[0]+wd.dx*gap,y:p[1]+wd.dy*gap,s:S,r:ang(wd.dx,wd.dy),w:2,c:col,lb:'',au:1};out.push(it);plugs.push(it)});r.ench=ch.length}
+ });
+ const wire=(a,b,n,curve)=>{const L=Math.hypot(b[0]-a[0],b[1]-a[1]);if(L<2)return;out.push({t:'line',wire:1,n,c:col,w:2.5,x1:a[0],y1:a[1],x2:b[0],y2:b[1],cv:Math.round(L*(curve===2?.07:curve?.16:0)),au:1})};
+ const edge=(it,to)=>{if(it.k==='luz'){const dx=to[0]-it.x,dy=to[1]-it.y,L=Math.hypot(dx,dy)||1;return[it.x+dx/L*S,it.y+dy/L*S]}if(/^int/.test(it.k)){const{T}=symXf(it);return T(0,.65)}if(/^ench/.test(it.k)){const{T}=symXf(it);return T(0,-.2)}return[it.x,it.y]};
+ if(o.link)sw.forEach(({it,L})=>{const l0=lights.find(q=>q.x===L[0][0]&&q.y===L[0][1]);if(!l0)return;wire(edge(it,[l0.x,l0.y]),edge(l0,edge(it,[l0.x,l0.y])),2,true);if(L.length>1){const l1=lights.find(q=>q.x===L[1][0]&&q.y===L[1][1]);if(l1)wire(edge(l0,[l1.x,l1.y]),edge(l1,[l0.x,l0.y]),3,true)}});
+ if(o.can){const mst=(nodes,n)=>{if(nodes.length<2)return;const inT=[0],rest=nodes.slice(1).map((_,i)=>i+1);while(rest.length){let bi=-1,bj=-1,bd=1e18;inT.forEach(i=>rest.forEach((j,k)=>{const a=nodes[i],b=nodes[j],d=(a.x-b.x)**2+(a.y-b.y)**2;if(d<bd){bd=d;bi=i;bj=k}}));const j=rest.splice(bj,1)[0];inT.push(j);const a=nodes[bi],b=nodes[j];wire(edge(a,[b.x,b.y]),edge(b,[a.x,a.y]),n,2)}};
+  const T0=tabs[0];const first=lights.filter((q,i,arr)=>sw.length?true:true);
+  const roomL=[];const seen=new Set();lights.forEach(q=>{const r=roomAt(q.x,q.y);if(!seen.has(r)){seen.add(r);roomL.push(q)}});
+  mst((T0?[T0]:[]).concat(roomL),3);mst((T0?[T0]:[]).concat(plugs),3)}
+ out.forEach(it=>P.items.push(it));dirty=true;req();
+ return{rooms:rep,n:out.length,tab:!!tabs.length}}
+function autoSheet(){let s=$('autoSh');if(!s){s=document.createElement('div');s.id='autoSh';s.className='sheet';s.innerHTML=`<div class="sheetIn"><div class="cpHead"><b>✨ Eléctrico automático</b><button class="x" id="auX" aria-label="Cerrar">×</button></div>
+<div class="mu">Busca las piezas cerradas del plano y pone los símbolos según el nombre que les escribiste (Cocina, Baño, Dormitorio, Living…).</div>
+<label class="row" style="gap:10px"><input type="checkbox" id="auS" checked style="width:24px;min-height:24px;flex:none">Luz, interruptor junto a la puerta y enchufes</label>
+<label class="row" style="gap:10px"><input type="checkbox" id="auL" checked style="width:24px;min-height:24px;flex:none">Unir cada interruptor con su luz (2 conductores)</label>
+<label class="row" style="gap:10px"><input type="checkbox" id="auC" checked style="width:24px;min-height:24px;flex:none">Canalización desde el tablero (alumbrado y enchufes)</label>
+<div id="auR" class="mu" style="font-weight:600"></div>
+<div class="row"><button class="pri" id="auGo" type="button">Generar</button><button class="sec fix" id="auDel" type="button">Quitar lo automático</button></div>
+<div class="mu" style="font-size:13px">Revisa y mueve lo que haga falta: lo automático es un punto de partida. Si una pieza ya tiene sus símbolos, no se toca.</div></div>`;($('measSh').parentNode||document.body).insertBefore(s,$('measSh'));
+ s.onclick=e=>{if(e.target===s)s.classList.remove('on')};$('auX').onclick=()=>s.classList.remove('on');
+ $('auGo').onclick=()=>{const r=autoElec({sym:$('auS').checked,link:$('auL').checked,can:$('auC').checked});if(r.err){$('auR').textContent=r.err;return}const t=r.rooms.reduce((a,x)=>({l:a.l+x.luz,i:a.i+x.int,e:a.e+x.ench}),{l:0,i:0,e:0});s.classList.remove('on');opts();toast(`${r.rooms.length} piezas: ${t.l} luces, ${t.i} interruptores, ${t.e} enchufes`+(r.tab||!$('auC').checked?'':'. Pon un tablero para unir la canalización a él.'))};
+ $('auDel').onclick=()=>{if(!P.items.some(it=>it.au)){$('auR').textContent='No hay nada automático en este plano.';return}snap();P.items=P.items.filter(it=>!it.au);sel=-1;msel=[];dirty=true;req();opts();s.classList.remove('on');toast('Quitado lo automático')}}
+ const A=autoRooms();$('auR').textContent=A.rooms.length?'Encontré '+A.rooms.length+' pieza'+(A.rooms.length>1?'s':'')+': '+A.rooms.map(R=>R.name||(R.type==='gen'?'sin nombre':ROOMN[R.type])).join(', ')+'.':'Aún no encuentro piezas cerradas en el plano.';s.classList.add('on')}
+window.__autoElec=o=>autoElec(o);window.__autoRooms=()=>autoRooms().rooms.map(R=>({n:R.name,t:R.type,a:+R.area.toFixed(1)}));
 
 /* ---- Estirar / agrandar elementos seleccionados ---- */
 
