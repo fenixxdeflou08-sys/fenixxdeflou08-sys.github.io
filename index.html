@@ -1695,7 +1695,7 @@ return{kx,ky,fx,k:(kx+ky)/2,T:(u,v)=>{const X1=u*kx*fx,Y1=v*ky;return[it.x+X1*ca
    1) PRO_CLIENT_ID: el "ID de cliente de OAuth" de Google Cloud (tipo Aplicación web, origen https://fenixxdeflou08-sys.github.io).
    2) PRO_OWN: hash SHA-256 de cada Gmail autorizado (en minúsculas). Nunca se escribe el correo tal cual. */
 const PRO_CLIENT_ID='840827119315-1ukvuk7t6pb09nk0cnnhon8teqv1lkv9.apps.googleusercontent.com';
-const PRO_OWN=['a774cc5fdbdf805bd17f394d9145b84bee0f87049b8c97752c26701dd2c3e0d2'];
+const PRO_OWN=['a774cc5fdbdf805bd17f394d9145b84bee0f87049b8c97752c26701dd2c3e0d2','d8be20a5d5827bfb94a1e67117f87820efa5c90c987034a9d1c2a7189faf0a91'];
 let proSess=null;try{proSess=JSON.parse(localStorage.getItem('rep_pro')||'null')}catch(e){}
 const proOk=()=>!!(proSess&&proSess.exp>Date.now()&&PRO_OWN.includes(proSess.h));
 const sha256=async s=>{const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')};
