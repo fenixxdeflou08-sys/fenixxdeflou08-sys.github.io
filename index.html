@@ -588,7 +588,7 @@ body.dHex.dEdit #fabMenu button.cir:not(#fTiempo)::after{top:2px;right:auto;left
 </section>
 <section>
 <h2>Reportes guardados</h2>
-<div class="waOptW"><span class="mu">Al enviar por WhatsApp:</span><div class="waOpt"><button type="button" class="waChip" data-wao="Folio"></button><button type="button" class="waChip" data-wao="Sep"></button></div></div>
+<div class="waOptW"><span class="mu">Al enviar por WhatsApp:</span><div class="waOpt"><button type="button" class="waChip" data-wao="Folio"></button><button type="button" class="waChip" data-wao="Sep"></button><button type="button" class="waChip" data-wao="Txt"></button></div></div>
 <div class="row" style="margin-bottom:8px"><input id="hQ" placeholder="Buscar lugar, tarea o nombre"><select id="hM" class="fix" style="width:auto;max-width:150px;padding:8px 6px"></select></div>
 <div id="hSum" style="display:none;margin-bottom:8px;padding:10px;border:1px solid var(--ac);border-radius:12px"></div>
 <div id="hist"><div class="mu">Aún no hay reportes.</div></div>
@@ -771,7 +771,7 @@ body.dHex.dEdit #fabMenu button.cir:not(#fTiempo)::after{top:2px;right:auto;left
 <div id="crSheet" class="sheet" role="dialog" aria-labelledby="crT"><div class="sheetIn"><b id="crT" style="font-size:20px">Revisar correcciones</b><div class="mu" style="font-size:14px">Puedes editar el texto antes de aplicarlo.</div><textarea id="crTa" style="min-height:140px"></textarea><div id="crCh" class="crList"></div><div id="crUn"></div><div class="row"><button class="pri" id="crOk">Aplicar</button><button class="sec" id="crX">Cancelar</button></div></div></div>
 <div id="pdfV" role="dialog" aria-labelledby="pvT"><div id="pvTop"><button class="sec" id="pvX" aria-label="Cerrar"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button><b id="pvT"></b><span id="pvP" class="mu"></span><button class="sec" id="pvOut" aria-label="Alejar">−</button><span id="pvZ" class="mu">100%</span><button class="sec" id="pvIn" aria-label="Acercar">+</button></div><div id="pvB"></div></div>
 <div id="pasteSh" class="sheet" role="dialog" aria-labelledby="psT"><div class="sheetIn"><b id="psT" style="font-size:20px"></b><div class="mu" style="font-size:14px">Copia el texto en Samsung Notes (mantén presionado → Seleccionar todo → Copiar) y pégalo aquí.</div><textarea id="psTa" style="min-height:130px" placeholder="Pega aquí tu nota"></textarea><div id="psPrev"></div><div class="row"><button class="pri" id="psOk">Agregar</button><button class="sec" id="psX">Cancelar</button></div></div></div>
-<div id="done" class="sheet" aria-modal="true" role="dialog" aria-labelledby="dnT"><div class="sheetIn"><div class="dnOk"><i data-ic="check"></i></div><b id="dnT">Reporte guardado</b><div class="mu" id="dnS"></div><button class="ok" id="dnW"><i data-ic="msg"></i>Enviar por WhatsApp</button><div class="waOpt"><button type="button" class="waChip" data-wao="Folio"></button><button type="button" class="waChip" data-wao="Sep"></button></div><div class="row"><button class="sec" id="dnP"><i data-ic="file"></i>PDF</button><button class="sec" id="dnN"><i data-ic="plus"></i>Nuevo reporte</button></div></div></div>
+<div id="done" class="sheet" aria-modal="true" role="dialog" aria-labelledby="dnT"><div class="sheetIn"><div class="dnOk"><i data-ic="check"></i></div><b id="dnT">Reporte guardado</b><div class="mu" id="dnS"></div><button class="ok" id="dnW"><i data-ic="msg"></i>Enviar por WhatsApp</button><div class="waOpt"><button type="button" class="waChip" data-wao="Folio"></button><button type="button" class="waChip" data-wao="Sep"></button><button type="button" class="waChip" data-wao="Txt"></button></div><div class="row"><button class="sec" id="dnP"><i data-ic="file"></i>PDF</button><button class="sec" id="dnN"><i data-ic="plus"></i>Nuevo reporte</button></div></div></div>
 <div id="toast" role="status" aria-live="polite"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -842,7 +842,7 @@ function renderLM(){if(!s.lm)s.lm=[];$('lmList').innerHTML=s.lm.length?s.lm.map(
 let whoEdit=false;
 function renderCur(){const t=s.task;$("ctT").textContent=t?t.t:"Sin tarea seleccionada";$("ctU").textContent=t?(t.u||""):"Elige una de tus tareas pendientes";$("ctBtn").textContent=t?"Cambiar":"Elegir tarea";
 const show=!!(s.resp.length&&s.ubic)&&!whoEdit;$("who").style.display=show?"flex":"none";$("secResp").style.display=show?"none":"";$("secUbic").style.display=show?"none":"";if(show){$("whoR").textContent=s.resp.join(", ");$("whoU").textContent=s.ubic}}
-function renderAll(){try{window.tAsk&&setTimeout(()=>{try{$("hmBtn")&&($("hmBtn").textContent=s.inicio?"🕒 Corregir horas a mano":"🕒 Agregar hora a mano")}catch(e){}},0)}catch(e){}renderCur();if(window.renderCobro)renderCobro();if(window.renderPlanos)renderPlanos();if(window.firmaRender)firmaRender();renderLM();renderLoc();$("notas").value=s.notas;renderResp();renderPhotos();renderMats();renderTime()}
+function renderAll(){try{window.tAsk&&setTimeout(()=>{try{$("hmBtn")&&($("hmBtn").textContent=s.inicio?"🕒 Corregir horas a mano":"🕒 Agregar hora a mano")}catch(e){}},0)}catch(e){}renderCur();if(window.renderCobro)renderCobro();if(window.renderPlanos)renderPlanos();if(window.firmaRender)firmaRender();renderLM();renderLoc();$("notas").value=s.notas;if(window.aiReset)aiReset(s);renderResp();renderPhotos();renderMats();renderTime()}
 
 $('whoBtn').onclick=()=>{whoEdit=true;renderCur();$('secResp').scrollIntoView({behavior:'smooth'})};
 $('ctBtn').onclick=()=>{const p=$('secTar');p.style.display='block';renderT();p.scrollIntoView({behavior:'smooth'})};
@@ -959,7 +959,7 @@ b.disabled=true;st.textContent='Mejorando el texto…';
 try{const out=await improveText(t,st);if(!out)throw new Error('vacío');window.heePrev=$('heN').value;$('heN').value=out;$('heUndo').style.display='inline-block';$('heRep').style.display='inline-flex';st.textContent='Texto mejorado. Revísalo y toca Guardar cambios.'}
 catch(e){st.textContent=aiErr(e)}
 b.disabled=false})();return}
-if(ed.eu!==undefined){if(window.heePrev!=null){$('heN').value=window.heePrev;window.heePrev=null;$('heUndo').style.display='none';$('heSt').textContent='Se recuperó el texto anterior.'}return}
+if(ed.eu!==undefined){if(window.heePrev!=null&&$('heUndo')&&$('heUndo').style.display!=='none'){$('heN').value=window.heePrev;window.heePrev=null;$('heUndo').style.display='none';$('heSt').textContent='Se recuperó el texto anterior.'}return}
 if(ed.es!==undefined){const r=list[+ed.es];if(!heTime(r))return;r.notas=$('heN').value;const u=$('heU').value.trim();if(u!==(r.ubic||'')){r.ubic=u;r.maps=null}put(KL,list);histEd=-1;renderHist();toast('Reporte actualizado');return}
 if(d!==undefined&&histEd>=0)histEd=-1;
 if(p!==undefined)pdf(list[+p]);
@@ -976,7 +976,7 @@ try{if(s.task&&s.task.t){const nm=x=>(x||"").trim().toLowerCase();let k=(activeT
 const fk=mode==='lev'?'rep_folio_lev':'rep_folio',reF=s._reF,fnum=reF||(load(fk)||0)+1;s.folio=fnum;delete s._reF;delete s._fdN;delete s._asked;
 list.unshift(JSON.parse(JSON.stringify(s)));
 if(!put(KL,list)){list.shift();if(!reF)delete s.folio;else s._reF=reF;return}if(!reF){put(fk,fnum);$(mode==='lev'?'fN2':'fN1').value=fnum+1}
-const keepR=s.resp;s=blank();s.resp=keepR;whoEdit=false;persist();renderAll();renderHist();showDone()};
+const keepR=s.resp;s=blank();s.resp=keepR;whoEdit=false;persist();renderAll();renderHist();showDone();try{window.empAfterSave&&empAfterSave(list[0])}catch(e){}};
 function showDone(){const r=list[0];if(!r)return;$("dnT").textContent=(r.tipo==="lev"?"Levantamiento ":"Reporte ")+folioStr(r)+" guardado";$("dnS").textContent=[fd(r.inicio),r.task&&r.task.t,r.ubic].filter(Boolean).join(" · ");$("done").classList.add("on");$("dnW").focus()}
 const closeDone=()=>$("done").classList.remove("on");
 $("dnW").onclick=()=>{closeDone();wa(list[0])};$("dnP").onclick=()=>{closeDone();pdf(list[0])};$("dnN").onclick=()=>{closeDone();window.scrollTo({top:0,behavior:"smooth"})};$("done").onclick=e=>{if(e.target.id==="done")closeDone()};addEventListener("keydown",e=>{if(e.key==="Escape")closeDone()});
@@ -1206,7 +1206,7 @@ toast('Generando PDF…');
 try{const buf=await makePdf(r);await dlSave({filename:(r.tipo==='lev'?'levantamiento-':'reporte-')+new Date(r.inicio).toLocaleDateString('sv')+'.pdf',data:buf});toast('PDF listo')}
 catch(e){if(e&&e.code==='declined')return;toast(e&&e.message==='lib'?'No se pudo cargar el generador de PDF':'No se pudo generar el PDF')}}
 $('bPdf').onclick=()=>pdf(s);
-const waPref=k=>{try{const v=localStorage.getItem('rep_wa'+k);return k==='Folio'?v!=='0':v==='1'}catch(e){return k==='Folio'}};
+const waPref=k=>{try{const v=localStorage.getItem('rep_wa'+k);return k==='Folio'||k==='Txt'?v!=='0':v==='1'}catch(e){return k==='Folio'||k==='Txt'}};
 const waSum=r=>{const L=summary(r).split('\n').filter(l=>!/^(Pausas|Tiempo efectivo|Fotos):/.test(l));if(r.folio&&!waPref('Folio'))L[0]=L[0].replace(' '+folioStr(r),'');return L.join('\n')};
 function waText(r){const u='https://wa.me/?text='+encodeURIComponent(waSum(r));const a=document.createElement('a');a.href=u;a.target='_blank';a.rel='noopener';document.body.appendChild(a);a.click();a.remove()}
 const d2b=d=>{const [h,b]=d.split(','),bin=atob(b),u=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);return new Blob([u],{type:(h.match(/:(.*?);/)||[])[1]||'image/jpeg'})};
@@ -1232,7 +1232,7 @@ async function wa(r){const base=(r.tipo==='lev'?'levantamiento-':'reporte-')+new
 let cbs=[];try{toast(waPref('Sep')?'Preparando las imágenes de antes y después…':'Preparando la imagen con las fotos…');cbs=await collages(r)}catch(e){}const cb=cbs[0]||null;
 let pf=[];try{pf=window.plFiles?plFiles(r.planos,base):[]}catch(e){}
 try{if((cb||pf.length)&&navigator.share&&navigator.canShare&&window.File){const f=cbs.map(b=>new File([b],base+'-'+(b._n||'fotos')+'.jpg',{type:'image/jpeg'}));const vf=[];for(const [k,v] of vidsOf(r)){const bl=await getV(v.id);if(bl)vf.push(new File([bl],base+'-video-'+k+'-'+(vf.length+1)+'.mp4',{type:v.ty||bl.type||'video/mp4'}))}
-for(const set of [[...f,...pf,...vf],[...f,...pf],f.length?f:pf]){if(set.length&&navigator.canShare({files:set})){try{await navigator.share({files:set,text:waSum(r)});return}catch(err){if(err&&err.name==='AbortError')return}}}}}catch(e){}
+for(const set of [[...f,...pf,...vf],[...f,...pf],f.length?f:pf]){if(set.length&&navigator.canShare({files:set})){const ap=set.length>1&&waPref('Txt'),sm=waSum(r);if(ap){try{await navigator.clipboard.writeText(sm)}catch(_){}}try{await navigator.share(ap?{files:set}:{files:set,text:sm});if(ap)setTimeout(()=>toast('Fotos enviadas. ¿Mandar el resumen? (también quedó copiado para pegar)',{label:'💬 Enviar resumen',ms:15000,fn:()=>{if(navigator.share)navigator.share({text:sm}).catch(()=>{});else location.href='https://wa.me/?text='+encodeURIComponent(sm)}}),400);return}catch(err){if(err&&err.name==='AbortError')return}}}}}catch(e){}
 if(!cb&&pf.length){try{for(const x of pf)await dlSave({filename:x.name,data:await x.arrayBuffer()});toast(pf.length>1?'Planos descargados: adjúntalos en WhatsApp con el 📎':'Plano descargado: adjúntalo en WhatsApp con el 📎');await new Promise(z=>setTimeout(z,1800))}catch(e){if(e&&e.code==='declined')return}}
 if(cb){try{for(const b of cbs)await dlSave({filename:base+'-'+(b._n||'fotos')+'.jpg',data:await b.arrayBuffer()});for(const x of pf){try{await dlSave({filename:x.name,data:await x.arrayBuffer()})}catch(e){if(e&&e.code==='declined')break}}let nv=0;for(const [k,v] of vidsOf(r)){const bl=await getV(v.id);if(bl){nv++;try{await dlSave({filename:base+'-video-'+k+'-'+nv+'.mp4',data:await bl.arrayBuffer()})}catch(e){if(e&&e.code==='declined')break}}}toast(nv?'Imágenes y videos descargados: adjúntalos en WhatsApp con el 📎':cbs.length>1?'Imágenes descargadas: adjúntalas en WhatsApp con el 📎':'Imagen descargada: adjúntala en WhatsApp con el 📎');await new Promise(z=>setTimeout(z,1800))}catch(e){if(e&&e.code==='declined')return}}
 else if(!cb&&!pf.length)toast('Este reporte no tiene fotos ni planos: se envía solo el texto');
@@ -1243,9 +1243,10 @@ $('aiBtn').onclick=async()=>{const st=$('micSt'),b=$('aiBtn'),t=$('notas').value
 if(!t){st.textContent='Primero escribe la nota.';return}
 b.disabled=true;st.textContent='Mejorando el texto…';
 try{const out=await improveText(t,st);if(!out)throw new Error('vacío');
-aiPrev=$('notas').value;$('notas').value=out;s.notas=out;persist();$('aiUndo').style.display='inline-block';$('aiRepB').style.display='inline-flex';st.textContent='Texto mejorado. Revísalo antes de guardar.'}
+aiPrev=$('notas').value;$('notas').value=out;s.notas=out;window.__aiFor=s;window.__aiOut=out;persist();$('aiUndo').style.display='inline-block';$('aiRepB').style.display='inline-flex';st.textContent='Texto mejorado. Revísalo antes de guardar.'}
 catch(e){st.textContent=aiErr(e)}
 b.disabled=false};
+window.aiReset=cur=>{if(cur&&cur===window.__aiFor&&aiPrev!==null&&$('notas').value===window.__aiOut)return;aiPrev=null;window.__aiFor=null;$('aiUndo').style.display='none';$('aiRepB').style.display='none';if(/mejorado|recuperó/i.test($('micSt').textContent))$('micSt').textContent=''};
 $('aiUndo').onclick=()=>{if(aiPrev===null)return;$('notas').value=aiPrev;s.notas=aiPrev;persist();aiPrev=null;$('aiUndo').style.display='none';$('aiRepB').style.display='none';$('micSt').textContent='Se recuperó el texto original.'};
 const AI_SYS='Eres un asistente que redacta reportes de trabajo técnicos (electricidad, gasfitería, mantención) en español de Chile. Reescribe la nota que te den de forma clara, profesional y ordenada, corrigiendo ortografía y redacción. No inventes datos, materiales, causas ni resultados que no estén en la nota. Mantén lugares, números y nombres tal cual. Responde SOLO con el texto final, sin títulos, comillas ni explicaciones.';
 let aiCfg={mode:'auto',key:''};try{Object.assign(aiCfg,JSON.parse(localStorage.getItem('rep_ai')||'{}'))}catch(e){}
@@ -1535,7 +1536,7 @@ setTimeout(()=>{try{const L=bkInfoTxt(),n=bkDias();if(!n||!list.length||!L.late)
 toast(L.t?'Hace '+Math.floor((Date.now()-L.t)/864e5)+' días que no respaldas':'Aún no has respaldado tus reportes',{label:'Respaldar',ms:9000,fn:()=>{window.setView&&setView('aj');const sc=$('bkShare');if(sc){const g=sc.closest('.cfgG');g&&g.classList.add('open');setTimeout(()=>sc.scrollIntoView({block:'center',behavior:'smooth'}),150)}}})}catch(e){}},4000);
 let hf=[];const mKey=t=>{const d=new Date(t);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')};
 const mLbl=k=>{const[y,m]=k.split('-');return new Date(+y,+m-1,1).toLocaleDateString('es',{month:'long',year:'numeric'})};
-function hv(){const q=($('hQ').value||'').trim().toLowerCase(),m=$('hM').value;return list.map((r,i)=>[r,i]).filter(([r])=>{if(m&&mKey(r.inicio)!==m)return false;if(!q)return true;
+function hv(){const q=($('hQ').value||'').trim().toLowerCase(),m=$('hM').value;return list.map((r,i)=>[r,i]).filter(([r])=>{if(window.empHide&&empHide(r))return false;if(m&&mKey(r.inicio)!==m)return false;if(!q)return true;
 return [folioStr(r),r.resp.join(' '),r.ubic,r.notas,(r.mats||[]).map(x=>x.n).join(' '),(r.lm||[]).map(x=>x.n).join(' '),fd(r.inicio),r.firmaN].join(' ').toLowerCase().includes(q)})}
 function fillMonths(){const S=$('hM'),cur=S.value,ks=[...new Set(list.map(r=>mKey(r.inicio)))].sort().reverse();S.innerHTML='<option value="">Todos</option>'+ks.map(k=>`<option value="${k}">${mLbl(k)}</option>`).join('');S.value=ks.includes(cur)?cur:''}
 function monthData(){const m=$('hM').value,rs=list.filter(r=>mKey(r.inicio)===m),rep=rs.filter(r=>r.tipo!=='lev'),ms={};
@@ -3102,10 +3103,10 @@ R()},230);
 const ap=t=>{if(t==='auto')document.documentElement.removeAttribute('data-theme');else document.documentElement.setAttribute('data-theme',t);P.querySelectorAll('[data-th]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.th===t))};
 P.onclick=e=>{const b=e.target.closest('[data-th]');if(!b)return;try{localStorage.setItem('rep_theme',b.dataset.th)}catch(_){}ap(b.dataset.th);toast('Tema: '+b.textContent.trim())};ap(cur())})();
 /* ---- Opciones de envío por WhatsApp ---- */
-(()=>{const T={Folio:[v=>v?'✓ Con N° de reporte':'✕ Sin N° de reporte'],Sep:[v=>v?'🖼️🖼️ Fotos: antes y después separadas':'🖼️ Fotos: todo en una imagen']};
+(()=>{const T={Folio:[v=>v?'✓ Con N° de reporte':'✕ Sin N° de reporte'],Sep:[v=>v?'🖼️🖼️ Fotos: antes y después separadas':'🖼️ Fotos: todo en una imagen'],Txt:[v=>v?'📝 Resumen: mensaje aparte':'📝 Resumen: junto a las fotos']};
 const R=()=>document.querySelectorAll('[data-wao]').forEach(b=>{const k=b.dataset.wao,v=waPref(k);b.textContent=T[k][0](v);b.setAttribute('aria-pressed',v)});
 document.addEventListener('click',e=>{const b=e.target.closest('[data-wao]');if(!b)return;const k=b.dataset.wao,v=!waPref(k);try{localStorage.setItem('rep_wa'+k,v?'1':'0')}catch(_){}R();
-toast(k==='Folio'?(v?'Se enviará con el número de reporte':'Se enviará sin el número de reporte'):(v?'Antes y después irán en imágenes separadas (máx. 6 fotos por imagen)':'Las fotos irán todas en una sola imagen'))});R()})();
+toast(k==='Txt'?(v?'Con varias fotos, el resumen va en un mensaje aparte (así no se repite al revisar las fotos)':'El resumen irá junto a las fotos'):k==='Folio'?(v?'Se enviará con el número de reporte':'Se enviará sin el número de reporte'):(v?'Antes y después irán en imágenes separadas (máx. 6 fotos por imagen)':'Las fotos irán todas en una sola imagen'))});R()})();
 /* ---- Asistente: usar lo escrito en Notas ---- */
 window.asNotas=auto=>{const I=$('asIn');if(!I)return;const n=(s.notas||'').trim();if(!n){if(!auto)toast('Aún no tienes nada escrito en Notas');return}
 if(auto&&I.value.trim())return;if(I.value.includes(n)){I.focus();return}
@@ -3239,7 +3240,7 @@ $('hmSvM').onclick=()=>{closeSv();horaPanel()};
 $('hmSvW').onclick=()=>{const n=Date.now();s.inicio=n;s.fin=n;s.pausas=[];s.noTime=true;persist();renderAll();closeSv();$('bSave').click()};
 $('hmSvX').onclick=closeSv;btnUI();})();
 
-const APP_VER='2.6.6';
+const APP_VER='2.7.0';
 /* ===== Asistente IA (chat con sugerencias seleccionables) ===== */
 setTimeout(()=>{const W=$('asis'),L=$('asL');let hist=[],busy=false,rec=null;const U=['pza','m','m²','kg','lt','caja','bolsa'];
 const SYS='Eres el asistente de la app "Reportes de trabajo" para técnicos de mantención en Chile (electricidad, gasfitería, obras civiles, pintura, cerámica, etc.). Respondes en español de Chile, claro y práctico. Siempre respondes SOLO un JSON con esta forma: {"respuesta":"texto breve (máx 4 frases)","textos":["redacción lista para pegar en las notas del reporte, en tercera persona, estilo informe técnico: Se realiza..."],"materiales":[{"n":"nombre","c":"cantidad numérica como texto","u":"pza|m|m²|kg|lt|caja|bolsa"}],"preguntas":[{"q":"pregunta corta para afinar","opciones":["opción 1","opción 2","opción 3"]}]}. Incluye 2-3 "textos" solo si la persona necesita redactar un reporte; incluye "materiales" solo si aplica (cantidades aproximadas si faltan datos); incluye 1-2 "preguntas" cuando falten datos importantes. Si es una duda técnica, responde en "respuesta" y deja vacías las otras listas. Si mencionas normativa chilena (RIC, DS 8, DS 66, RIDAA) di el número pero recomienda verificarla. No inventes datos; si no sabes, dilo.';
@@ -3914,6 +3915,222 @@ window.__certCuadro=i=>withP(i,()=>{const K=calcAll();const difOf=n=>{const g=K.
 })();
 
 document.getElementById('mCert').onclick=()=>{document.getElementById('modeMenu').style.display='none';window.openCert()};
+</script>
+<script>
+/* ================= REDSTONE Empresa · modo empresa (solo en la copia /empresa/) ================= */
+(()=>{
+const $=id=>document.getElementById(id),E=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const LS={get:k=>{try{return JSON.parse(localStorage.getItem('emp_e'+k))}catch(e){return null}},set:(k,v)=>{try{localStorage.setItem('emp_e'+k,JSON.stringify(v))}catch(e){}},del:k=>{try{localStorage.removeItem('emp_e'+k)}catch(e){}}};
+const CLIENT_ID='840827119315-1ukvuk7t6pb09nk0cnnhon8teqv1lkv9.apps.googleusercontent.com';
+const ESP_IC={'eléctrico':'⚡','electrico':'⚡','gasfitería':'💧','gasfiteria':'💧','mantención general':'🔧','mantencion general':'🔧','climatización':'❄️'};
+const icOf=e=>ESP_IC[String(e||'').toLowerCase()]||'🛠';
+const EMP={on:LS.get('On')===true,url:LS.get('Url')||'',sess:LS.get('Sess')||'',me:LS.get('Me')||null,empresa:LS.get('Emp')||'',esps:LS.get('Esps')||[],fmt:LS.get('Fmt')||null,tareas:LS.get('Tar')||[],per:[],q:LS.get('Q')||[],all:LS.get('All')===true,view:'home',tab:'mi',sel:null,busy:false};
+const save=()=>{LS.set('On',EMP.on);LS.set('Url',EMP.url);LS.set('Sess',EMP.sess);LS.set('Me',EMP.me);LS.set('Emp',EMP.empresa);LS.set('Esps',EMP.esps);LS.set('Fmt',EMP.fmt);LS.set('Tar',EMP.tareas);LS.set('Q',EMP.q);LS.set('All',EMP.all)};
+const idOf=u=>{const m=String(u||'').match(/\/macros\/s\/([\w-]{20,})\//);return m?m[1]:''};const urlOf=v=>{v=String(v||'').trim();const m=v.match(/[?&#]emp=([\w-]{20,})/);if(m)v=m[1];if(/^[\w-]{30,}$/.test(v))return 'https://script.google.com/macros/s/'+v+'/exec';return /^https:\/\/script\.google(usercontent)?\.com\/.+/.test(v)?v:''};
+const invLink=()=>{const b=location.origin+location.pathname.replace(/index\.html$/,'');return b+'?emp='+idOf(EMP.url)};
+const isPlan=()=>EMP.me&&(EMP.me.rol==='admin'||EMP.me.rol==='planificador'),isAdm=()=>EMP.me&&EMP.me.rol==='admin';
+const ERR={no_autorizado:'Tu cuenta no está agregada en la empresa. Pídele al administrador que te agregue con tu Gmail.',sesion:'Tu sesión venció. Vuelve a entrar con Google.',sin_permiso:'No tienes permiso para esto.',ya_tomada:'Otro técnico ya tomó esta tarea.',ya_realizada:'Esta tarea ya está realizada.',no_instalado:'El script del Drive aún no está instalado (falta ejecutar "instalar").',token_invalido:'No se pudo verificar tu cuenta de Google. Intenta de nuevo.',correo_invalido:'Ese correo no es válido.',no_puedes_quitarte_admin:'No puedes quitarte el rol de administrador.',net:'Sin conexión con el Drive de la empresa.'};
+const msg=e=>ERR[e&&(e.code||e.message)]||('Error: '+((e&&(e.code||e.message))||e));
+async function call(a,data){if(!EMP.url)throw Object.assign(new Error('sin_url'),{code:'sin_url'});let r;
+ try{r=await fetch(EMP.url,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(Object.assign({a,sess:EMP.sess},data||{}))})}catch(x){throw Object.assign(new Error('net'),{code:'net'})}
+ let j=null;try{j=await r.json()}catch(x){throw Object.assign(new Error('net'),{code:'net'})}
+ if(!j.ok){const e=Object.assign(new Error(j.err||'error'),{code:j.err,j});if(j.err==='sesion'||(j.err==='no_autorizado'&&a!=='login')){EMP.sess='';EMP.me=null;save()}throw e}return j}
+const t2s=v=>{if(!v)return'';const d=new Date(+v||v);return isNaN(d)?String(v):d.toLocaleString('es-CL',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})};
+const day=v=>{const d=new Date(+v||v);return isNaN(d)?'':d.toLocaleDateString('es-CL',{day:'2-digit',month:'2-digit',year:'numeric'})};
+const prioCl=p=>/alta|urg/i.test(p)?'er':/baja/i.test(p)?'mu':'wa';
+const nm=em=>{if(EMP.me&&String(em).toLowerCase()===EMP.me.email&&!isPlan())return 'Ti';const p=EMP.per.find(x=>String(x.email).toLowerCase()===String(em).toLowerCase());return p?(p.nombre||em):(em?String(em).split('@')[0]:'')};
+
+/* ---------- Pantalla ---------- */
+const S=document.createElement('div');S.id='empS';S.setAttribute('role','dialog');S.setAttribute('aria-label','Empresa');document.body.appendChild(S);
+const st=document.createElement('style');st.textContent=`#empS{display:none;position:fixed;inset:0;z-index:62;background:var(--bg);color:var(--tx);overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 14px calc(30px + env(safe-area-inset-bottom,0px))}#empS.on{display:block}
+#empS .eH{position:sticky;top:0;z-index:2;background:var(--bg);display:flex;align-items:center;gap:10px;padding:12px 0 10px;border-bottom:1px solid var(--bd);margin-bottom:12px}
+#empS .eH h2{margin:0;font-family:var(--fc);font-size:20px;line-height:1.1;flex:1;min-width:0}#empS .eH .sub{display:block;font:500 13px var(--f);color:var(--mu)}
+#empS .eC{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:12px 14px;margin-bottom:10px}
+#empS .eL{font:700 12px var(--f);letter-spacing:1.4px;color:var(--mu);margin:14px 0 6px;text-transform:uppercase}
+#empS .eTag{display:inline-block;font:700 12px var(--f);border-radius:8px;padding:3px 8px;margin-right:6px}
+#empS .eTag.er{background:var(--er);color:#fff}#empS .eTag.wa{background:var(--wa);color:var(--wax)}#empS .eTag.mu{border:1px solid var(--bd);color:var(--mu)}#empS .eTag.ok{background:var(--ok);color:#fff}
+#empS .eT{font-weight:700;font-size:17px;margin-top:6px}#empS .eM{color:var(--mu);font-size:14px;margin-top:2px}
+#empS .eTabs{display:flex;gap:8px;margin-bottom:6px;flex-wrap:wrap}#empS .eTabs button{flex:1 1 0;min-width:90px;min-height:44px;border-radius:22px}
+#empS .eStats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:10px}#empS .eStats div{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:8px 12px}#empS .eStats b{display:block;font:700 28px var(--fc)}
+#empS label.eF{display:flex;flex-direction:column;gap:5px;font-size:14px;color:var(--mu);margin-bottom:10px}#empS label.eF input,#empS label.eF select,#empS label.eF textarea{color:var(--tx)}
+#empS .eRow{display:flex;gap:8px;align-items:center;flex-wrap:wrap}#empS .eRow>*{flex:1 1 0}
+#empS .eP{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--bd)}#empS .eP:last-child{border-bottom:0}
+#empS .eBar{width:6px;align-self:stretch;border-radius:3px;flex:none}#empS .eSt{font-size:14px;color:var(--mu);margin:8px 0;min-height:20px}
+#empS button small{display:block;font-weight:500;font-size:12px;opacity:.8}#empS [data-e=fmtSel]{display:block;line-height:1.25;padding:8px}#empBan{display:none;margin:8px 0;padding:10px 14px;border-radius:14px;background:var(--card);border:1px solid var(--bd);font-weight:600;cursor:pointer;width:100%;text-align:left;min-height:48px;color:var(--tx)}#empBan b{color:var(--ac)}html body #main>button#empBan.on{display:block!important}`;document.head.appendChild(st);
+const head=(t,sub,back)=>`<div class="eH">${back?`<button class="sec" data-e="${back}" aria-label="Volver" style="min-width:44px">‹</button>`:`<button class="sec" data-e="close" aria-label="Cerrar" style="min-width:44px">✕</button>`}<h2>${E(t)}${sub?`<span class="sub">${E(sub)}</span>`:''}</h2>${EMP.me&&!back?`<button class="sec" data-e="cfg" aria-label="Configurar empresa" style="min-width:44px">⚙</button>`:''}</div>`;
+function card(t){const tom=String(t.tomadaPor||'').toLowerCase(),mine=EMP.me&&tom===EMP.me.email,av=!t.asignado&&!tom&&t.estado!=='Realizada';
+ const tag=t.estado==='Realizada'?'<span class="eTag ok">REALIZADA</span>':t.estado==='En curso'?'<span class="eTag mu">EN CURSO</span>':`<span class="eTag ${prioCl(t.prioridad)}">${E(String(t.prioridad||'Media').toUpperCase())}</span>`;
+ const who=isPlan()?(tom?nm(tom):t.asignado?'Asignada a '+nm(t.asignado):'Disponible para '+t.especialidad):(t.fecha?t2s(t.fecha):'');
+ return `<div class="eC" ${av&&!isPlan()?'style="border-style:dashed"':''}><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span>${tag}</span><span class="eM" style="margin:0">${E(t.id)} · ${icOf(t.especialidad)} ${E(t.especialidad)}</span></div>
+ <div class="eT">${E(t.tarea)}</div><div class="eM">${E(t.ubicacion||'—')}${who?' · '+E(who):''}</div>
+ <div class="eRow" style="margin-top:10px"><button class="${mine||(!isPlan()&&!av)?'pri':'sec'}" data-e="det" data-id="${E(t.id)}">${t.estado==='Realizada'?'Ver':mine?'Continuar':'Ver tarea'}</button>${av&&!isPlan()?`<button class="sec" data-e="tomar" data-id="${E(t.id)}" style="border-color:var(--ac);color:var(--ac)">Tomar</button>`:''}</div></div>`}
+function vOff(){return head('Modo Empresa','Desactivado')+`<div class="eC" style="text-align:center"><div style="font-size:42px">🏢</div><div class="eT">Trabaja con las órdenes de tu empresa</div><div class="eM" style="margin:6px 0 14px;text-align:left;line-height:1.5">• Ves las tareas de tu especialidad o las que te asignan.<br>• Haces el reporte como siempre y al guardarlo se sube al Drive de la empresa como realizada.<br>• Tus reportes personales no se mezclan: los de la empresa van aparte.</div>
+ <button class="pri" data-e="on" style="width:100%;min-height:52px;font-size:17px">Activar modo Empresa</button><div class="mu" style="margin-top:10px;font-size:13px">Puedes desactivarlo cuando quieras en ⚙. Si te mandaron una invitación, ábrela y quedas conectado.</div></div>`}
+function vCfg(){return head('Empresa',EMP.url?'Conectada':'Conectar con tu empresa',EMP.me&&EMP.url?'home':'')+`<div class="eC">${EMP.url&&EMP.me?`<div class="mu">✓ Conectado a <b>${E(EMP.empresa||'la empresa')}</b>.</div><details style="margin-top:8px"><summary class="mu" style="cursor:pointer;min-height:32px">Cambiar de empresa</summary>`:`<div class="mu" style="margin-bottom:8px">Abre la <b>invitación</b> que te mandó tu empresa, o pega aquí el <b>código</b> o link que viene en ella.</div>`}
+ <label class="eF">Código o link de la empresa<input id="eUrl" value="${E(EMP.url?idOf(EMP.url):'')}" placeholder="AKfycb… o https://script.google.com/…/exec" autocomplete="off" autocapitalize="off" spellcheck="false"></label>
+ <button class="pri" data-e="saveUrl" style="width:100%">Conectar</button>${EMP.url&&EMP.me?'</details>':''}<div class="eSt" id="eSt"></div></div>
+ ${isPlan()&&EMP.url?`<button class="pri" data-e="inv" style="width:100%;margin-bottom:10px;min-height:52px">📨 Invitar técnico</button>`:''}
+ ${EMP.me?`<div class="eC"><div class="eL" style="margin-top:0">Tu cuenta</div><div><b>${E(EMP.me.nombre)}</b> · ${E(EMP.me.email)}</div><div class="eM">${EMP.me.rol==='admin'?'Administrador':EMP.me.rol==='planificador'?'Planificador':'Técnico'}${EMP.me.esp?' · '+icOf(EMP.me.esp)+' '+E(EMP.me.esp):''}</div>
+ <label class="eRow" style="margin-top:10px;gap:10px"><input type="checkbox" id="eAll" ${EMP.all?'checked':''} style="width:24px;min-height:24px;flex:none"><span style="flex:1">Enviar al Drive también los reportes que no vienen de una orden</span></label>
+ <button class="sec" data-e="logout" style="width:100%;margin-top:10px">Cerrar sesión</button></div>`:''}
+ <button class="sec" data-e="off" style="width:100%;margin-bottom:10px">Desactivar modo Empresa</button>
+ ${isAdm()?`<div class="eC"><div class="eL" style="margin-top:0">Empresa (administrador)</div><label class="eF">Nombre de la empresa<input id="eEmp" value="${E(EMP.empresa)}"></label>
+ <label class="eF">Especialidades (separadas por coma)<input id="eEsps" value="${E(EMP.esps.join(', '))}"></label><button class="sec" data-e="saveCfg" style="width:100%">Guardar</button>
+ <div class="eL">Formato del PDF</div><div class="mu" style="margin-bottom:8px">Publica tu logo, colores y hoja membretada (los de Configuración → Formato del PDF) para que todos los reportes de la empresa salgan iguales.</div>
+ <div class="eRow"><button class="sec" data-e="pubFmt">Publicar mi formato</button>${EMP.fmt?'<button class="sec" data-e="delFmt">Quitar</button>':''}</div><div class="mu" style="margin-top:6px">${EMP.fmt?'✓ La empresa tiene un formato publicado.':'Aún no hay formato de la empresa.'}</div>
+ <button class="pri" data-e="per" style="width:100%;margin-top:12px">👥 Personas y roles</button></div>`:''}`}
+function vLogin(){return head('Empresa',EMP.empresa||'Entrar','cfgx')+`<div class="eC" style="text-align:center"><div style="font-size:42px">🏢</div><div class="eT">Entra con tu cuenta de Google</div><div class="eM" style="margin:6px 0 14px">La empresa te reconoce por tu Gmail y te muestra las tareas de tu especialidad.</div><div id="eGBtn" style="display:flex;justify-content:center;min-height:44px"></div><div class="eSt" id="eSt"></div></div>`}
+function vHome(){const T=EMP.tareas,me=EMP.me,pend=EMP.q.length;let h='';
+ if(isPlan()){const p=T.filter(t=>t.estado==='Pendiente').length,c=T.filter(t=>t.estado==='En curso').length,hoy=new Date().setHours(0,0,0,0),d=T.filter(t=>t.estado==='Realizada'&&+t.fin>=hoy).length;
+  const f=EMP.tab,list=T.filter(t=>f==='mi'?t.estado!=='Realizada':f==='hechas'?t.estado==='Realizada':t.especialidad===f&&t.estado!=='Realizada').sort((a,b)=>(a.estado==='En curso'?0:1)-(b.estado==='En curso'?0:1)||(+b.creada)-(+a.creada));
+  h=head('Órdenes de trabajo',(EMP.empresa||'')+' · '+(me.rol==='admin'?'Administrador':'Planificador'))+`<div class="eStats"><div><b style="color:var(--wa)">${p}</b><span class="mu">Pendientes</span></div><div><b style="color:#4C93FF">${c}</b><span class="mu">En curso</span></div><div><b style="color:var(--ok)">${d}</b><span class="mu">Hechas hoy</span></div></div>
+  <div class="eRow" style="margin-bottom:10px"><button class="pri" data-e="nueva">+ Nueva tarea</button><button class="sec" data-e="desc">⬇ Descargar realizadas</button></div>
+  <div class="eTabs"><button class="${f==='mi'?'pri':'sec'}" data-e="tab" data-t="mi">Abiertas</button>${EMP.esps.map(x=>`<button class="${f===x?'pri':'sec'}" data-e="tab" data-t="${E(x)}">${icOf(x)} ${E(x)}</button>`).join('')}<button class="${f==='hechas'?'pri':'sec'}" data-e="tab" data-t="hechas">Hechas</button></div>
+  ${list.length?list.map(card).join(''):'<div class="eC mu">No hay tareas aquí.</div>'}`}
+ else{const em=me.email,mi=T.filter(t=>t.estado!=='Realizada'&&(String(t.tomadaPor).toLowerCase()===em||String(t.asignado).toLowerCase()===em)),dis=T.filter(t=>t.estado!=='Realizada'&&!t.asignado&&!t.tomadaPor),he=T.filter(t=>t.estado==='Realizada');const f=EMP.tab==='mi'||EMP.tab==='esp'||EMP.tab==='hechas'?EMP.tab:'mi';
+  const L=f==='mi'?mi:f==='esp'?dis:he;
+  h=head('Mis tareas',(EMP.empresa||'')+' · '+icOf(me.esp)+' '+(me.esp||'Técnico'))+`<div class="eTabs"><button class="${f==='mi'?'pri':'sec'}" data-e="tab" data-t="mi">Para mí · ${mi.length}</button><button class="${f==='esp'?'pri':'sec'}" data-e="tab" data-t="esp">${E(me.esp||'Disponibles')} · ${dis.length}</button><button class="${f==='hechas'?'pri':'sec'}" data-e="tab" data-t="hechas">Hechas</button></div>
+  ${L.length?L.map(card).join(''):`<div class="eC mu">${f==='mi'?'No tienes tareas asignadas. Revisa las disponibles de tu especialidad.':f==='esp'?'No hay tareas disponibles ahora.':'Aún no tienes tareas realizadas.'}</div>`}`}
+ return h+`<div class="eSt" id="eSt">${pend?'⏳ '+pend+' reporte'+(pend>1?'s':'')+' esperando conexión para subir al Drive.':''}</div><button class="sec" data-e="sync" style="width:100%">↻ Actualizar</button><div class="mu" style="text-align:center;font-size:12px;margin-top:12px">Lo de la empresa queda en su Drive. Tus reportes de este teléfono siguen en el inicio.</div>`}
+function vDet(){const t=EMP.tareas.find(x=>String(x.id)===String(EMP.sel));if(!t)return vHome();const tom=String(t.tomadaPor||'').toLowerCase(),mine=tom===EMP.me.email,av=!tom&&t.estado!=='Realizada'&&(!t.asignado||String(t.asignado).toLowerCase()===EMP.me.email);
+ return head(t.tarea,t.id+' · '+icOf(t.especialidad)+' '+t.especialidad,'home')+`<div class="eC" style="display:grid;grid-template-columns:110px minmax(0,1fr);gap:8px 10px;font-size:15px">
+ <span class="mu">Estado</span><span>${E(t.estado)}</span><span class="mu">Ubicación</span><span>${E(t.ubicacion||'—')}</span><span class="mu">Prioridad</span><span>${E(t.prioridad||'—')}</span><span class="mu">Para cuándo</span><span>${E(t2s(t.fecha)||'—')}</span>
+ <span class="mu">Para</span><span>${E(t.asignado?nm(t.asignado):'Todos los de '+t.especialidad)}</span>${tom?`<span class="mu">La tiene</span><span>${E(nm(tom))}</span>`:''}${t.fin?`<span class="mu">Terminada</span><span>${E(t2s(t.fin))}</span>`:''}</div>
+ ${t.indicaciones?`<div class="eC"><div class="eL" style="margin-top:0">Indicaciones</div><div style="white-space:pre-wrap;line-height:1.45">${E(t.indicaciones)}</div></div>`:''}
+ ${t.resumen?`<div class="eC"><div class="eL" style="margin-top:0">Resumen</div><div style="line-height:1.45">${E(t.resumen)}</div>${t.pdf?`<a href="${E(t.pdf)}" target="_blank" rel="noopener" style="display:inline-block;margin-top:8px">Abrir PDF en Drive</a>`:''}</div>`:''}
+ <div class="eSt" id="eSt"></div>
+ ${t.estado!=='Realizada'&&(mine||av)?`<button class="pri" data-e="start" data-id="${E(t.id)}" style="width:100%;min-height:52px;font-size:17px">▶ ${mine?'Seguir con el reporte':'Tomar y empezar reporte'}</button>`:''}
+ ${mine&&t.estado!=='Realizada'?`<button class="sec" data-e="soltar" data-id="${E(t.id)}" style="width:100%;margin-top:8px">Devolver a disponibles</button>`:''}
+ ${isPlan()&&t.estado!=='Realizada'?`<button class="sec" data-e="borrar" data-id="${E(t.id)}" style="width:100%;margin-top:8px;color:var(--er)">Eliminar tarea</button>`:''}`}
+function vNueva(){const P=EMP.per.filter(p=>p.rol!=='admin'||p.especialidad);return head('Nueva tarea','','home')+`<div class="eC">
+ <label class="eF">Qué hay que hacer<textarea id="x_nT" rows="3" placeholder="Ej: Enchufe quemado en oficina 3"></textarea></label>
+ <label class="eF">Ubicación<input id="x_nU" placeholder="Ej: Edificio central · 2° piso"></label>
+ <label class="eF">Indicaciones (opcional)<textarea id="x_nI" rows="2"></textarea></label>
+ <label class="eF">Especialidad<select id="x_nE"><option value="">✨ Que la elija la IA</option>${EMP.esps.map(x=>`<option>${E(x)}</option>`).join('')}</select></label>
+ <label class="eF">Para quién<select id="x_nA"><option value="">Todos los de la especialidad (el primero la toma)</option>${P.map(p=>`<option value="${E(p.email)}">${E(p.nombre||p.email)}${p.especialidad?' · '+E(p.especialidad):''}</option>`).join('')}</select></label>
+ <div class="eRow"><label class="eF">Para cuándo<input id="x_nF" type="datetime-local"></label><label class="eF">Prioridad<select id="x_nP"><option>Alta</option><option selected>Media</option><option>Baja</option></select></label></div>
+ <div class="eSt" id="eSt"></div><button class="pri" data-e="crear" style="width:100%;min-height:52px">Publicar tarea</button></div>`}
+function vPer(){return head('Personas y roles',EMP.empresa,'cfg')+`<div class="eC"><div class="eL" style="margin-top:0">Agregar o cambiar</div>
+ <label class="eF">Gmail<input id="x_pE" type="email" placeholder="nombre@gmail.com" autocomplete="off"></label><label class="eF">Nombre<input id="x_pN"></label>
+ <div class="eRow"><label class="eF">Rol<select id="x_pR"><option value="tecnico">Técnico</option><option value="planificador">Planificador</option><option value="admin">Administrador</option></select></label><label class="eF">Especialidad<select id="x_pS"><option value="">—</option>${EMP.esps.map(x=>`<option>${E(x)}</option>`).join('')}</select></label></div>
+ <button class="pri" data-e="savePer" style="width:100%">Guardar persona</button><div class="eSt" id="eSt"></div><div class="mu" style="margin-top:10px;font-size:13px">Después de agregarlo, mándale la invitación:</div><button class="sec" data-e="inv" style="width:100%;margin-top:6px">📨 Invitar técnico</button></div>
+ <div class="eC">${EMP.per.length?EMP.per.map(p=>`<div class="eP"><div style="flex:1;min-width:0"><b>${E(p.nombre||p.email)}</b><div class="eM" style="overflow:hidden;text-overflow:ellipsis">${E(p.email)}</div></div><span class="eTag mu">${p.rol==='admin'?'Admin':p.rol==='planificador'?'Planificador':icOf(p.especialidad)+' '+E(p.especialidad||'Técnico')}</span><button class="sec" data-e="editPer" data-m="${E(p.email)}" aria-label="Editar ${E(p.nombre||p.email)}" style="min-width:44px">✎</button>${String(p.email).toLowerCase()!==EMP.me.email?`<button class="sec" data-e="delPer" data-m="${E(p.email)}" aria-label="Quitar ${E(p.nombre||p.email)}" style="min-width:44px">🗑</button>`:''}</div>`).join(''):'<div class="mu">Cargando…</div>'}</div>`}
+function vDesc(){const now=new Date(),ini=new Date(now.getFullYear(),now.getMonth(),1),iso=d=>new Date(d-d.getTimezoneOffset()*6e4).toISOString().slice(0,10);
+ return head('Descargar realizadas',EMP.empresa,'home')+`<div class="eC"><div class="eRow"><label class="eF">Desde<input id="x_dD" type="date" value="${iso(ini)}"></label><label class="eF">Hasta<input id="x_dH" type="date" value="${iso(now)}"></label></div>
+ <div class="eRow"><label class="eF">Especialidad<select id="x_dE"><option value="">Todas</option>${EMP.esps.map(x=>`<option>${E(x)}</option>`).join('')}</select></label><label class="eF">Técnico<select id="x_dT"><option value="">Todos</option>${EMP.per.map(p=>`<option value="${E(p.email)}">${E(p.nombre||p.email)}</option>`).join('')}</select></label></div>
+ <div class="eL">Formato</div><div class="eRow"><button class="pri" data-e="fmtSel" data-f="pdf" id="x_dfPdf">PDF<br><small>un reporte por página, con fotos</small></button><button class="sec" data-e="fmtSel" data-f="xls" id="x_dfXls">Excel<br><small>una fila por tarea</small></button></div>
+ <label class="eRow" style="gap:10px;margin-top:10px"><input type="checkbox" id="x_dRes" checked style="width:24px;min-height:24px;flex:none"><span style="flex:1">Primera hoja con resumen del período</span></label>
+ <div class="mu" style="margin-top:6px">La hoja usa ${EMP.fmt?'el formato publicado por la empresa (logo, colores o membrete)':'tu formato de Configuración → Formato del PDF'}.</div>
+ <div class="eSt" id="eSt"></div><div class="eRow"><button class="pri" data-e="descGo" data-to="dl" style="min-height:52px">Descargar</button><button class="sec" data-e="descGo" data-to="drive" style="min-height:52px">Guardar en Drive</button></div></div>`}
+function render(){let h;if(!EMP.on)h=vOff();else if(!EMP.url||EMP.view==='cfgx')h=vCfg();else if(!EMP.sess||!EMP.me)h=vLogin();else h=({cfg:vCfg,home:vHome,det:vDet,nueva:vNueva,per:vPer,desc:vDesc}[EMP.view]||vHome)();S.innerHTML=h;
+ if(EMP.on&&EMP.url&&(!EMP.sess||!EMP.me)&&EMP.view!=='cfgx')gBtn();ban();mmLbl()}
+const stx=t=>{const e=$('eSt');if(e)e.textContent=t||''};
+function open(v){if(v)EMP.view=v;S.classList.add('on');render();if(EMP.sess&&EMP.me)sync(true)}
+function close(){S.classList.remove('on');ban()}
+window.openEmpresa=open;
+
+/* ---------- Google ---------- */
+let gisP=null;const loadGis=()=>gisP||(gisP=new Promise((ok,no)=>{if(window.google&&google.accounts&&google.accounts.id)return ok();const s=document.createElement('script');s.src='https://accounts.google.com/gsi/client';s.async=true;s.onload=()=>ok();s.onerror=()=>{gisP=null;no(new Error('net'))};document.head.appendChild(s)}));
+async function gBtn(){const b=$('eGBtn');if(!b)return;try{await loadGis();google.accounts.id.initialize({client_id:CLIENT_ID,callback:onCred,auto_select:false,ux_mode:'popup'});google.accounts.id.renderButton(b,{theme:'filled_black',size:'large',text:'signin_with',shape:'pill',locale:'es'})}catch(e){stx('No se pudo cargar el inicio de sesión de Google. Revisa la conexión.')}}
+async function onCred(r){stx('Verificando…');try{const j=await call('login',{idToken:r.credential});EMP.sess=j.sess;EMP.me=j.me;EMP.empresa=j.empresa;EMP.esps=j.esps||[];EMP.view='home';EMP.tab='mi';save();render();sync();toast('Hola, '+(j.me.nombre||j.me.email))}
+ catch(e){stx(e.code==='no_autorizado'?'La cuenta '+((e.j&&e.j.email)||'')+' no está agregada en la empresa. Pídele al administrador que te agregue.':msg(e))}}
+
+/* ---------- Datos ---------- */
+async function sync(quiet){if(EMP.busy)return;EMP.busy=true;if(!quiet)stx('Actualizando…');try{const m=await call('me');EMP.me=m.me;EMP.empresa=m.empresa;EMP.esps=m.esps||[];EMP.fmt=m.formato||null;const t=await call('tareas');EMP.tareas=t.tareas||[];
+ if(isPlan()){try{EMP.per=(await call('personas')).personas||[]}catch(_){}}save();EMP.busy=false;if(S.classList.contains('on')&&!document.activeElement.closest?.('#empS input,#empS textarea,#empS select'))render();else ban();flush()}
+ catch(e){EMP.busy=false;if(!EMP.sess){render();return}stx(msg(e))}}
+function ban(){let b=$('empBan');const m=$('main');if(!b&&m){b=document.createElement('button');b.id='empBan';b.type='button';b.onclick=()=>open('home');m.insertBefore(b,m.firstChild)}if(!b)return;
+ if(!EMP.on){b.classList.remove('on');return}
+ if(!EMP.url||!EMP.sess||!EMP.me){b.classList.add('on');b.innerHTML='🏢 <b>Empresa</b> · '+(EMP.url?'Entrar con Google':'Conectar con tu empresa')+' ›';return}
+ const em=EMP.me.email,mi=EMP.tareas.filter(t=>t.estado!=='Realizada'&&(String(t.tomadaPor).toLowerCase()===em||String(t.asignado).toLowerCase()===em)).length,dis=EMP.tareas.filter(t=>t.estado!=='Realizada'&&!t.asignado&&!t.tomadaPor).length;
+ b.classList.add('on');b.innerHTML='🏢 <b>'+E(EMP.empresa||'Empresa')+'</b> · '+(isPlan()?EMP.tareas.filter(t=>t.estado!=='Realizada').length+' abiertas':mi+' para ti · '+dis+' disponibles')+(EMP.q.length?' · ⏳ '+EMP.q.length+' por subir':'')+' ›'}
+
+/* ---------- Reporte → Drive ---------- */
+function startTask(t){const d=t.tarea+(t.indicaciones?' - '+t.indicaciones:'');s.task={t:t.tarea,u:t.ubicacion||''};s.ubic=t.ubicacion||'';s.maps=null;s.empOT={id:t.id,esp:t.especialidad};if(!String(s.notas||'').includes(t.tarea))s.notas=s.notas?s.notas.trimEnd()+'\n'+d:d;persist();renderAll();close();window.scrollTo({top:0,behavior:'smooth'});toast(t.id+' cargada en el reporte. Al guardarlo se sube al Drive.')}
+const b64=buf=>new Promise(ok=>{const fr=new FileReader();fr.onload=()=>ok(String(fr.result).split(',')[1]);fr.readAsDataURL(new Blob([buf]))});
+async function withFmt(fn){if(!EMP.fmt)return fn();const old=JSON.parse(JSON.stringify(fmt));Object.assign(fmt,EMP.fmt);try{return await fn()}finally{for(const k of Object.keys(fmt))delete fmt[k];Object.assign(fmt,old)}}
+const keyOf=r=>String(r.inicio||'')+'|'+String(r.folio||'')+'|'+String(r.fin||'');
+window.empAfterSave=r=>{if(!r||!EMP.on||!EMP.url||!EMP.sess||!EMP.me)return;if(!r.empOT&&!EMP.all)return;const k=keyOf(r);if(!EMP.q.includes(k))EMP.q.push(k);save();ban();flush()};
+let flushing=false;async function flush(){if(flushing||!EMP.q.length||!EMP.sess)return;flushing=true;try{while(EMP.q.length){const k=EMP.q[0],r=list.find(x=>keyOf(x)===k);if(!r||r.empSent){EMP.q.shift();save();continue}
+  const pdf=await withFmt(()=>makePdf(r)),fotos=[];(r.antes||[]).forEach((p,i)=>p&&p.d&&fotos.push({n:'antes '+(i+1),b64:String(p.d).split(',')[1]}));(r.despues||[]).forEach((p,i)=>p&&p.d&&fotos.push({n:'después '+(i+1),b64:String(p.d).split(',')[1]}));
+  const j=await call('cerrar',{id:r.empOT&&r.empOT.id||'',titulo:(r.task&&r.task.t)||(r.tipo==='lev'?'Levantamiento':'Trabajo'),ubicacion:r.ubic||'',especialidad:(r.empOT&&r.empOT.esp)||EMP.me.esp||'',inicio:r.inicio||'',fin:r.fin||Date.now(),texto:summary(r),pdf:await b64(pdf),fotos});
+  r.empSent={at:Date.now(),id:j.id,pdf:j.pdf};try{put(KL,list)}catch(_){}EMP.q.shift();save();toast('✓ '+j.id+' enviado al Drive de la empresa como realizada');const t=EMP.tareas.find(x=>String(x.id)===String(j.id));if(t){t.estado='Realizada';t.fin=Date.now();t.resumen=j.resumen;t.pdf=j.pdf}ban()}}
+ catch(e){if(e.code!=='net'&&e.code!=='sesion'){const k=EMP.q.shift();save();toast('No se pudo subir un reporte al Drive: '+msg(e))}else ban()}finally{flushing=false;if(S.classList.contains('on')&&EMP.view==='home')render()}}
+addEventListener('online',()=>{flush();sync(true)});
+
+/* ---------- Descarga ---------- */
+let pdfLibP=null;const loadPdfLib=()=>pdfLibP||(pdfLibP=new Promise((ok,no)=>{if(window.PDFLib)return ok(window.PDFLib);const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js';s.onload=()=>ok(window.PDFLib);s.onerror=()=>{pdfLibP=null;no(new Error('net'))};document.head.appendChild(s)}));
+const ab64=s=>{const b=atob(s),u=new Uint8Array(b.length);for(let i=0;i<b.length;i++)u[i]=b.charCodeAt(i);return u};
+async function resumenPdf(rows,o){return withFmt(async()=>{const J=window.jspdf&&window.jspdf.jsPDF;const d=new J({unit:'mm',format:'a4'}),W=210,H=297,M=15,col=hexRGB(fmt.col||'#1f6feb');
+ if(fmt.bg){try{d.addImage(fmt.bg,'JPEG',0,0,W,H)}catch(_){}}
+ let y=fmt.bg?48:20;if(!fmt.bg&&fmt.logo){try{const im=await loadIm(fmt.logo);if(im){const k=Math.min(50/im.width,16/im.height);d.addImage(fmt.logo,'PNG',M,y-6,im.width*k,im.height*k)}}catch(_){}}
+ d.setTextColor(col[0],col[1],col[2]);d.setFont('helvetica','bold');d.setFontSize(18);d.text('Trabajos realizados',fmt.bg||!fmt.logo?M:M+56,y+4);d.setFontSize(11);d.setTextColor(60,60,60);d.setFont('helvetica','normal');d.text((EMP.empresa||fmt.emp||'')+' · '+o.periodo,fmt.bg||!fmt.logo?M:M+56,y+11);y+=24;
+ const by=(f)=>{const m={};rows.forEach(r=>{const k=f(r)||'—';m[k]=(m[k]||0)+1});return Object.entries(m).sort((a,b)=>b[1]-a[1])};
+ d.setFont('helvetica','bold');d.setFontSize(13);d.setTextColor(20,20,20);d.text(rows.length+(rows.length===1?' tarea realizada':' tareas realizadas'),M,y);y+=8;
+ [['Por especialidad',by(r=>r.especialidad)],['Por técnico',by(r=>nm(r.tomadaPor))]].forEach(([t,a])=>{d.setFont('helvetica','bold');d.setFontSize(11);d.text(t,M,y);y+=6;d.setFont('helvetica','normal');a.forEach(([k,n])=>{d.text(String(k),M+4,y);d.text(String(n),W-M,y,{align:'right'});y+=5.5});y+=3});
+ d.setFont('helvetica','bold');d.setFontSize(11);d.text('Detalle',M,y);y+=6;d.setFontSize(9);
+ rows.forEach(r=>{if(y>H-20){d.addPage();if(fmt.bg){try{d.addImage(fmt.bg,'JPEG',0,0,W,H)}catch(_){}}y=fmt.bg?48:20}d.setFont('helvetica','bold');d.text(String(r.id),M,y);d.setFont('helvetica','normal');const ln=d.splitTextToSize(day(r.fin)+' · '+r.tarea+' · '+(r.ubicacion||'')+' · '+nm(r.tomadaPor),W-2*M-22);d.text(ln,M+22,y);y+=4.5*ln.length+1.5});
+ return d.output('arraybuffer')})}
+async function descargar(to,fmtSel){const v=id=>($(id)||{}).value||'',de=v('x_dD')?new Date(v('x_dD')+'T00:00:00').getTime():0,ha=v('x_dH')?new Date(v('x_dH')+'T23:59:59').getTime():Date.now();
+ stx('Buscando tareas realizadas…');let j;try{j=await call('realizadas',{desde:de,hasta:ha,esp:v('x_dE'),tec:v('x_dT')})}catch(e){stx(msg(e));return}
+ const rows=(j.tareas||[]).sort((a,b)=>(+a.fin)-(+b.fin));if(j.personas)EMP.per=j.personas;if(!rows.length){stx('No hay tareas realizadas en ese período.');return}
+ const periodo=day(de||rows[0].fin)+' al '+day(ha),fname='realizadas-'+(v('x_dD')||'')+'_'+(v('x_dH')||'');let data,mime,name;
+ if(fmtSel==='xls'){const c=x=>'"'+String(x==null?'':x).replace(/"/g,'""')+'"',hd=['OT','Fecha','Tarea','Ubicación','Especialidad','Técnico','Inicio','Término','Minutos','Resumen','PDF'];
+  const L=[hd.map(c).join(';')].concat(rows.map(r=>[r.id,day(r.fin),r.tarea,r.ubicacion,r.especialidad,nm(r.tomadaPor),t2s(r.inicio),t2s(r.fin),r.inicio&&r.fin?Math.round((+r.fin-+r.inicio)/6e4):'',r.resumen,r.pdf].map(c).join(';')));
+  data=new TextEncoder().encode('﻿'+L.join('\r\n'));mime='text/csv';name=fname+'.csv'}
+ else{let PL;try{PL=await loadPdfLib()}catch(e){stx('No se pudo cargar el generador de PDF (necesitas internet).');return}const out=await PL.PDFDocument.create();
+  if($('x_dRes')&&$('x_dRes').checked){const sp=await PL.PDFDocument.load(await resumenPdf(rows,{periodo}));(await out.copyPages(sp,sp.getPageIndices())).forEach(p=>out.addPage(p))}
+  let i=0,miss=0;for(const r of rows){i++;stx('Juntando reportes '+i+' de '+rows.length+'…');if(!r.pdfId){miss++;continue}try{const q=await call('pdf',{fileId:r.pdfId}),src=await PL.PDFDocument.load(ab64(q.b64));(await out.copyPages(src,src.getPageIndices())).forEach(p=>out.addPage(p))}catch(e){miss++}}
+  data=await out.save();mime='application/pdf';name=fname+'.pdf';if(miss)toast(miss+' tarea'+(miss>1?'s':'')+' sin PDF: van solo en el resumen')}
+ if(to==='drive'){stx('Guardando en el Drive…');try{const g=await call('guardarArchivo',{b64:await b64(data),mime,nombre:name});stx('✓ Guardado en el Drive, carpeta Descargas.');if(g.url)window.open(g.url,'_blank','noopener')}catch(e){stx(msg(e))}}
+ else{await dlSave({filename:name,data});stx('✓ Descargado: '+rows.length+' tareas.')}}
+
+/* ---------- Invitación ---------- */
+async function invitar(){const id=idOf(EMP.url),l=invLink(),txt='Te invito al modo Empresa de '+(EMP.empresa||'la empresa')+' en la app de reportes.\n\n1) Abre este link: '+l+'\n2) Entra con tu Gmail.\n\nSi usas la app instalada: 🏢 Empresa → Activar → pega este código:\n'+id;
+ try{if(navigator.share){await navigator.share({title:'Invitación · '+(EMP.empresa||'Empresa'),text:txt});return}}catch(e){if(e&&e.name==='AbortError')return}
+ try{await navigator.clipboard.writeText(txt);toast('Invitación copiada. Pégala en WhatsApp.',{label:'Abrir WhatsApp',ms:8000,fn:()=>window.open('https://wa.me/?text='+encodeURIComponent(txt),'_blank','noopener')})}catch(e){window.open('https://wa.me/?text='+encodeURIComponent(txt),'_blank','noopener')}}
+/* ---------- Eventos ---------- */
+let dFmt='pdf';
+S.addEventListener('change',e=>{if(e.target.id==='eAll'){EMP.all=e.target.checked;save()}});
+S.addEventListener('click',async e=>{const b=e.target.closest('[data-e]');if(!b)return;const a=b.dataset.e,id=b.dataset.id;
+ if(a==='close'){close();return}if(a==='home'||a==='cfg'||a==='per'||a==='desc'||a==='nueva'){EMP.view=a;render();if(a==='per'||a==='nueva'||a==='desc'){try{EMP.per=(await call('personas')).personas||[];if(EMP.view===a)render()}catch(_){}}return}
+ if(a==='on'){EMP.on=true;EMP.view='home';save();render();if(EMP.sess&&EMP.me)sync(true);toast('Modo Empresa activado');return}
+ if(a==='off'){EMP.on=false;save();render();close();toast('Modo Empresa desactivado. Tus datos de la empresa siguen guardados para cuando lo actives.');return}
+ if(a==='inv'){invitar();return}
+ if(a==='cfgx'){EMP.view='cfgx';render();return}
+ if(a==='tab'){EMP.tab=b.dataset.t;render();return}
+ if(a==='det'){EMP.sel=id;EMP.view='det';render();return}
+ if(a==='sync'){sync();return}
+ if(a==='saveUrl'){const u=urlOf($('eUrl').value);if(!u){stx('Ese código o link no es válido. Pídele a tu empresa la invitación.');return}if(u!==EMP.url){EMP.sess='';EMP.me=null;EMP.tareas=[]}stx('Probando conexión…');
+  try{const r=await fetch(u);const j=await r.json();if(!j||j.app!=='REDSTONE Empresa')throw 0;if(!j.instalado){stx(ERR.no_instalado);return}EMP.url=u;EMP.view='home';save();render();toast('Conectado. Ahora entra con tu Gmail.')}catch(x){stx('No responde como el script de REDSTONE Empresa. Revisa el link y que la implementación sea "Cualquier persona".')}return}
+ if(a==='logout'){EMP.sess='';EMP.me=null;EMP.tareas=[];EMP.view='home';save();try{google.accounts.id.disableAutoSelect()}catch(_){}render();return}
+ if(a==='tomar'||a==='start'){const t=EMP.tareas.find(x=>String(x.id)===String(id));if(!t)return;const mine=String(t.tomadaPor||'').toLowerCase()===EMP.me.email;
+  if(!mine){b.disabled=true;stx('Tomando la tarea…');try{const j=await call('tomar',{id});Object.assign(t,j.t)}catch(x){b.disabled=false;stx(msg(x));if(x.code==='ya_tomada')sync(true);return}}
+  save();if(a==='start'){startTask(t)}else{toast(t.id+' es tuya');render()}return}
+ if(a==='soltar'){try{const j=await call('soltar',{id});const t=EMP.tareas.find(x=>String(x.id)===String(id));if(t)Object.assign(t,j.t);if(s.empOT&&String(s.empOT.id)===String(id)){delete s.empOT;persist()}save();EMP.view='home';render();toast('Tarea devuelta')}catch(x){stx(msg(x))}return}
+ if(a==='borrar'){if(b.dataset.ok!=='1'){b.dataset.ok='1';b.textContent='Toca de nuevo para eliminar';return}try{await call('borrar',{id});EMP.tareas=EMP.tareas.filter(t=>String(t.id)!==String(id));save();EMP.view='home';render();toast('Tarea eliminada')}catch(x){stx(msg(x))}return}
+ if(a==='crear'){const t={tarea:$('x_nT').value.trim(),ubicacion:$('x_nU').value.trim(),indicaciones:$('x_nI').value.trim(),especialidad:$('x_nE').value,asignado:$('x_nA').value,fecha:$('x_nF').value?new Date($('x_nF').value).getTime():'',prioridad:$('x_nP').value};
+  if(!t.tarea){stx('Escribe qué hay que hacer.');return}if(t.asignado&&!t.especialidad){const p=EMP.per.find(x=>x.email===t.asignado);if(p&&p.especialidad)t.especialidad=p.especialidad}b.disabled=true;stx('Publicando…');
+  try{const j=await call('crear',{t});EMP.tareas.unshift(j.t);save();EMP.view='home';EMP.tab='mi';render();toast(j.t.id+' publicada · '+icOf(j.t.especialidad)+' '+j.t.especialidad)}catch(x){b.disabled=false;stx(msg(x))}return}
+ if(a==='savePer'){const p={email:$('x_pE').value.trim(),nombre:$('x_pN').value.trim(),rol:$('x_pR').value,especialidad:$('x_pS').value};stx('Guardando…');try{await call('guardarPersona',{p});EMP.per=(await call('personas')).personas||[];render();toast('Persona guardada')}catch(x){stx(msg(x))}return}
+ if(a==='editPer'){const p=EMP.per.find(x=>x.email===b.dataset.m);if(!p)return;$('x_pE').value=p.email;$('x_pN').value=p.nombre||'';$('x_pR').value=p.rol||'tecnico';$('x_pS').value=p.especialidad||'';$('x_pE').focus();return}
+ if(a==='delPer'){if(b.dataset.ok!=='1'){b.dataset.ok='1';b.textContent='¿Seguro?';return}try{await call('borrarPersona',{email:b.dataset.m});EMP.per=EMP.per.filter(x=>x.email!==b.dataset.m);render();toast('Persona quitada')}catch(x){stx(msg(x))}return}
+ if(a==='saveCfg'){try{const j=await call('config',{empresa:$('eEmp').value.trim(),esps:$('eEsps').value.split(',').map(x=>x.trim()).filter(Boolean)});EMP.empresa=j.empresa;EMP.esps=j.esps;save();render();toast('Empresa guardada')}catch(x){stx(msg(x))}return}
+ if(a==='pubFmt'||a==='delFmt'){const f=a==='delFmt'?null:{emp:fmt.emp,tit:fmt.tit,pie:fmt.pie,col:fmt.col,tcol:fmt.tcol,logo:fmt.logo,bg:fmt.bg,cover:fmt.cover};stx('Publicando…');try{await call('config',{formato:f});EMP.fmt=f;save();render();toast(f?'Formato publicado para toda la empresa':'Formato de la empresa quitado')}catch(x){stx(msg(x))}return}
+ if(a==='fmtSel'){dFmt=b.dataset.f;$('x_dfPdf').className=dFmt==='pdf'?'pri':'sec';$('x_dfXls').className=dFmt==='xls'?'pri':'sec';$('x_dRes').closest('label').style.display=dFmt==='pdf'?'':'none';return}
+ if(a==='descGo'){S.querySelectorAll('[data-e=descGo]').forEach(x=>x.disabled=true);try{await descargar(b.dataset.to,dFmt)}finally{S.querySelectorAll('[data-e=descGo]').forEach(x=>x.disabled=false)}return}
+});
+// botón en el menú de modos
+const mm=$('modeMenu');if(mm&&!$('mEmp')){const bt=document.createElement('button');bt.className='sec';bt.id='mEmp';bt.onclick=()=>{mm.style.display='none';open('home')};mm.appendChild(bt)}
+function mmLbl(){const bt=$('mEmp');if(bt)bt.innerHTML='<span class="mmI" aria-hidden="true">🏢</span><span>Empresa'+(EMP.on?' <small style="color:var(--ok)">● activo</small>':'')+'</span>'}
+// reportes de empresa fuera del historial personal
+window.empHide=r=>!!(r&&(r.empOT||r.empSent));
+// invitación por link
+try{const q=new URLSearchParams(location.search),v=q.get('emp');if(v){const u=urlOf(v);if(u){if(u!==EMP.url){EMP.sess='';EMP.me=null;EMP.tareas=[]}EMP.url=u;EMP.on=true;EMP.view='home';save();setTimeout(()=>{open('home');toast('Invitación de empresa: entra con tu Gmail')},600)}q.delete('emp');history.replaceState(null,'',location.pathname+(q.toString()?'?'+q:'')+location.hash)}}catch(e){}
+mmLbl();
+ban();if(EMP.sess&&EMP.me)setTimeout(()=>sync(true),1500);
+})();
+
 </script>
 </body>
 </html>
