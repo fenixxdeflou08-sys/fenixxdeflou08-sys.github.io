@@ -2667,13 +2667,30 @@ $('fRadio').onclick=()=>{fabOpen=false;fab();openRadio()};})();
 
 /* ---- Walkie-talkie (canal por código; en vivo por WebRTC + respaldo de mensajes de voz vía ntfy.sh) ---- */
 (()=>{const W=$('walk'),H=window.WK_H||'https://ntfy.sh/';let es=null,seenIds=new Set(),ch='',me='',rec=null,chunks=[],t0=0,tmr=0,mic=null,log=[],auto=true,lim=0,talking=false;
-const MB=new Map();let pingT=0;const PC={},ICE=[{urls:['stun:stun.l.google.com:19302','stun:stun1.l.google.com:19302']},{urls:'stun:stun.cloudflare.com:3478'}];
+const MB=new Map();let pingT=0,pend=0,discard=false,lockd=false;
+const SND=(()=>{let ac=null;const A=()=>{try{if(!ac){const C=window.AudioContext||window.webkitAudioContext;if(!C)return null;ac=new C()}if(ac.state==='suspended')ac.resume()}catch(e){return null}return ac};
+addEventListener('pointerdown',()=>A(),{capture:true,passive:true});
+const tone=(c,t,f1,f2,d,ty,v)=>{const o=c.createOscillator(),g=c.createGain();o.type=ty||'sine';o.frequency.setValueAtTime(f1,t);if(f2!==f1)o.frequency.exponentialRampToValueAtTime(f2,t+d);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(v||.25,t+.008);g.gain.setValueAtTime(v||.25,t+d*.7);g.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(g).connect(c.destination);o.start(t);o.stop(t+d+.02)};
+const noise=(c,t,d,v,f)=>{const n=Math.floor(c.sampleRate*d),b=c.createBuffer(1,n,c.sampleRate),x=b.getChannelData(0);for(let i=0;i<n;i++)x[i]=Math.random()*2-1;const s=c.createBufferSource();s.buffer=b;const q=c.createBiquadFilter();q.type='bandpass';q.frequency.value=f||2500;q.Q.value=.6;const g=c.createGain();g.gain.setValueAtTime(v||.2,t);g.gain.exponentialRampToValueAtTime(.0001,t+d);s.connect(q).connect(g).connect(c.destination);s.start(t);s.stop(t+d)};
+const K={
+radio:{n:'📻 Radio clásica',a:(c,t)=>{noise(c,t,.12,.3);tone(c,t+.1,1200,1200,.09,'sine',.22);return 220},b:(c,t)=>{tone(c,t,1000,1000,.08,'sine',.22);tone(c,t+.09,1450,1450,.08,'sine',.22);noise(c,t+.18,.22,.28);return 420}},
+freq:{n:'📡 Frecuencia',a:(c,t)=>{noise(c,t,.28,.14,1800);tone(c,t,300,2200,.26,'sine',.2);return 290},b:(c,t)=>{tone(c,t,2200,300,.22,'sine',.2);noise(c,t+.14,.32,.22,1500);return 470}},
+chirp:{n:'📶 Chirp (tipo Nextel)',a:(c,t)=>{for(let i=0;i<6;i++){const f=i%2?2250:1800;tone(c,t+i*.032,f,f,.032,'square',.07)}return 200},b:(c,t)=>{for(let i=0;i<4;i++){const f=i%2?1800:2250;tone(c,t+i*.032,f,f,.032,'square',.07)}return 140}},
+bip:{n:'🔔 Bip doble',a:(c,t)=>{tone(c,t,880,880,.07,'sine',.28);tone(c,t+.1,1320,1320,.08,'sine',.28);return 190},b:(c,t)=>{tone(c,t,660,660,.13,'sine',.28);return 140}},
+moneda:{n:'🪙 Moneda',a:(c,t)=>{tone(c,t,988,988,.07,'square',.1);tone(c,t+.07,1319,1319,.2,'square',.1);return 260},b:(c,t)=>{tone(c,t,659,659,.06,'square',.1);tone(c,t+.07,523,523,.12,'square',.1);return 200}},
+laser:{n:'🔫 Láser',a:(c,t)=>{tone(c,t,1900,220,.22,'sawtooth',.12);return 230},b:(c,t)=>{tone(c,t,220,1500,.15,'sawtooth',.1);return 160}},
+burbuja:{n:'🫧 Burbuja',a:(c,t)=>{tone(c,t,300,900,.1,'sine',.32);tone(c,t+.11,420,1250,.1,'sine',.32);return 230},b:(c,t)=>{tone(c,t,900,300,.12,'sine',.32);return 140}},
+ninguno:{n:'🔇 Sin sonido',a:()=>0,b:()=>0}};
+return {K,play:(k,w)=>{const s=K[k]||K.radio,c=A();if(!c)return 0;try{return s[w](c,c.currentTime+.03)+40}catch(e){return 0}}}})();
+let kit='radio';try{kit=localStorage.getItem('rep_wkSnd')||'radio'}catch(e){}
+const lbl=(big,sm)=>{$('wkPL').textContent=big;const k=$('wkKs');if(k)k.textContent=sm};
+const PC={},ICE=[{urls:['stun:stun.l.google.com:19302','stun:stun1.l.google.com:19302']},{urls:'stun:stun.cloudflare.com:3478'}];
 try{me=localStorage.getItem('rep_wkId')||'';if(!me){me=Math.random().toString(36).slice(2,10);localStorage.setItem('rep_wkId',me)}auto=localStorage.getItem('rep_wkAuto')!=='0'}catch(e){me=me||Math.random().toString(36).slice(2,10)}
 const nm=()=>($('wkN').value.trim()||'Sin nombre').slice(0,30);const st=t=>{$('wkSt').textContent=t};
 const topic=c=>'redstone-wt-'+c.toLowerCase().replace(/[^a-z0-9]/g,'');
 const newCode=()=>{const a='abcdefghjkmnpqrstuvwxyz23456789';let c='';const r=crypto.getRandomValues(new Uint8Array(8));r.forEach(x=>c+=a[x%a.length]);return c.slice(0,4)+'-'+c.slice(4)};
 function renderLog(){$('wkLog').innerHTML=log.length?log.slice(0,30).map((m,i)=>`<div class="nIt"><button class="sec fix" data-wp="${i}" style="min-height:44px;width:44px;padding:0">▶</button><div class="nTx" style="flex:1"><b>${esc(m.mine?'Tú':m.n)}</b><span>${hm(m.t)}${m.d?' · '+m.d+' s':''}${m.lv?' · 🔴 escuchado en vivo':''}</span></div></div>`).join(''):'<div class="mu">Aún no hay mensajes en este canal.</div>'}
-function playMsg(m){try{const a=new Audio(m.u);a.play().catch(()=>st('Toca ▶ para escuchar el mensaje de '+m.n))}catch(e){}}
+function playMsg(m){try{const a=new Audio(m.u),k=m.mine?'':m.k;const d=k?SND.play(k,'a'):0;if(k)a.onended=()=>SND.play(k,'b');setTimeout(()=>a.play().catch(()=>st('Toca ▶ para escuchar el mensaje de '+m.n)),d)}catch(e){}}
 /* ---- en vivo ---- */
 const live=()=>Object.entries(PC).filter(([k,p])=>p.ok).map(([k])=>k);
 function liveUI(){const n=live().length,el=$('wkLive');if(!el)return;el.textContent=n?'🟢 En vivo con '+n+(n===1?' persona':' personas'):(mic?'⚪ Sin conexión en vivo: los mensajes se envían grabados':'');}
@@ -2684,7 +2701,7 @@ function mkPC(id,name){drop(id);const pc=new RTCPeerConnection({iceServers:ICE})
 const p={pc,au,n:name||'',ok:false,dc:null};PC[id]=p;if(mic)mic.getAudioTracks().forEach(t=>pc.addTrack(t,mic));else pc.addTransceiver('audio',{direction:'recvonly'});
 pc.ontrack=e=>{au.srcObject=e.streams[0]||new MediaStream([e.track]);au.play().catch(()=>{})};
 const upd=()=>{const s=pc.connectionState||pc.iceConnectionState;p.ok=(s==='connected'||s==='completed');if(s==='failed'||s==='closed')drop(id);liveUI()};pc.onconnectionstatechange=upd;pc.oniceconnectionstatechange=upd;
-const setDC=dc=>{p.dc=dc;dc.onmessage=e=>{let j;try{j=JSON.parse(e.data)}catch(_){return}if(j.t==='ptt'){p.n=j.n||p.n;$('wkHear').textContent=j.on?'🔊 '+p.n+' está hablando…':''}}};pc.ondatachannel=e=>setDC(e.channel);p.setDC=setDC;return p}
+const setDC=dc=>{p.dc=dc;dc.onmessage=e=>{let j;try{j=JSON.parse(e.data)}catch(_){return}if(j.t==='ptt'){p.n=j.n||p.n;$('wkHear').textContent=j.on?'🔊 '+p.n+' está hablando…':'';SND.play(j.k||'radio',j.on?'a':'b');fUpd()}}};pc.ondatachannel=e=>setDC(e.channel);p.setDC=setDC;return p}
 const gather=pc=>new Promise(r=>{if(pc.iceGatheringState==='complete')return r();const t=setTimeout(r,2500);pc.addEventListener('icegatheringstatechange',()=>{if(pc.iceGatheringState==='complete'){clearTimeout(t);r()}})});
 async function call(id,name){const p=mkPC(id,name);p.setDC(p.pc.createDataChannel('ctl'));await p.pc.setLocalDescription(await p.pc.createOffer());await gather(p.pc);sig({t:'offer',to:id,sdp:p.pc.localDescription.sdp})}
 function whoUI(){const now=Date.now();for(const[k,v]of MB)if(now-v.t>150000)MB.delete(k);const n=MB.size+1;$('wkCnt').textContent=n;const L=['Tú ('+nm()+')',...[...MB.values()].map(v=>v.n+(PC[v.id]&&PC[v.id].ok?' 🟢':''))];$('wkWhoL').innerHTML=L.map(esc).join('<br>')}
@@ -2694,29 +2711,55 @@ if(j.t==='offer'){const p=mkPC(id,j.n);await p.pc.setRemoteDescription({type:'of
 if(j.t==='answer'&&PC[id]){try{await PC[id].pc.setRemoteDescription({type:'answer',sdp:j.sdp})}catch(e){}return}
 if(j.t==='bye')drop(id)}
 function join(c){c=(c||'').trim().toLowerCase();if(!/^[a-z0-9-]{4,30}$/.test(c)){st('Escribe un código de canal válido (letras y números).');return}leave(true);ch=c;try{localStorage.setItem('rep_wkCh',c);localStorage.setItem('rep_wkName',nm())}catch(e){}
-$('wkCh').value=c;$('wkIn').style.display='';$('wkOut').style.display='none';$('wkCur').textContent=c;try{const sv=JSON.parse(localStorage.getItem('rep_wkChans')||'[]').find(x=>x.c===c);$('wkCurN').textContent=sv?sv.n:''}catch(e){}st('Conectando…');if(inClaude()){st('Dentro de la app de Claude el walkie-talkie está bloqueado. Úsalo desde la APK o desde fenixxdeflou08-sys.github.io.');return}
+$('wkCh').value=c;$('wkIn').style.display='';$('wkOut').style.display='none';$('wkCur').textContent=c;setTimeout(()=>fUpd(),0);try{const sv=JSON.parse(localStorage.getItem('rep_wkChans')||'[]').find(x=>x.c===c);$('wkCurN').textContent=sv?sv.n:''}catch(e){}st('Conectando…');if(inClaude()){st('Dentro de la app de Claude el walkie-talkie está bloqueado. Úsalo desde la APK o desde fenixxdeflou08-sys.github.io.');return}
 ensureMic().catch(()=>{}).then(()=>{liveUI()});
 try{es=new EventSource(H+topic(c)+','+topic(c)+'-sig/sse');es.onopen=()=>{st('Conectado. Mantén presionado el botón para hablar.');clearInterval(pingT);pingT=setInterval(()=>{sig({t:'ping'});whoUI()},60000);const go=()=>sig({t:'hello'});mic?go():setTimeout(go,1200)};es.onerror=()=>st('Reconectando… revisa tu internet.');
 es.onmessage=async e=>{let j;try{j=JSON.parse(e.data)}catch(_){return}if(j.event&&j.event!=='message')return;if(j.id){if(seenIds.has(j.id))return;seenIds.add(j.id)}
 if(j.topic&&/-sig$/.test(j.topic)){let body=j.message;if(j.attachment&&j.attachment.url){try{body=await (await fetch(j.attachment.url)).text()}catch(_){return}}try{onSig(JSON.parse(body))}catch(_){}return}
 const tg=j.tags||[];if(tg.includes('id-'+me))return;const a=j.attachment;if(!a||!a.url)return;const lvT=tg.find(x=>/^lv-/.test(x));const heard=!!(lvT&&lvT.slice(3).split('-').includes(me));
-const m={n:(j.title||'Alguien').slice(0,30),t:(j.time||Date.now()/1000)*1000,u:a.url,d:+(tg.find(x=>/^d-\d+$/.test(x))||'d-0').slice(2)||0,lv:heard};log.unshift(m);renderLog();
+const m={n:(j.title||'Alguien').slice(0,30),t:(j.time||Date.now()/1000)*1000,u:a.url,d:+(tg.find(x=>/^d-\d+$/.test(x))||'d-0').slice(2)||0,lv:heard,k:((tg.find(x=>/^k-/.test(x))||'k-radio').slice(2))};log.unshift(m);renderLog();
 if(!heard){try{navigator.vibrate&&navigator.vibrate([60,40,60])}catch(_){}if(auto)playMsg(m);if(!W.classList.contains('on'))toast('🎙️ Mensaje de '+m.n,{label:'Escuchar',ms:8000,fn:()=>playMsg(m)})}}}catch(e){st('No se pudo conectar al canal.')}}
-function leave(silent){if(ch)sig({t:'bye'});clearInterval(pingT);MB.clear();whoUI();Object.keys(PC).forEach(drop);if(es){es.close();es=null}ch='';$('wkHear').textContent='';if(!silent){$('wkIn').style.display='none';$('wkOut').style.display='';st('');try{localStorage.removeItem('rep_wkCh')}catch(e){}if(mic){mic.getTracks().forEach(t=>t.stop());mic=null}}log=[];renderLog();liveUI()}
-const ptt=on=>{Object.values(PC).forEach(p=>{try{p.dc&&p.dc.readyState==='open'&&p.dc.send(JSON.stringify({t:'ptt',on,n:nm()}))}catch(e){}})};
-async function startRec(){if(!ch||rec)return;try{await ensureMic()}catch(e){st('Necesito permiso de micrófono para hablar.');return}
+function leave(silent){if(ch)sig({t:'bye'});clearInterval(pingT);MB.clear();whoUI();Object.keys(PC).forEach(drop);if(es){es.close();es=null}ch='';$('wkHear').textContent='';if(!silent){$('wkIn').style.display='none';$('wkOut').style.display='';st('');try{localStorage.removeItem('rep_wkCh')}catch(e){}if(mic){mic.getTracks().forEach(t=>t.stop());mic=null}}log=[];renderLog();liveUI();fUpd(false)}
+const ptt=on=>{Object.values(PC).forEach(p=>{try{p.dc&&p.dc.readyState==='open'&&p.dc.send(JSON.stringify({t:'ptt',on,n:nm(),k:kit}))}catch(e){}})};
+async function startRec(){if(!ch||rec||pend)return;pend=-1;try{await ensureMic()}catch(e){pend=0;st('Necesito permiso de micrófono para hablar.');return}
+if(pend!==-1)return;$('wkPTT').classList.add('on');fUpd(true);lbl('Espera el tono…','…');ptt(true);talking=true;try{navigator.vibrate&&navigator.vibrate(20)}catch(_){}
+const d=SND.play(kit,'a');pend=setTimeout(()=>{pend=0;realStart()},Math.max(d,60))}
+async function realStart(){if(!ch||rec)return;
 const mt=['audio/webm;codecs=opus','audio/ogg;codecs=opus','audio/mp4'].find(t=>window.MediaRecorder&&MediaRecorder.isTypeSupported(t))||'';
-mic.getAudioTracks().forEach(t=>t.enabled=true);talking=true;ptt(true);
+mic.getAudioTracks().forEach(t=>t.enabled=true);
 try{rec=new MediaRecorder(mic,mt?{mimeType:mt,audioBitsPerSecond:24000}:{})}catch(e){st('Este teléfono no permite grabar audio aquí.');return}chunks=[];rec.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data)};
-const lvAt=live();rec.onstop=()=>send(new Blob(chunks,{type:rec.mimeType||mt||'audio/webm'}),(Date.now()-t0)/1000,lvAt.filter(x=>PC[x]&&PC[x].ok));rec.start();t0=Date.now();$('wkPTT').classList.add('on');try{navigator.vibrate&&navigator.vibrate(25)}catch(_){}
-const tick=()=>{const s=(Date.now()-t0)/1000;$('wkPL').textContent=(lvAt.length?'🔴 En vivo… ':'Hablando… ')+Math.floor(s)+' s';if(s>=60)stopRec();else tmr=setTimeout(tick,250)};tick()}
-function stopRec(){clearTimeout(tmr);$('wkPTT').classList.remove('on');$('wkPL').textContent='Mantén presionado para hablar';if(mic)mic.getAudioTracks().forEach(t=>t.enabled=false);if(talking){talking=false;ptt(false)}if(rec&&rec.state!=='inactive')rec.stop()}
+const lvAt=live();rec.onstop=()=>{if(discard){discard=false;rec=null;return}send(new Blob(chunks,{type:rec.mimeType||mt||'audio/webm'}),(Date.now()-t0)/1000,lvAt.filter(x=>PC[x]&&PC[x].ok))};rec.start();t0=Date.now();$('wkPTT').classList.add('on');try{navigator.vibrate&&navigator.vibrate(25)}catch(_){}
+const tick=()=>{const s=(Date.now()-t0)/1000;lbl((lockd?'🔒 ':'')+(lvAt.length?'🔴 En vivo… ':'Hablando… ')+Math.floor(s)+' s'+(lockd?' · toca para terminar':''),'ON');fUpd(true);if(s>=(lockd?300:60))stopRec();else tmr=setTimeout(tick,250)};tick()}
+function stopRec(cancel){const wasPend=!!pend;if(pend>0)clearTimeout(pend);pend=0;clearTimeout(tmr);lockd=false;$('wkPTT').classList.remove('on');lbl('Mantén presionado para hablar · desliza ↑ para bloquear','OFF');if(mic)mic.getAudioTracks().forEach(t=>t.enabled=false);if(talking){talking=false;ptt(false)}if(rec&&rec.state!=='inactive'){if(cancel)discard=true;else SND.play(kit,'b');rec.stop()}fUpd(false)}
 async function send(b,dur,lv){rec=null;if(dur<.6){st('Muy corto: mantén presionado mientras hablas.');return}if(Date.now()-lim<1500){st('Espera un segundo entre mensajes.');return}lim=Date.now();
 const ext=/mp4/.test(b.type)?'m4a':/ogg/.test(b.type)?'ogg':'webm';st(lv&&lv.length?'Enviado en vivo; guardando copia…':'Enviando…');
-const tags=['id-'+me,'d-'+Math.round(dur)];if(lv&&lv.length)tags.push('lv-'+lv.slice(0,8).join('-'));
+const tags=['id-'+me,'d-'+Math.round(dur)];if(lv&&lv.length)tags.push('lv-'+lv.slice(0,8).join('-'));tags.push('k-'+kit);
 try{const r=await fetch(H+topic(ch)+'?filename='+encodeURIComponent('voz-'+Date.now()+'.'+ext)+'&title='+encodeURIComponent(nm())+'&tags='+encodeURIComponent(tags.join(',')),{method:'PUT',body:b});if(!r.ok)throw new Error(r.status);
 log.unshift({n:nm(),t:Date.now(),u:URL.createObjectURL(b),d:Math.round(dur),mine:true,lv:!!(lv&&lv.length)});renderLog();st(lv&&lv.length?'Escuchado en vivo ✓':'Enviado ✓')}catch(e){st('No se pudo enviar ('+(e.message||'sin internet')+').')}}
-const P=$('wkPTT');P.addEventListener('pointerdown',e=>{e.preventDefault();try{P.setPointerCapture(e.pointerId)}catch(_){}startRec()});['pointerup','pointercancel','lostpointercapture'].forEach(t=>P.addEventListener(t,()=>{if(rec)stopRec()}));P.oncontextmenu=e=>e.preventDefault();
+const P=$('wkPTT');let pY=0,pDn=false;P.addEventListener('pointerdown',e=>{e.preventDefault();if(lockd){stopRec();return}pDn=true;pY=e.clientY;try{P.setPointerCapture(e.pointerId)}catch(_){}startRec()});
+P.addEventListener('pointermove',e=>{if(!pDn||lockd)return;if(pY-e.clientY>90&&(rec||pend)){lockd=true;try{navigator.vibrate&&navigator.vibrate([30,30,30])}catch(_){}}});
+['pointerup','pointercancel','lostpointercapture'].forEach(t=>P.addEventListener(t,()=>{if(!pDn)return;pDn=false;if(lockd)return;if(rec||pend)stopRec()}));P.oncontextmenu=e=>e.preventDefault();
+/* ---- isla flotante ---- */
+const MIC='<svg viewBox="0 0 24 24" aria-hidden="true" style="width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7"/></svg>';
+const F=document.createElement('div');F.id='wkF';F.innerHTML='<div class="wkLk" aria-hidden="true"></div><svg class="wkChv" viewBox="0 0 40 60" aria-hidden="true"><path d="M8 22l12-10 12 10M8 36l12-10 12 10M8 50l12-10 12 10"/></svg><button type="button" id="wkK" aria-label="Walkie: mantén presionado para hablar, desliza arriba para dejarlo encendido, toque corto abre el walkie">'+MIC+'<small id="wkKs">OFF</small></button>';document.body.appendChild(F);
+const FS=document.createElement('style');FS.textContent='#wkF{position:fixed;right:10px;bottom:calc(150px + env(safe-area-inset-bottom,0px));z-index:50;width:72px;height:196px;border-radius:36px;background:var(--card);border:3px solid var(--tx);box-shadow:0 6px 22px rgba(0,0,0,.35);display:none;touch-action:none;user-select:none;-webkit-user-select:none}#wkF.on{display:block}#wkF .wkLk{position:absolute;left:9px;right:9px;top:9px;height:48px;border:3px solid #1e88e5;border-bottom:0;border-radius:27px 27px 0 0;opacity:.8}#wkF .wkChv{position:absolute;left:16px;top:62px;width:34px;height:52px;fill:none;stroke:#1e88e5;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;opacity:.85}#wkF.tk .wkChv,#wkF.lk .wkChv{animation:wkUp 1s infinite}@keyframes wkUp{0%{transform:translateY(6px);opacity:.3}60%{opacity:1}100%{transform:translateY(-6px);opacity:.2}}#wkK{position:absolute;left:4px;bottom:4px;width:58px;height:58px;min-height:0;padding:0;border-radius:50%!important;background:#ef9a9a;color:#1565c0;border:3px solid #1e88e5;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;touch-action:none;transition:transform .12s}#wkK small{font:800 11px/1 var(--fc,system-ui);color:#c62828;letter-spacing:.04em}#wkF.tk #wkK,#wkF.lk #wkK{background:#a5d6a7}#wkF.tk #wkK small,#wkF.lk #wkK small{color:#2e7d32}#wkF.lk #wkK{transform:translateY(-122px)}#wkF.hear{border-color:var(--ok);animation:wkHr 1s infinite}@keyframes wkHr{50%{box-shadow:0 0 0 8px rgba(76,175,80,.35)}}@media (prefers-reduced-motion:reduce){#wkF .wkChv,#wkF.hear{animation:none!important}}';document.head.appendChild(FS);
+const KB=$('wkK'),TR=122;let fY=0,fDn=false,fT=0,fMv=0;
+function fUpd(tk){if(!F)return;F.classList.toggle('on',!!ch&&!W.classList.contains('on'));if(tk!==undefined){F.classList.toggle('tk',!!tk&&!lockd);F.classList.toggle('lk',!!tk&&lockd)}if(!tk&&tk!==undefined)KB.style.transform='';F.classList.toggle('hear',!!$('wkHear').textContent)}
+new MutationObserver(()=>fUpd()).observe(W,{attributes:true,attributeFilter:['class']});
+KB.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();if(lockd){stopRec();return}fDn=true;fY=e.clientY;fT=Date.now();fMv=0;try{KB.setPointerCapture(e.pointerId)}catch(_){}startRec()});
+KB.addEventListener('pointermove',e=>{if(!fDn||lockd)return;const dy=Math.max(0,fY-e.clientY);fMv=Math.max(fMv,dy);KB.style.transform='translateY('+(-Math.min(dy,TR))+'px)';if(dy>TR*.8&&(rec||pend)){lockd=true;KB.style.transform='';F.classList.remove('tk');F.classList.add('lk');lbl('🔒 Bloqueado · toca para terminar','ON');try{navigator.vibrate&&navigator.vibrate([30,30,30])}catch(_){}}});
+['pointerup','pointercancel','lostpointercapture'].forEach(t=>KB.addEventListener(t,()=>{if(!fDn)return;fDn=false;if(lockd)return;KB.style.transform='';if(Date.now()-fT<300&&fMv<8){stopRec(true);W.classList.add('on');return}if(rec||pend)stopRec()}));KB.oncontextmenu=e=>e.preventDefault();
+/* arrastrar la isla (tocarla abre el walkie) */
+let gY=0,gT=0,gD=false,gTop=0;F.addEventListener('pointerdown',e=>{if(e.target.closest('#wkK'))return;gD=true;gY=e.clientY;gTop=F.getBoundingClientRect().top;try{F.setPointerCapture(e.pointerId)}catch(_){}});
+F.addEventListener('pointermove',e=>{if(!gD)return;const dy=e.clientY-gY;if(Math.abs(dy)>6){const top=Math.min(innerHeight-F.offsetHeight-8,Math.max(8,gTop+dy));F.style.top=top+'px';F.style.bottom='auto';gT=1}});
+F.addEventListener('pointerup',()=>{if(!gD)return;gD=false;if(gT){gT=0;try{localStorage.setItem('rep_wkFy',F.style.top)}catch(_){}return}W.classList.add('on')});
+try{const y=localStorage.getItem('rep_wkFy');if(y&&parseFloat(y)<innerHeight-100){F.style.top=y;F.style.bottom='auto'}}catch(_){}
+new MutationObserver(()=>fUpd()).observe($('wkHear'),{childList:true,characterData:true,subtree:true});
+/* sonidos */
+$('wkAuto').closest('label').insertAdjacentHTML('afterend','<div class="row" style="align-items:flex-end;margin-top:8px"><label style="flex:1;display:flex;flex-direction:column;gap:4px;font-size:14px;color:var(--mu)">Sonido al hablar<select id="wkSnd">'+Object.entries(SND.K).map(([k,v])=>'<option value="'+k+'">'+v.n+'</option>').join('')+'</select></label><button class="sec fix" id="wkSndT" type="button" aria-label="Probar sonido">▶ Probar</button></div><div class="mu" style="font-size:12px;margin-top:4px">Suena antes de abrir el micrófono y al soltar. Los demás escuchan tu sonido.</div>');
+$('wkSnd').value=SND.K[kit]?kit:'radio';$('wkSnd').onchange=e=>{kit=e.target.value;try{localStorage.setItem('rep_wkSnd',kit)}catch(_){}SND.play(kit,'a')};
+$('wkSndT').onclick=()=>{const d=SND.play(kit,'a');setTimeout(()=>SND.play(kit,'b'),d+500)};
+lbl('Mantén presionado para hablar · desliza ↑ para bloquear','OFF');
 $('wkWho').onclick=()=>{const l=$('wkWhoL');l.style.display=l.style.display==='none'?'':'none';whoUI()};
 $('wkLog').onclick=e=>{const b=e.target.closest('[data-wp]');if(b)playMsg(log[+b.dataset.wp])};
 $('wkNew').onclick=()=>{$('wkCh').value=newCode();join($('wkCh').value)};$('wkJoin').onclick=()=>join($('wkCh').value);$('wkLeave').onclick=()=>leave(false);
@@ -3240,7 +3283,7 @@ $('hmSvM').onclick=()=>{closeSv();horaPanel()};
 $('hmSvW').onclick=()=>{const n=Date.now();s.inicio=n;s.fin=n;s.pausas=[];s.noTime=true;persist();renderAll();closeSv();$('bSave').click()};
 $('hmSvX').onclick=closeSv;btnUI();})();
 
-const APP_VER='2.7.1';
+const APP_VER='2.7.2';
 /* ===== Asistente IA (chat con sugerencias seleccionables) ===== */
 setTimeout(()=>{const W=$('asis'),L=$('asL');let hist=[],busy=false,rec=null;const U=['pza','m','m²','kg','lt','caja','bolsa'];
 const SYS='Eres el asistente de la app "Reportes de trabajo" para técnicos de mantención en Chile (electricidad, gasfitería, obras civiles, pintura, cerámica, etc.). Respondes en español de Chile, claro y práctico. Siempre respondes SOLO un JSON con esta forma: {"respuesta":"texto breve (máx 4 frases)","textos":["redacción lista para pegar en las notas del reporte, en tercera persona, estilo informe técnico: Se realiza..."],"materiales":[{"n":"nombre","c":"cantidad numérica como texto","u":"pza|m|m²|kg|lt|caja|bolsa"}],"preguntas":[{"q":"pregunta corta para afinar","opciones":["opción 1","opción 2","opción 3"]}]}. Incluye 2-3 "textos" solo si la persona necesita redactar un reporte; incluye "materiales" solo si aplica (cantidades aproximadas si faltan datos); incluye 1-2 "preguntas" cuando falten datos importantes. Si es una duda técnica, responde en "respuesta" y deja vacías las otras listas. Si mencionas normativa chilena (RIC, DS 8, DS 66, RIDAA) di el número pero recomienda verificarla. No inventes datos; si no sabes, dilo.';
